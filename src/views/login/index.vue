@@ -1,9 +1,15 @@
 <script setup>
-import { RiEyeLine } from '@remixicon/vue'
+import {
+  RiEyeLine,
+  RiLoginBoxLine,
+  RiBookOpenLine,
+  RiFileCheckLine,
+  RiSearchLine
+} from '@remixicon/vue'
 </script>
 
 <template>
-  <div class="h-full bg-gray-200 w-full py-16 px-4">
+  <div class="bg-gray-200 w-full min-h-screen py-9 px-4">
     <div class="flex flex-col items-center justify-center">
       <img
         tabindex="0"
@@ -23,8 +29,7 @@ import { RiEyeLine } from '@remixicon/vue'
           Desenvolvendo e otimizando soluções em TI desde 1993
         </p>
       </div>
-
-      <div class="bg-white shadow rounded lg:w-1/3 md:w-1/2 w-full p-10 mt-16">
+      <div class="bg-white shadow rounded lg:w-1/3 md:max-w-lg w-full p-10 mt-9">
         <p tabindex="0" class="focus:outline-none text-2xl font-extrabold leading-6 text-gray-800">
           Portal da Transparência
         </p>
@@ -34,8 +39,20 @@ import { RiEyeLine } from '@remixicon/vue'
         >
           Painel Administrativo
         </p>
-
         <div class="pt-5">
+          <form>
+            <select
+              id="prefs"
+              class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"
+            >
+              <option selected>Selecione</option>
+              <option value="CM">Prefeitura de Ceará Mirim</option>
+              <option value="CN">Prefeitura de Currais Novos</option>
+            </select>
+          </form>
+        </div>
+        <div class="py-1">
+          <label id="email" class="text-sm font-medium leading-none text-gray-800">CPF</label>
           <input
             aria-labelledby="email"
             type="email"
@@ -43,15 +60,7 @@ import { RiEyeLine } from '@remixicon/vue'
           />
         </div>
         <div class="py-1">
-          <label id="email" class="text-sm font-medium leading-none text-gray-800"> CPF </label>
-          <input
-            aria-labelledby="email"
-            type="email"
-            class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"
-          />
-        </div>
-        <div class="py-1">
-          <label for="pass" class="text-sm font-medium leading-none text-gray-800"> Senha </label>
+          <label for="pass" class="text-sm font-medium leading-none text-gray-800">Senha</label>
           <div class="relative flex items-center justify-center">
             <input
               id="pass"
@@ -59,45 +68,55 @@ import { RiEyeLine } from '@remixicon/vue'
               class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"
             />
             <div class="absolute right-0 mt-2 mr-3 cursor-pointer">
-              <RiEyeLine class="text-gray-500" />
+              <RiEyeLine class="text-gray-500 size-5" />
             </div>
           </div>
         </div>
         <div class="mt-8">
           <button
             role="button"
-            class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-4 w-full"
+            class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3 w-full"
+            onclick="alert('Sucesso!')"
           >
-            Acessar
+            <div class="relative flex items-center justify-center">
+              <RiLoginBoxLine class="text-white size-4" />&nbsp;Acessar
+            </div>
           </button>
         </div>
-
-        <div class="w-full flex items-center justify-between pt-5">
+        <div class="w-full flex items-center justify-between py-7">
           <hr class="w-full bg-gray-400" />
           <p class="text-base font-medium leading-4 px-2.5 text-gray-400">ou</p>
           <hr class="w-full bg-gray-400" />
         </div>
-
         <button
           aria-label="Opção secundária 1"
           role="button"
-          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 flex items-center w-full mt-10"
+          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3 px-4 border rounded-lg border-gray-700 flex items-center w-full"
         >
-          <p class="text-base font-medium ml-4 text-gray-700">Opção secundária 1</p>
+          <div class="relative flex items-center justify-center">
+            <RiBookOpenLine class="text-gray-700 size-3.5" />
+            <p class="text-sm font-medium ml-2 text-gray-700">Opção secundária 1</p>
+          </div>
         </button>
         <button
           aria-label="Opção secundária 2"
           role="button"
-          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 flex items-center w-full mt-4"
+          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3 px-4 border rounded-lg border-gray-700 flex items-center w-full mt-4"
         >
-          <p class="text-base font-medium ml-4 text-gray-700">Opção secundária 2</p>
+          <div class="relative flex items-center justify-center">
+            <RiFileCheckLine class="text-gray-700 size-3.5" />
+            <p class="text-sm font-medium ml-2 text-gray-700">Opção secundária 2</p>
+          </div>
         </button>
         <button
           aria-label="Opção secundária 3"
           role="button"
-          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 flex items-center w-full mt-4"
+          class="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3 px-4 border rounded-lg border-gray-700 flex items-center w-full mt-4"
         >
-          <p class="text-base font-medium ml-4 text-gray-700">Opção secundária 3</p>
+          <div class="relative flex items-center justify-center">
+            <RiSearchLine class="text-gray-700 size-3.5" />
+            <p class="text-sm font-medium ml-2 text-gray-700">Opção secundária 3</p>
+          </div>
         </button>
       </div>
     </div>
