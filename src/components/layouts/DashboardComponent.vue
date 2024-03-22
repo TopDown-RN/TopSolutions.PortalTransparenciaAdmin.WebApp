@@ -125,7 +125,7 @@
           </p>
         </li>
         <li>
-          <a href="#">
+          <a href="/dados-administrativos">
             <button
               class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
               type="button"
@@ -146,13 +146,13 @@
               <p
                 class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
               >
-                Dados Pessoais
+                Dados Administrativos
               </p>
             </button>
           </a>
         </li>
         <li>
-          <a href="/users">
+          <a href="/usuarios">
             <button
               class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
               type="button"

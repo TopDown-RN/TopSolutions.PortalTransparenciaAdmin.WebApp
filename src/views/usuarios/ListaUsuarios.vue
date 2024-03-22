@@ -7,7 +7,7 @@ import { RiEdit2Line, RiDeleteBin5Line } from '@remixicon/vue'
   <div class="flex md:justify-end m-2">
     <Button
       type="button"
-      onclick="location.href='/users/new-user'"
+      onclick="location.href='/usuarios/novo-usuario'"
       class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3"
     >
       Adicionar novo usuário
