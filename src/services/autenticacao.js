@@ -1,8 +1,11 @@
 import api from './api'
 
-export function getContratos() {
+export function Autenticar(_usuario, _senha) {
   return api
-    .get('contrato/contratoasync')
+    .post('contrato/contratoasync',{
+      txtCpfCnpjEmail: _usuario,
+      txtSenha: _senha
+    })
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }

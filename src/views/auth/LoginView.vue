@@ -1,5 +1,30 @@
 <script setup>
+
+import { Autenticar } from '@/services/autenticacao'
+import { onMounted, ref, watch } from 'vue'
+import router from '@/router'
 import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
+
+const token = ref('')
+
+function postAutenticar() {
+  try {
+    //const response = await Autenticar()
+    //token.value = response.data
+    console.log('asdasdasdasd')
+  } catch (error) {
+    console.error('Erro ao obter os arquivos:', error)
+    
+  }
+}
+
+watch(token, () => {
+  //loading.value = false
+})
+
+onMounted(() => {
+  //fetchArp()
+})
 </script>
 
 <template>
@@ -58,7 +83,7 @@ import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
           <button
             role="button"
             class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3 w-full"
-            onclick="location.href='/home'"
+            @onclick="postAutenticar"
           >
             <div class="relative flex items-center justify-center">
               <RiLoginBoxLine class="text-white size-4" />&nbsp;Acessar
