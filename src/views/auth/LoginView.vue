@@ -6,16 +6,19 @@ import router from '@/router'
 import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
 
 const token = ref('')
+const txtCpfCnpjEmail = ref('');
+const txtPass = ref('');
 
-function postAutenticar() {
+async function postAutenticar() {
   try {
-    //const response = await Autenticar()
-    //token.value = response.data
-    console.log('asdasdasdasd')
-  } catch (error) {
-    console.error('Erro ao obter os arquivos:', error)
-    
-  }
+      const response = await Autenticar(txtCpfCnpjEmail.value, txtPass.value)
+      //token.value = response.data
+      //console.log(response.token)
+      localStorage.setItem('token', response.token)
+      router.push({name: 'home'})
+   } catch (error) {
+     console.error('erro ao obter os arquivos:', error)
+   }
 }
 
 watch(token, () => {
@@ -25,6 +28,8 @@ watch(token, () => {
 onMounted(() => {
   //fetchArp()
 })
+
+
 </script>
 
 <template>
@@ -61,6 +66,8 @@ onMounted(() => {
         <div class="py-1">
           <label id="email" class="text-sm font-medium leading-none text-gray-800">CPF</label>
           <input
+            v-model="txtCpfCnpjEmail"
+            id="txtCpfCnpjEmail"
             aria-labelledby="email"
             type="email"
             class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"
@@ -70,6 +77,7 @@ onMounted(() => {
           <label for="pass" class="text-sm font-medium leading-none text-gray-800">Senha</label>
           <div class="relative flex items-center justify-center">
             <input
+            v-model="txtPass"
               id="pass"
               type="password"
               class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"
@@ -83,7 +91,7 @@ onMounted(() => {
           <button
             role="button"
             class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3 w-full"
-            @onclick="postAutenticar"
+            @click="postAutenticar($event)"
           >
             <div class="relative flex items-center justify-center">
               <RiLoginBoxLine class="text-white size-4" />&nbsp;Acessar
