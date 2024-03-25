@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AutenticacaoRoutes from '@/router/auth'
 import DadosAdminRoutes from '@/router/dadosadministrativos'
 import UsuariosRoutes from '@/router/usuarios'
-import AuthService from '@/services/autenticacao'
+//import AuthService from '@/services/autenticacao'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,8 +31,11 @@ function fnLogout() {
 }
 
 
-
 router.beforeEach(async (to, from, next) => {
+  if (to.name.toLocaleLowerCase() == "logout".toLocaleLowerCase()){
+    fnLogout()
+    router.push({name : 'login'})
+  }
   if (to.meta.requiresAuth) {
       const isAuthenticated = await fnisAuthenticated();
       if (!isAuthenticated) {
@@ -43,7 +46,7 @@ router.beforeEach(async (to, from, next) => {
               //await AuthService.verifyToken();
               next();
           } catch (error) {
-              fnLogout(); // Token verification failed, logout user
+              //fnLogout(); // Token verification failed, logout user
               next('/');
           }
       }

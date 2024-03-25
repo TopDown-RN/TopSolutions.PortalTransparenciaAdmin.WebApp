@@ -1,4 +1,39 @@
-<script setup></script>
+<script setup>
+// import Checkbox from 'primevue/checkbox';
+import { postSaveUsuario } from '@/services/autenticacao'
+import { onMounted, ref, watch } from 'vue'
+import router from '@/router'
+
+const result = ref()
+const idUsuario = ref(0)
+const txtNome = ref('');
+const txtCpfCnpj = ref('');
+const txtEmail = ref('');
+const txtPass = ref('');
+const blnAcessoExterno = ref(false);
+
+async function SaveUsuario() {
+  try {
+      const response = await postSaveUsuario(idUsuario.value, txtNome.value ,txtCpfCnpj.value, txtEmail.value ,txtPass.value, blnAcessoExterno.value)
+      result.value = response.data
+      //console.log('AQUI');
+      //localStorage.setItem('token', response.token)
+      router.push({name: 'home'})
+   } catch (error) {
+     console.error('erro ao obter os arquivos:', error)
+   }
+}
+
+watch(result, () => {
+  //loading.value = false
+})
+
+onMounted(() => {
+  //fetchArp()
+})
+
+
+</script>
 
 <template>
   <div class="mx-auto max-w-3xl text-center">
@@ -17,9 +52,10 @@
         >
         <div class="mt-2.5">
           <input
+           v-model="txtNome"
             type="text"
-            name="fullName"
-            id="fullName"
+            name="txtNome"
+            id="txtNome"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:outline-none"
           />
         </div>
@@ -28,9 +64,10 @@
         <label for="cpf" class="block text-sm font-semibold leading-6 text-black">CPF</label>
         <div class="mt-2.5">
           <input
+            v-model="txtCpfCnpj"
             type="text"
-            name="cpf"
-            id="cpf"
+            name="txtCpfCnpj"
+            id="txtCpfCnpj"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:outline-none"
           />
         </div>
@@ -39,9 +76,10 @@
         <label for="email" class="block text-sm font-semibold leading-6 text-black">E-mail</label>
         <div class="mt-2.5">
           <input
+            v-model="txtEmail"
             type="text"
-            name="email"
-            id="email"
+            name="txtEmail"
+            id="txtEmail"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:outline-none"
           />
         </div>
@@ -50,9 +88,10 @@
         <label for="password" class="block text-sm font-semibold leading-6 text-black">Senha</label>
         <div class="mt-2.5">
           <input
-            type="text"
-            name="password"
-            id="password"
+           v-model="txtPass"
+            type="password"
+            name="txtPass"
+            id="txtPass"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:outline-none"
           />
         </div>
@@ -63,18 +102,26 @@
         >
         <div class="mt-2.5">
           <input
-            type="text"
+            type="password"
             name="confirmPassword"
             id="confirmPassword"
             class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:outline-none"
           />
         </div>
       </div>
+      <div class="card flex flex-wrap justify-content-center gap-3">
+    <div class="flex align-items-center">
+        <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox>
+        <label for="ingredient1" class="ml-2"> Acesso Externo </label>
+    </div>
+   
+</div>
+
     </div>
     <div class="mt-10">
       <button
-        type="submit"
-        onclick="location.href='/usuarios/novo-usuario'"
+        type="button"
+        @click="SaveUsuario"
         class="block w-full rounded-md bg-primary-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-pimary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800"
       >
         Cadastrar

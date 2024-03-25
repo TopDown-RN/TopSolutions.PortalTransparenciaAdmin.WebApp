@@ -10,23 +10,23 @@ export function Autenticar(_usuario, _senha) {
     .catch((error) => console.error(error))
 }
 
-export function getContratoDetalhe(idContrato) {
+export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno) {
   return api
-    .get('contrato/ContratoDetAsync', {
-      params: { idContrato: idContrato }
-    })
+    .post('usuario/registro',{
+      idUsuario: _idUsuario, txtCpfCnpj: _cpfcnpj, txtNome: _nome, txtEmail: _email, txtSenha: _senha, blnAcessoExterno : _blnAcessoExterno
+    }, { 'Authorization': `Bearer ${localStorage.getItem('token')}` })
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
-export function logout() {
-        localStorage.removeItem('token');
-    }
+// export function logout() {
+//         localStorage.removeItem('token');
+// }
 
- const isAuthenticated = () => {
-        const token = localStorage.getItem('token');
-        // Check if token exists and not expired
-        return token !== null;
-}
+//  const isAuthenticated = () => {
+//         const token = localStorage.getItem('token');
+//         // Check if token exists and not expired
+//         return token !== null;
+// }
 
     export function verifyToken(_token) {
       return api
