@@ -5,23 +5,29 @@ import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
 
-const token = ref('')
+const tokenData = ref()
 const txtCpfCnpjEmail = ref('');
 const txtPass = ref('');
 
 async function postAutenticar() {
   try {
       const response = await Autenticar(txtCpfCnpjEmail.value, txtPass.value)
-      //token.value = response.data
-      //console.log(response.token)
-      localStorage.setItem('token', response.token)
+      tokenData.value = response.data
+      
+      const token = localStorage.getItem('token');
+      if (token != "")
+        localStorage.removeItem('token');
+
+      localStorage.setItem('token', tokenData.value.token);
+      
+      //console.log(localStorage.getItem('token'));
       router.push({name: 'home'})
    } catch (error) {
      console.error('erro ao obter os arquivos:', error)
    }
 }
 
-watch(token, () => {
+watch(tokenData, () => {
   //loading.value = false
 })
 

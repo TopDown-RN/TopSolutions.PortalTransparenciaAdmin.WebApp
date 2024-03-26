@@ -2,7 +2,7 @@ import api from './api'
 
 export function Autenticar(_usuario, _senha) {
   return api
-    .post('usuario/loginusuario',{
+    .post('autenticacao/usuario',{
       txtCpfCnpjEmail: _usuario,
       txtSenha: _senha
     })
@@ -10,29 +10,11 @@ export function Autenticar(_usuario, _senha) {
     .catch((error) => console.error(error))
 }
 
-export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno) {
+export function verifyToken(_token) {
   return api
-    .post('usuario/registro',{
-      idUsuario: _idUsuario, txtCpfCnpj: _cpfcnpj, txtNome: _nome, txtEmail: _email, txtSenha: _senha, blnAcessoExterno : _blnAcessoExterno
-    }, { 'Authorization': `Bearer ${localStorage.getItem('token')}` })
+    .post('usuario/verifyToken', { token: _token })
     .then((response) => response.data)
     .catch((error) => console.error(error))
+    //const token = localStorage.getItem('token');
 }
-// export function logout() {
-//         localStorage.removeItem('token');
-// }
-
-//  const isAuthenticated = () => {
-//         const token = localStorage.getItem('token');
-//         // Check if token exists and not expired
-//         return token !== null;
-// }
-
-    export function verifyToken(_token) {
-      return api
-        .post('usuario/verifyToken', { token: _token })
-        .then((response) => response.data)
-        .catch((error) => console.error(error))
-        //const token = localStorage.getItem('token');
-    }
-    export default api
+export default api

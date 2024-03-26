@@ -1,6 +1,6 @@
 <script setup>
 // import Checkbox from 'primevue/checkbox';
-import { postSaveUsuario } from '@/services/autenticacao'
+import { postSaveUsuario } from '@/services/usuario'
 import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 
