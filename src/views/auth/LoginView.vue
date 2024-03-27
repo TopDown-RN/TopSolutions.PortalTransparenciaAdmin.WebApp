@@ -19,12 +19,17 @@ async function postAutenticar() {
         localStorage.removeItem('token');
 
       localStorage.setItem('token', tokenData.value.token);
-      
-      //console.log(localStorage.getItem('token'));
-      router.push({name: 'home'})
+      router.push('/home')
+      window.location.reload();
    } catch (error) {
      console.error('erro ao obter os arquivos:', error)
    }
+}
+
+function fnisAuthenticated() {
+  const token = localStorage.getItem('token');
+  // Check if token exists and not expired
+  return token !== null;
 }
 
 watch(tokenData, () => {
@@ -33,6 +38,7 @@ watch(tokenData, () => {
 
 onMounted(() => {
   //fetchArp()
+  if(fnisAuthenticated()) router.push('/home')
 })
 
 

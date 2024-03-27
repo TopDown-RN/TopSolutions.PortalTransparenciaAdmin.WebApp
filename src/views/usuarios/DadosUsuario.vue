@@ -4,6 +4,7 @@ import { postSaveUsuario, getUsuario } from '@/services/usuario'
 import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
+import Message from 'primevue/message';
 
 const idUsuario = ref(0)
 const route = useRoute()
@@ -71,6 +72,8 @@ onMounted(() => {
 </script>
 
 <template>
+  <Message>Message Content</Message>
+
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       Cadastrar novo usuário
@@ -86,7 +89,7 @@ onMounted(() => {
           >Nome Completo</label
         >
         <div class="mt-2.5">
-          <input
+        <input
            v-model="txtNome"
             type="text"
             name="txtNome"
@@ -99,6 +102,7 @@ onMounted(() => {
         <label for="cpf" class="block text-sm font-semibold leading-6 text-black">CPF</label>
         <div class="mt-2.5">
           <input
+          v-mask="['###.###.###-##', '##.###.###/####-##']"
             v-model="txtCpfCnpj"
             type="text"
             name="txtCpfCnpj"
