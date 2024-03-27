@@ -10,6 +10,28 @@ const api = axios.create({
   }
 });
 
+
+// Axios response interceptor
+api.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.response && error.response.status === 404) {
+      // Handle specific error codes
+      console.log("Page not found");
+      // Redirect to home page
+      router.push({ path: '/' }); // Assuming you have Vue Router set up
+    } else if (error.message === 'Network Error') {
+      // Handle network errors
+      console.log("Network error");
+      // Redirect to home page
+      router.push({ path: '/' }); // Assuming you have Vue Router set up
+    }
+    return Promise.reject(error);
+  }
+);
+
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     const token = localStorage.getItem('token');

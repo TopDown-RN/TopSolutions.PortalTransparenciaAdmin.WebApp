@@ -3,12 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AutenticacaoRoutes from '@/router/auth'
 import DadosAdminRoutes from '@/router/dadosadministrativos'
 import UsuariosRoutes from '@/router/usuarios'
-//import AuthService from '@/services/autenticacao'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    ...AutenticacaoRoutes,
     {
       path: '/home',
       name: 'home',
@@ -16,7 +14,8 @@ const router = createRouter({
       component: () => import('@/views/home/HomeView.vue')
     },
     ...UsuariosRoutes,
-    ...DadosAdminRoutes
+    ...DadosAdminRoutes,
+    ...AutenticacaoRoutes
   ]
 });
 
@@ -33,7 +32,7 @@ function fnLogout() {
 //router.
 
 router.beforeResolve(to => {
-  //console.log(router.hasRoute(to.path))
+  //next({ path: '/login', query: { redirect: to.fullPath }})
   if (to.meta.requiresAuth && !fnisAuthenticated) return false
   //if (router.hasRoute(to.fullPath)) return false
 });
