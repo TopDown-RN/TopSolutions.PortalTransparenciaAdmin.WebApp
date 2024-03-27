@@ -29,10 +29,10 @@ const blnAcessoExterno = ref(false);
 async function SaveUsuario() {
   try {
       const response = await postSaveUsuario(idUsuario.value, txtNome.value ,txtCpfCnpj.value, txtEmail.value ,txtPass.value, blnAcessoExterno.value)
-      result.value = response.data
-      //console.log('AQUI');
+      //result.value = response.data
+      //console.log(idUsuario.value, txtNome.value);
       //localStorage.setItem('token', response.token)
-      router.push({name: 'home'})
+      router.push({name: 'usuarios'})
    } catch (error) {
      console.error('erro ao obter os arquivos:', error)
    }
@@ -40,9 +40,14 @@ async function SaveUsuario() {
 
 async function fetchUsuario(_idUsuario) {
   try {
-      //const response = await getUsuario(_idUsuario)
+      const response = await getUsuario(_idUsuario)
       //result.value = response.data
-      console.log(_idUsuario);
+      idUsuario.value = _idUsuario
+      txtNome.value = response.data.txtNome
+      txtCpfCnpj.value = response.data.txtCpfCnpj
+      txtEmail.value = response.data.txtEmail
+      blnAcessoExterno.value =  response.data.blnAcessoExterno
+      //console.log(response.data);
       //localStorage.setItem('token', response.token)
       
    } catch (error) {
@@ -141,7 +146,7 @@ onMounted(() => {
       </div>
       <div class="card flex flex-wrap justify-content-center gap-3">
     <div class="flex align-items-center">
-      <input type="checkbox" value="subscribe" name="subscribe" v-model="subscribe" />
+      <input type="checkbox" value="blnAcessoExterno" name="blnAcessoExterno" v-model="blnAcessoExterno" />
 
         <!-- <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox> -->
         <label for="ingredient1" class="ml-2"> Acesso Externo </label>

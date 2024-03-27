@@ -9,14 +9,14 @@ const routes = [
     path: '/usuarios/novo',
     name: 'novo-usuario',
     meta: { requiresAuth: true },
-    component: () => import('@/views/usuarios/Usuario.vue')
+    component: () => import('@/views/usuarios/DadosUsuario.vue')
   }
   ,
   {
     path: '/usuarios/editar/:id',
     name: 'usuario-editar',
     meta: { requiresAuth: true },
-    component: () => import('@/views/usuarios/Usuario.vue')
+    component: () => import('@/views/usuarios/DadosUsuario.vue')
   }
 ]
 
