@@ -30,29 +30,13 @@ function fnLogout() {
   localStorage.removeItem('token');
 }
 
+//router.
 
-router.beforeEach(async (to, from, next) => {
-  if (to.name.toLocaleLowerCase() == "logout".toLocaleLowerCase()){
-    fnLogout()
-    router.push({name : 'login'})
-  }
-  if (to.meta.requiresAuth) {
-      const isAuthenticated = await fnisAuthenticated();
-      if (!isAuthenticated) {
-          next('/'); // Redirect to login if not authenticated
-      } else {
-          // Verify token before navigating to the route
-          try {
-              //await AuthService.verifyToken();
-              next();
-          } catch (error) {
-              //fnLogout(); // Token verification failed, logout user
-              next('/');
-          }
-      }
-  } else {
-      next();
-  }
+router.beforeResolve(to => {
+  //console.log(router.hasRoute(to.path))
+  if (to.meta.requiresAuth && !fnisAuthenticated) return false
+  //if (router.hasRoute(to.fullPath)) return false
 });
+
 
 export default router

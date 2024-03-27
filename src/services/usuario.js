@@ -10,10 +10,19 @@ export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _bl
     .catch((error) => console.error(error))
 }
 
-export function getUsuarios(_blnAcessoExterno) {
+export function getListaUsuarios(_blnAcessoExterno) {
   return api
     .get('usuario/listar',{
       blnAcessoExterno : _blnAcessoExterno
+    }, { 'Authorization': `Bearer ${localStorage.getItem('token')}` })
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}
+
+export function getUsuario(_idUsuario) {
+  return api
+    .get('usuario/listar',{
+      blnAcessoExterno : _idUsuario
     }, { 'Authorization': `Bearer ${localStorage.getItem('token')}` })
     .then((response) => response.data)
     .catch((error) => console.error(error))

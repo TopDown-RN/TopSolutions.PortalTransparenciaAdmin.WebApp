@@ -1,11 +1,25 @@
 <script setup>
 // import Checkbox from 'primevue/checkbox';
-import { postSaveUsuario } from '@/services/usuario'
+import { postSaveUsuario, getUsuario } from '@/services/usuario'
 import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
+import { useRoute, useRouter } from 'vue-router'
+
+const idUsuario = ref(0)
+const route = useRoute()
+const router1 = useRouter()
+
+function extractParamFromPath() {
+  const matchedRoute = router1.resolve(route.path)
+  const params = matchedRoute.params
+
+  if (params && params.id) {
+    idUsuario.value = params.id;
+  }
+}
 
 const result = ref()
-const idUsuario = ref(0)
+
 const txtNome = ref('');
 const txtCpfCnpj = ref('');
 const txtEmail = ref('');
@@ -24,12 +38,28 @@ async function SaveUsuario() {
    }
 }
 
+async function fetchUsuario(_idUsuario) {
+  try {
+      //const response = await getUsuario(_idUsuario)
+      //result.value = response.data
+      console.log(_idUsuario);
+      //localStorage.setItem('token', response.token)
+      
+   } catch (error) {
+     console.error('erro ao obter os arquivos:', error)
+   }
+}
+
 watch(result, () => {
   //loading.value = false
 })
 
 onMounted(() => {
   //fetchArp()
+  extractParamFromPath()
+  if(idUsuario.value != null){
+    fetchUsuario(idUsuario.value)
+  }
 })
 
 
@@ -111,7 +141,9 @@ onMounted(() => {
       </div>
       <div class="card flex flex-wrap justify-content-center gap-3">
     <div class="flex align-items-center">
-        <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox>
+      <input type="checkbox" value="subscribe" name="subscribe" v-model="subscribe" />
+
+        <!-- <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox> -->
         <label for="ingredient1" class="ml-2"> Acesso Externo </label>
     </div>
    
