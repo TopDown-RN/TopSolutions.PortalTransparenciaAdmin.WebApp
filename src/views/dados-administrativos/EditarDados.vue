@@ -2,10 +2,13 @@
 import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
 import { getDadosAdmin, postDadosAdmin} from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
-import router from '@/router'
+//import router from '@/router'
 
 const logo = ref('')
-const extesaoLogo = ref('')
+const extensaoLogo = ref('')
+
+const capa = ref('')
+const extensaoCapa = ref('')
 
 const orgao = ref('')
 const cnpj = ref('')
@@ -59,7 +62,10 @@ async function pegarDadosAdmin() {
   try{
     const response = await getDadosAdmin()
     logo.value = response.data.imgLogo
-    extesaoLogo.value = response.data.txtLogoExtensao
+    extensaoLogo.value = response.data.txtLogoExtensao
+
+    capa.value = response.data.imgCapa
+    extensaoCapa.value = response.data.txtCapaExtensao
 
     orgao.value = response.data.txtCliente
     cnpj.value = response.data.cpfCnpj
@@ -85,14 +91,15 @@ async function atualizarDadosAdmin() {
 
     const formData = new FormData();
 
-    const inputImagem = document.getElementById('inputImagem');
+    const inputImagemLogo = document.getElementById('inputImagemLogo');
+    const inputImagemCapa = document.getElementById('inputImagemCapa');
 
     formData.append('txtCliente', orgao.value);
     formData.append('CpfCnpj', cnpj.value);
     formData.append('txtEndereco', rua_avenida.value);
     formData.append('txtEmail', email.value);
     formData.append('txtNumTelefone', telefone.value);
-    formData.append('imgLogo', inputImagem.files[0]);
+    formData.append('imgLogo', inputImagemLogo.files[0]);
     formData.append('txtNumEndereco', numero.value);
     formData.append('txtCidade', cidade.value);
     formData.append('txtEstado', estado.value);
@@ -100,6 +107,7 @@ async function atualizarDadosAdmin() {
     formData.append('txtFacebook', facebook.value);
     formData.append('txtInstagram', instagram.value);
     formData.append('txtX', x.value);
+    formData.append('imgCapa', inputImagemCapa.files[0]);
 
     const response = await postDadosAdmin(formData)
 
@@ -142,8 +150,13 @@ onMounted(() => {
           <div class="text-gray-600 content-center">
 
             <div class="flex">
-              <input type="file" id="inputImagem" accept="image/*">              
-              <img :src="'data:image/'+extesaoLogo+';base64,' + logo" alt="Base64 Image" width="100px" height="100px"/>
+              <input type="file" id="inputImagemLogo" accept="image/*">              
+              <img :src="'data:image/'+extensaoLogo+';base64,' + logo" alt="Base64 Image" width="100px" height="100px"/>
+            </div>
+
+            <div class="flex">
+              <input type="file" id="inputImagemCapa" accept="image/*">              
+              <img :src="'data:image/'+extensaoCapa+';base64,' + capa" alt="Base64 Image" width="100px" height="100px"/>
             </div>
             
             
