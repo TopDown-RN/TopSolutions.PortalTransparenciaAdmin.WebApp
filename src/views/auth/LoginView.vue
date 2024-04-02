@@ -37,6 +37,7 @@ watch(tokenData, () => {
 })
 
 onMounted(() => {
+  //localStorage.removeItem('token');
   //fetchArp()
   if(fnisAuthenticated()) router.push('/home')
 })

@@ -1,12 +1,14 @@
 import api from './api'
 
 export function postArquivos(_oData) {
-  return api
-    .post('usuario/registro',{ _oData }, { 
-      headers: { 
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data'
-   }})
+  console.log(_oData)
+    return api
+    .post('arquivo/salvarasync', _oData , {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      }
+    })
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }

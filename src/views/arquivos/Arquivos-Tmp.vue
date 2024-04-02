@@ -26,34 +26,28 @@ function extractParamFromPath() {
 
 const result = ref()
 
-const txtNome = ref('');
-const txtCpfCnpj = ref('');
-const txtEmail = ref('');
-const txtPass = ref('');
-const blnAcessoExterno = ref(false);
+const idArquivo = ref(0);
+const txtDescricao = ref('');
+const idCategoriaPubArquivo = ref(0);
 
 
 const files = ref([]);
+const handleFileChange = (event) => {
+      files.value = Array.from(event.target.files);
+    };
 
 async function postSaveArquivos() {
   try {
 
     const formData = new FormData();
-    let dados = {
-      idArquivo : 0,
-      txtDescricao : "AAAAAAA",
-      Arquivo : "adsasda",
-      txtArquivoOCR: "adsasda",
-      idUsuario: "adsasda",
-      idCategoriaPubArquivo: "adsasda"
-
-    }
-
-    for (let i = 0; i < files.length; i++) {
-        formData.append('files[]', files[i]);
-      }
-      console.log(files.length);
-      //const response = await postArquivos(dados)
+    
+    formData.append('txtDescricao', txtDescricao.value)
+    files.value.forEach((file) => {
+      formData.append('Arquivo', file);
+    });
+    formData.append('idUsuario', 0)
+    formData.append('idCategoriaPubArquivo', idCategoriaPubArquivo.value)
+    const response = await postArquivos(formData)
       //result.value = response.data
       //console.log(idUsuario.value, txtNome.value);
       //localStorage.setItem('token', response.token)
@@ -92,18 +86,54 @@ onMounted(() => {
 
 </script>
 <template>
-  <dv>Arquivos</dv>
-  <div><InputText type="text" v-model="value" /></div>
-  <div><FileUpload mode="basic" v-model="files" name="demo[]" :auto="false" :multiple="true" accept="image/*" :maxFileSize="1000000" @upload="onUpload" /></div>
+  <div>Arquivos</div>
+  <input
+                  type="text"
+                  name="txtDescricao"
+                  id="txtDescricao"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  placeholder="Descricao do Item do Arquivo"
+                  v-model="txtDescricao"
+                />
+                <input
+                  type="text"
+                  name="idCategoriaPubArquivo"
+                  id="idCategoriaPubArquivo"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  placeholder="IdCategoria"
+                  v-model="idCategoriaPubArquivo"
+                />
+  <input type="file" ref="fileInput" multiple  @change="handleFileChange"/>
   <div>
-    <Button
-      type="button"
-      @click="postSaveArquivos()"
-      class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3"
-    >
-      Adicionar novo usuário
-    </Button>
+    <input type="button" value="Adicionar Arquivos" @click="postSaveArquivos()">
+   
   </div>
+  <table class="min-w-full bg-white shadow-md rounded-xl">
+    <thead>
+      <tr class="bg-blue-gray-100 text-gray-700">
+        <th class="py-3 px-4 text-left">Nome</th>
+        <th class="py-3 px-4 text-left">CPF</th>
+        <th class="py-3 px-4 text-left">E-mail</th>
+        <th class="py-3 px-4 text-left">Ações</th>
+      </tr>
+    </thead>
+    <tbody class="text-blue-gray-900">
+      <tr v-for="item in result" :key="item.idUsuario" class="border-b border-blue-gray-200">
+        <td class="py-3 px-4">{{ item.txtNome }}</td>
+        <td class="py-3 px-4">{{ item.txtCpfCnpj }}</td>
+        <td class="py-3 px-4">{{ item.txtEmail }}</td>
+        <td class="py-3 px-4 flex">
+          <a :href="'usuarios/editar/'+ item.idUsuario" class="text-primary-700 pr-2" title="Editar">
+            <RiEdit2Line />
+          </a>
+         
+          <a href="#" class="text-red-600" title="Excluir">
+            <RiDeleteBin5Line />
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <style>
