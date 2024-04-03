@@ -149,14 +149,24 @@ onMounted(() => {
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
 
-            <div class="flex">
-              <input type="file" id="inputImagemLogo" accept="image/*">              
-              <img :src="'data:image/'+extensaoLogo+';base64,' + logo" alt="Base64 Image" width="100px" height="100px"/>
-            </div>
+            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
+              <div>
+                <label for="inputImagemPerfil">Logo do Município</label>
+                <div class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative">
+                  <input type="file" id="inputImagemLogo" accept="image/*" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
+                  <img :src="'data:image/' + extensaoLogo + ';base64,' + logo" alt="Base64 Image" width="100px"
+                     />
+                </div>
+              </div>
 
-            <div class="flex">
-              <input type="file" id="inputImagemCapa" accept="image/*">              
-              <img :src="'data:image/'+extensaoCapa+';base64,' + capa" alt="Base64 Image" width="100px" height="100px"/>
+              <div>
+                <label for="inputImagemCapa">Foto de Capa</label>
+                <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
+                  <input type="file" id="inputImagemCapa" accept="image/*" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
+                  <img :src="'data:image/' + extensaoCapa + ';base64,' + capa" alt="Base64 Image" width="100px"
+                    />
+                </div>
+              </div>
             </div>
             
             
