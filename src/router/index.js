@@ -21,25 +21,24 @@ const router = createRouter({
     ...ArquivosRoutes,
     ...MenuRoutes
   ]
-});
+})
 
 function fnisAuthenticated() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   // Check if token exists and not expired
-  return token !== null;
+  return token !== null
 }
 
 function fnLogout() {
-  localStorage.removeItem('token');
+  localStorage.removeItem('token')
 }
 
 //router.
 
-router.beforeResolve(to => {
+router.beforeResolve((to) => {
   //next({ path: '/login', query: { redirect: to.fullPath }})
   if (to.meta.requiresAuth && !fnisAuthenticated) return false
   //if (router.hasRoute(to.fullPath)) return false
-});
-
+})
 
 export default router

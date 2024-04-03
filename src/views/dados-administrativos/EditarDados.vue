@@ -1,6 +1,6 @@
 <script setup>
 import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
-import { getDadosAdmin, postDadosAdmin} from '@/services/dadosAdmin'
+import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
 //import router from '@/router'
 
@@ -24,42 +24,38 @@ const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
 
-
 const estadosOptions = ref([
-        { codigo: 'AC', nome: 'Acre' },
-        { codigo: 'AL', nome: 'Alagoas' },
-        { codigo: 'AP', nome: 'Amapá' },
-        { codigo: 'AM', nome: 'Amazonas' },
-        { codigo: 'BA', nome: 'Bahia' },
-        { codigo: 'CE', nome: 'Ceará' },
-        { codigo: 'DF', nome: 'Distrito Federal' },
-        { codigo: 'ES', nome: 'Espírito Santo' },
-        { codigo: 'GO', nome: 'Goiás' },
-        { codigo: 'MA', nome: 'Maranhão' },
-        { codigo: 'MT', nome: 'Mato Grosso' },
-        { codigo: 'MS', nome: 'Mato Grosso do Sul' },
-        { codigo: 'MG', nome: 'Minas Gerais' },
-        { codigo: 'PA', nome: 'Pará' },
-        { codigo: 'PB', nome: 'Paraíba' },
-        { codigo: 'PR', nome: 'Paraná' },
-        { codigo: 'PE', nome: 'Pernambuco' },
-        { codigo: 'PI', nome: 'Piauí' },
-        { codigo: 'RJ', nome: 'Rio de Janeiro' },
-        { codigo: 'RN', nome: 'Rio Grande do Norte' },
-        { codigo: 'RS', nome: 'Rio Grande do Sul' },
-        { codigo: 'RO', nome: 'Rondônia' },
-        { codigo: 'RR', nome: 'Roraima' },
-        { codigo: 'SC', nome: 'Santa Catarina' },
-        { codigo: 'SP', nome: 'São Paulo' },
-        { codigo: 'SE', nome: 'Sergipe' },
-        { codigo: 'TO', nome: 'Tocantins' }
+  { codigo: 'AC', nome: 'Acre' },
+  { codigo: 'AL', nome: 'Alagoas' },
+  { codigo: 'AP', nome: 'Amapá' },
+  { codigo: 'AM', nome: 'Amazonas' },
+  { codigo: 'BA', nome: 'Bahia' },
+  { codigo: 'CE', nome: 'Ceará' },
+  { codigo: 'DF', nome: 'Distrito Federal' },
+  { codigo: 'ES', nome: 'Espírito Santo' },
+  { codigo: 'GO', nome: 'Goiás' },
+  { codigo: 'MA', nome: 'Maranhão' },
+  { codigo: 'MT', nome: 'Mato Grosso' },
+  { codigo: 'MS', nome: 'Mato Grosso do Sul' },
+  { codigo: 'MG', nome: 'Minas Gerais' },
+  { codigo: 'PA', nome: 'Pará' },
+  { codigo: 'PB', nome: 'Paraíba' },
+  { codigo: 'PR', nome: 'Paraná' },
+  { codigo: 'PE', nome: 'Pernambuco' },
+  { codigo: 'PI', nome: 'Piauí' },
+  { codigo: 'RJ', nome: 'Rio de Janeiro' },
+  { codigo: 'RN', nome: 'Rio Grande do Norte' },
+  { codigo: 'RS', nome: 'Rio Grande do Sul' },
+  { codigo: 'RO', nome: 'Rondônia' },
+  { codigo: 'RR', nome: 'Roraima' },
+  { codigo: 'SC', nome: 'Santa Catarina' },
+  { codigo: 'SP', nome: 'São Paulo' },
+  { codigo: 'SE', nome: 'Sergipe' },
+  { codigo: 'TO', nome: 'Tocantins' }
 ])
 
-
-
-
 async function pegarDadosAdmin() {
-  try{
+  try {
     const response = await getDadosAdmin()
     logo.value = response.data.imgLogo
     extensaoLogo.value = response.data.txtLogoExtensao
@@ -80,46 +76,42 @@ async function pegarDadosAdmin() {
     facebook.value = response.data.txtFacebook
     instagram.value = response.data.txtInstagram
     x.value = response.data.txtX
-
-  }catch(error){
+  } catch (error) {
     console.log(error)
   }
 }
 
 async function atualizarDadosAdmin() {
-  try{
+  try {
+    const formData = new FormData()
 
-    const formData = new FormData();
+    const inputImagemLogo = document.getElementById('inputImagemLogo')
+    const inputImagemCapa = document.getElementById('inputImagemCapa')
 
-    const inputImagemLogo = document.getElementById('inputImagemLogo');
-    const inputImagemCapa = document.getElementById('inputImagemCapa');
-
-    formData.append('txtCliente', orgao.value);
-    formData.append('CpfCnpj', cnpj.value);
-    formData.append('txtEndereco', rua_avenida.value);
-    formData.append('txtEmail', email.value);
-    formData.append('txtNumTelefone', telefone.value);
-    formData.append('imgLogo', inputImagemLogo.files[0]);
-    formData.append('txtNumEndereco', numero.value);
-    formData.append('txtCidade', cidade.value);
-    formData.append('txtEstado', estado.value);
-    formData.append('txtCep', cep.value);
-    formData.append('txtFacebook', facebook.value);
-    formData.append('txtInstagram', instagram.value);
-    formData.append('txtX', x.value);
-    formData.append('imgCapa', inputImagemCapa.files[0]);
+    formData.append('txtCliente', orgao.value)
+    formData.append('CpfCnpj', cnpj.value)
+    formData.append('txtEndereco', rua_avenida.value)
+    formData.append('txtEmail', email.value)
+    formData.append('txtNumTelefone', telefone.value)
+    formData.append('imgLogo', inputImagemLogo.files[0])
+    formData.append('txtNumEndereco', numero.value)
+    formData.append('txtCidade', cidade.value)
+    formData.append('txtEstado', estado.value)
+    formData.append('txtCep', cep.value)
+    formData.append('txtFacebook', facebook.value)
+    formData.append('txtInstagram', instagram.value)
+    formData.append('txtX', x.value)
+    formData.append('imgCapa', inputImagemCapa.files[0])
 
     const response = await postDadosAdmin(formData)
 
     console.log(response)
 
-    location.reload();
-    
-  }catch(error){
+    location.reload()
+  } catch (error) {
     console.log(error)
   }
 }
-
 
 onMounted(() => {
   pegarDadosAdmin()
@@ -128,12 +120,9 @@ onMounted(() => {
 // watch(orgao, (newValue, oldValue) => {
 //   console.log('Orgão foi modificado de', oldValue, 'para', newValue)
 // })
-
 </script>
 
 <template>
-
-  
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       Editar Dados Administrativos
@@ -148,28 +137,44 @@ onMounted(() => {
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
-
             <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
               <div>
                 <label for="inputImagemPerfil">Logo do Município</label>
-                <div class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative">
-                  <input type="file" id="inputImagemLogo" accept="image/*" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
-                  <img :src="'data:image/' + extensaoLogo + ';base64,' + logo" alt="Base64 Image" width="100px"
-                     />
+                <div
+                  class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative"
+                >
+                  <input
+                    type="file"
+                    id="inputImagemLogo"
+                    accept="image/*"
+                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <img
+                    :src="'data:image/' + extensaoLogo + ';base64,' + logo"
+                    alt="Base64 Image"
+                    width="100px"
+                  />
                 </div>
               </div>
 
               <div>
                 <label for="inputImagemCapa">Foto de Capa</label>
                 <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
-                  <input type="file" id="inputImagemCapa" accept="image/*" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
-                  <img :src="'data:image/' + extensaoCapa + ';base64,' + capa" alt="Base64 Image" width="100px"
-                    />
+                  <input
+                    type="file"
+                    id="inputImagemCapa"
+                    accept="image/*"
+                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <img
+                    :src="'data:image/' + extensaoCapa + ';base64,' + capa"
+                    alt="Base64 Image"
+                    width="100px"
+                  />
                 </div>
               </div>
             </div>
-            
-            
+
             <p class="font-medium text-lg pt-10">Redes Sociais</p>
 
             <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
@@ -295,10 +300,15 @@ onMounted(() => {
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                   v-model="estado"
                 >
-                <option value="" disabled selected>Selecione o estado</option>
-                <option v-for="estado in estadosOptions" :key="estado.codigo" :value="estado.codigo">{{ estado.nome }}</option>
-              </select>
-
+                  <option value="" disabled selected>Selecione o estado</option>
+                  <option
+                    v-for="estado in estadosOptions"
+                    :key="estado.codigo"
+                    :value="estado.codigo"
+                  >
+                    {{ estado.nome }}
+                  </option>
+                </select>
 
                 <!-- <div class="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                   <input
@@ -343,7 +353,7 @@ onMounted(() => {
                     </svg>
                   </button>
                 </div>-->
-              </div> 
+              </div>
               <div class="md:col-span-1">
                 <label for="cep">CEP</label>
                 <input

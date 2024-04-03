@@ -4,7 +4,7 @@ import { postSaveUsuario, getUsuario } from '@/services/usuario'
 import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
-import Message from 'primevue/message';
+import Message from 'primevue/message'
 
 const idUsuario = ref(0)
 const route = useRoute()
@@ -15,45 +15,51 @@ function extractParamFromPath() {
   const params = matchedRoute.params
 
   if (params && params.id) {
-    idUsuario.value = params.id;
+    idUsuario.value = params.id
   }
 }
 
 const result = ref()
 
-const txtNome = ref('');
-const txtCpfCnpj = ref('');
-const txtEmail = ref('');
-const txtPass = ref('');
-const blnAcessoExterno = ref(false);
+const txtNome = ref('')
+const txtCpfCnpj = ref('')
+const txtEmail = ref('')
+const txtPass = ref('')
+const blnAcessoExterno = ref(false)
 
 async function SaveUsuario() {
   try {
-      const response = await postSaveUsuario(idUsuario.value, txtNome.value ,txtCpfCnpj.value, txtEmail.value ,txtPass.value, blnAcessoExterno.value)
-      //result.value = response.data
-      //console.log(idUsuario.value, txtNome.value);
-      //localStorage.setItem('token', response.token)
-      router.push({name: 'usuarios'})
-   } catch (error) {
-     console.error('erro ao obter os arquivos:', error)
-   }
+    const response = await postSaveUsuario(
+      idUsuario.value,
+      txtNome.value,
+      txtCpfCnpj.value,
+      txtEmail.value,
+      txtPass.value,
+      blnAcessoExterno.value
+    )
+    //result.value = response.data
+    //console.log(idUsuario.value, txtNome.value);
+    //localStorage.setItem('token', response.token)
+    router.push({ name: 'usuarios' })
+  } catch (error) {
+    console.error('erro ao obter os arquivos:', error)
+  }
 }
 
 async function fetchUsuario(_idUsuario) {
   try {
-      const response = await getUsuario(_idUsuario)
-      //result.value = response.data
-      idUsuario.value = _idUsuario
-      txtNome.value = response.data.txtNome
-      txtCpfCnpj.value = response.data.txtCpfCnpj
-      txtEmail.value = response.data.txtEmail
-      blnAcessoExterno.value =  response.data.blnAcessoExterno
-      //console.log(response.data);
-      //localStorage.setItem('token', response.token)
-      
-   } catch (error) {
-     console.error('erro ao obter os arquivos:', error)
-   }
+    const response = await getUsuario(_idUsuario)
+    //result.value = response.data
+    idUsuario.value = _idUsuario
+    txtNome.value = response.data.txtNome
+    txtCpfCnpj.value = response.data.txtCpfCnpj
+    txtEmail.value = response.data.txtEmail
+    blnAcessoExterno.value = response.data.blnAcessoExterno
+    //console.log(response.data);
+    //localStorage.setItem('token', response.token)
+  } catch (error) {
+    console.error('erro ao obter os arquivos:', error)
+  }
 }
 
 watch(result, () => {
@@ -63,12 +69,10 @@ watch(result, () => {
 onMounted(() => {
   //fetchArp()
   extractParamFromPath()
-  if(idUsuario.value != null){
+  if (idUsuario.value != null) {
     fetchUsuario(idUsuario.value)
   }
 })
-
-
 </script>
 
 <template>
@@ -89,8 +93,8 @@ onMounted(() => {
           >Nome Completo</label
         >
         <div class="mt-2.5">
-        <input
-           v-model="txtNome"
+          <input
+            v-model="txtNome"
             type="text"
             name="txtNome"
             id="txtNome"
@@ -102,7 +106,7 @@ onMounted(() => {
         <label for="cpf" class="block text-sm font-semibold leading-6 text-black">CPF</label>
         <div class="mt-2.5">
           <input
-          v-mask="['###.###.###-##', '##.###.###/####-##']"
+            v-mask="['###.###.###-##', '##.###.###/####-##']"
             v-model="txtCpfCnpj"
             type="text"
             name="txtCpfCnpj"
@@ -127,7 +131,7 @@ onMounted(() => {
         <label for="password" class="block text-sm font-semibold leading-6 text-black">Senha</label>
         <div class="mt-2.5">
           <input
-           v-model="txtPass"
+            v-model="txtPass"
             type="password"
             name="txtPass"
             id="txtPass"
@@ -149,15 +153,18 @@ onMounted(() => {
         </div>
       </div>
       <div class="card flex flex-wrap justify-content-center gap-3">
-    <div class="flex align-items-center">
-      <input type="checkbox" value="blnAcessoExterno" name="blnAcessoExterno" v-model="blnAcessoExterno" />
+        <div class="flex align-items-center">
+          <input
+            type="checkbox"
+            value="blnAcessoExterno"
+            name="blnAcessoExterno"
+            v-model="blnAcessoExterno"
+          />
 
-        <!-- <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox> -->
-        <label for="ingredient1" class="ml-2"> Acesso Externo </label>
-    </div>
-   
-</div>
-
+          <!-- <Checkbox inputId="ingredient1" name="pizza" value="Cheese" ></Checkbox> -->
+          <label for="ingredient1" class="ml-2"> Acesso Externo </label>
+        </div>
+      </div>
     </div>
     <div class="mt-10">
       <button

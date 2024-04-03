@@ -5,12 +5,11 @@ import { postArquivos } from '@/services/arquivos'
 
 import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
-import Message from 'primevue/message';
+import Message from 'primevue/message'
 
-import FileUpload from 'primevue/fileupload';
-import InputText from 'primevue/inputtext';
-import { RiDeleteBin5Line, RiEdit2Line } from '@remixicon/vue';
-
+import FileUpload from 'primevue/fileupload'
+import InputText from 'primevue/inputtext'
+import { RiDeleteBin5Line, RiEdit2Line } from '@remixicon/vue'
 
 const idUsuario = ref(0)
 const route = useRoute()
@@ -21,31 +20,29 @@ function extractParamFromPath() {
   const params = matchedRoute.params
 
   if (params && params.id) {
-    idUsuario.value = params.id;
+    idUsuario.value = params.id
   }
 }
 
 const result = ref()
 
-const idArquivo = ref(0);
-const txtDescricao = ref('');
-const idCategoriaPubArquivo = ref(0);
+const idArquivo = ref(0)
+const txtDescricao = ref('')
+const idCategoriaPubArquivo = ref(0)
 
-
-const files = ref([]);
+const files = ref([])
 const handleFileChange = (event) => {
-  files.value = Array.from(event.target.files);
-};
+  files.value = Array.from(event.target.files)
+}
 
 async function postSaveArquivos() {
   try {
-
-    const formData = new FormData();
+    const formData = new FormData()
 
     formData.append('txtDescricao', txtDescricao.value)
     files.value.forEach((file) => {
-      formData.append('Arquivo', file);
-    });
+      formData.append('Arquivo', file)
+    })
     formData.append('idUsuario', 0)
     formData.append('idCategoriaPubArquivo', idCategoriaPubArquivo.value)
     const response = await postArquivos(formData)
@@ -81,16 +78,11 @@ watch(result, () => {
 
 onMounted(() => {
   //fetchArp()
-
 })
-
-
 </script>
 <template>
   <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      Arquivos
-    </h2>
+    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência.
     </p>
@@ -105,21 +97,24 @@ onMounted(() => {
               <div class="md:col-span-5">
                 <label>Menu</label>
                 <select
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent">
+                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                >
                   <option value="" disabled selected>Selecione</option>
                 </select>
               </div>
               <div class="md:col-span-1">
                 <label>Ano</label>
                 <select
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent">
+                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                >
                   <option value="" disabled selected>Selecione</option>
                 </select>
               </div>
               <div class="md:col-span-4">
                 <label>Categoria</label>
                 <select
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent">
+                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                >
                   <option value="" disabled selected>Selecione</option>
                 </select>
               </div>
@@ -129,7 +124,9 @@ onMounted(() => {
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
-                  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
                     Publicar
                   </button>
                 </div>
@@ -153,9 +150,7 @@ onMounted(() => {
             <td class="py-3 px-4">2024</td>
             <td class="py-3 px-4">Categoria X</td>
             <td class="py-3 px-4">
-              <a href="#" class="text-primary-700">
-                arquivo01.pdf
-              </a>
+              <a href="#" class="text-primary-700"> arquivo01.pdf </a>
             </td>
             <td class="py-3 px-4">02/04/24, 23:00</td>
             <td class="py-3 px-4 flex">

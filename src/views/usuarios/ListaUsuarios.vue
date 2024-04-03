@@ -34,15 +34,15 @@ const filters = ref({
 
 async function fetchUsuario() {
   try {
-      const response = await getListaUsuarios(false)
-      result.value = response.data
-      //console.log(result.value);
-      //localStorage.setItem('token', response.token)
-      //router.push({name: 'home'})
-   } catch (error) {
+    const response = await getListaUsuarios(false)
+    result.value = response.data
+    //console.log(result.value);
+    //localStorage.setItem('token', response.token)
+    //router.push({name: 'home'})
+  } catch (error) {
     result.value = []
-     console.error('erro ao obter os arquivos:', error)
-   }
+    console.error('erro ao obter os arquivos:', error)
+  }
 }
 
 // function onRowDetails(event) {
@@ -57,7 +57,6 @@ watch(result, () => {
 onMounted(() => {
   fetchUsuario()
 })
-
 </script>
 
 <template>
@@ -71,16 +70,16 @@ onMounted(() => {
     </Button>
   </div>
   <div v-if="loading" class="my-4 text-center">
-      <ProgressSpinner />
-    </div>
+    <ProgressSpinner />
+  </div>
 
   <div v-if="!loading" class="relative my-8 overflow-x-auto">
-  <!-- <DataTable
+    <!-- <DataTable
   v-if="result.length > 0"
   :value="result" v-model:filters="filters" class="min-w-full bg-white shadow-md rounded-xl " tableStyle="min-width: 50rem">
     <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
 </DataTable> -->
-</div>
+  </div>
   <table class="min-w-full bg-white shadow-md rounded-xl">
     <thead>
       <tr class="bg-blue-gray-100 text-gray-700">
@@ -96,10 +95,14 @@ onMounted(() => {
         <td class="py-3 px-4">{{ item.txtCpfCnpj }}</td>
         <td class="py-3 px-4">{{ item.txtEmail }}</td>
         <td class="py-3 px-4 flex">
-          <a :href="'usuarios/editar/'+ item.idUsuario" class="text-primary-700 pr-2" title="Editar">
+          <a
+            :href="'usuarios/editar/' + item.idUsuario"
+            class="text-primary-700 pr-2"
+            title="Editar"
+          >
             <RiEdit2Line />
           </a>
-         
+
           <a href="#" class="text-red-600" title="Excluir">
             <RiDeleteBin5Line />
           </a>
