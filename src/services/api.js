@@ -1,5 +1,5 @@
 import axios from 'axios'
-import router from '@/router'; 
+import router from '@/router'
 
 const api = axios.create({
   baseURL: import.meta.env.DEV
@@ -8,41 +8,40 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json'
   }
-});
-
+})
 
 // Axios response interceptor
 api.interceptors.response.use(
-  response => {
-    return response;
+  (response) => {
+    return response
   },
-  error => {
+  (error) => {
     if (error.response && error.response.status === 404) {
       // Handle specific error codes
-      console.log("Page not found");
+      console.log('Page not found')
       // Redirect to home page
-      router.push({ path: '/' }); // Assuming you have Vue Router set up
+      router.push({ path: '/' }) // Assuming you have Vue Router set up
     } else if (error.message === 'Network Error') {
       // Handle network errors
-      console.log("Network error");
+      console.log('Network error')
       // Redirect to home page
-      router.push({ path: '/' }); // Assuming you have Vue Router set up
+      router.push({ path: '/' }) // Assuming you have Vue Router set up
     }
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } else {
       // Handle unauthorized access here, such as redirecting to login page
-      router.push({name: 'login'});// next('/');
+      router.push({ name: 'login' }) // next('/');
     }
   }
-  next();
-});
+  next()
+})
 
 export default api

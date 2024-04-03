@@ -1,35 +1,33 @@
 <script setup>
-
 import { Autenticar } from '@/services/autenticacao'
 import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
 
 const tokenData = ref()
-const txtCpfCnpjEmail = ref('');
-const txtPass = ref('');
+const txtCpfCnpjEmail = ref('')
+const txtPass = ref('')
 
 async function postAutenticar() {
   try {
-      const response = await Autenticar(txtCpfCnpjEmail.value, txtPass.value)
-      tokenData.value = response.data
-      
-      const token = localStorage.getItem('token');
-      if (token != "")
-        localStorage.removeItem('token');
+    const response = await Autenticar(txtCpfCnpjEmail.value, txtPass.value)
+    tokenData.value = response.data
 
-      localStorage.setItem('token', tokenData.value.token);
-      router.push('/home')
-      window.location.reload();
-   } catch (error) {
-     console.error('erro ao obter os arquivos:', error)
-   }
+    const token = localStorage.getItem('token')
+    if (token != '') localStorage.removeItem('token')
+
+    localStorage.setItem('token', tokenData.value.token)
+    router.push('/home')
+    window.location.reload()
+  } catch (error) {
+    console.error('erro ao obter os arquivos:', error)
+  }
 }
 
 function fnisAuthenticated() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   // Check if token exists and not expired
-  return token !== null;
+  return token !== null
 }
 
 watch(tokenData, () => {
@@ -39,10 +37,8 @@ watch(tokenData, () => {
 onMounted(() => {
   //localStorage.removeItem('token');
   //fetchArp()
-  if(fnisAuthenticated()) router.push('/home')
+  if (fnisAuthenticated()) router.push('/home')
 })
-
-
 </script>
 
 <template>
@@ -90,7 +86,7 @@ onMounted(() => {
           <label for="pass" class="text-sm font-medium leading-none text-gray-800">Senha</label>
           <div class="relative flex items-center justify-center">
             <input
-            v-model="txtPass"
+              v-model="txtPass"
               id="pass"
               type="password"
               class="bg-gray-200 border rounded text-xs font-medium leading-none text-gray-800 py-3 w-full pl-3 mt-2"

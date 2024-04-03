@@ -27,9 +27,9 @@ export function postDadosAdmin(formData) {
   return api
     .post('dadosadministrativo/gravardados', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .then((response) => response.data)
-    .catch((error) => console.error(error));
+    .catch((error) => console.error(error))
 }
