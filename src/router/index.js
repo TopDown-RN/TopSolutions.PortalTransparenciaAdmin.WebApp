@@ -5,6 +5,7 @@ import DadosAdminRoutes from '@/router/dadosadministrativos'
 import UsuariosRoutes from '@/router/usuarios'
 import ArquivosRoutes from '@/router/arquivos'
 import MenuRoutes from '@/router/menu'
+import MenusRoutes from '@/router/menus'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,7 +20,8 @@ const router = createRouter({
     ...DadosAdminRoutes,
     ...AutenticacaoRoutes,
     ...ArquivosRoutes,
-    ...MenuRoutes
+    ...MenuRoutes,
+    ...MenusRoutes
   ]
 })
 
