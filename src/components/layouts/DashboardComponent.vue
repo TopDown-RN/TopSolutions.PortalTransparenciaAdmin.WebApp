@@ -2,7 +2,7 @@
 
 <template>
   <div
-    class="bg-gradient-to-br from-primary-900 to-primary-900 -translate-x-80 z-50 my-4 ml-4 h-[calc(100vh-32px)] rounded-xl transition-transform duration-300 xl:translate-x-0"
+    class="bg-gradient-to-br from-primary-900 to-primary-900 -translate-x-80 z-50 my-4 ml-4 h-full rounded-xl transition-transform duration-300 xl:translate-x-0"
   >
     <div class="relative border-b border-white/20">
       <a class="flex items-center gap-4 py-6 px-8" href="#/">
@@ -36,7 +36,7 @@
         <li>
           <a aria-current="page" class="active" href="/home">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-gradient-to-tr from-white/20 to-white/30 shadow-md shadow-white-500/20 text-white hover:shadow-lg hover:shadow-white-500/40 active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg bg-gradient-to-tr from-white/20 to-white/30 shadow-md shadow-white-500/20 text-white hover:shadow-lg hover:shadow-white-500/40 active:opacity-[0.85] w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -44,7 +44,7 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z"
@@ -54,7 +54,7 @@
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 dashboard
               </p>
@@ -62,9 +62,9 @@
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/menus">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -72,7 +72,7 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   fill-rule="evenodd"
@@ -81,7 +81,7 @@
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 Menus
               </p>
@@ -91,7 +91,7 @@
         <li>
           <a href="/arquivos">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -99,7 +99,7 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   fill-rule="evenodd"
@@ -108,7 +108,7 @@
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 Arquivos
               </p>
@@ -127,7 +127,7 @@
         <li>
           <a href="/dados-administrativos">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -135,7 +135,7 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   fill-rule="evenodd"
@@ -144,7 +144,7 @@
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 Dados Administrativos
               </p>
@@ -154,7 +154,7 @@
         <li>
           <a href="/usuarios">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -162,14 +162,14 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 Usuários
               </p>
@@ -179,7 +179,7 @@
         <li>
           <a href="/menu">
             <button
-              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+              class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-2 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-2 px-2 capitalize"
               type="button"
             >
               <svg
@@ -187,14 +187,14 @@
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
-                class="w-5 h-5 text-inherit"
+                class="w-4 h-4 text-inherit"
               >
                 <path
                   d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
                 ></path>
               </svg>
               <p
-                class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize"
+                class="block antialiased font-sans text-sm leading-relaxed text-inherit font-medium capitalize"
               >
                 Menu Temporário
               </p>

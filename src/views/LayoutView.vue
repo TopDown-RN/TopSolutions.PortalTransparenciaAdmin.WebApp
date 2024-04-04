@@ -6,7 +6,7 @@ import BreadcrumbsComponent from '../components/layouts/BreadcrumbsComponent.vue
 
 <template>
   <HeaderComponent />
-  <div class="grid grid-cols-6 gap-2 bg-gray-50">
+  <div class="grid grid-cols-6 gap-2 bg-gray-50 pb-10">
     <DashboardComponent />
     <div class="p-4 col-span-5">
       <BreadcrumbsComponent />
