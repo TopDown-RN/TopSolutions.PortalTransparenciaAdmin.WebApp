@@ -4,7 +4,7 @@ import router from '@/router'
 const api = axios.create({
   baseURL: import.meta.env.DEV
     ? 'https://localhost:7011'
-    : 'https://demo.topsolutionsrn.com.br/apiportaltransp',
+    : 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin',
   headers: {
     'Content-Type': 'application/json'
   }
