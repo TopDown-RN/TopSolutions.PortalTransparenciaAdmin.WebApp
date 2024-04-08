@@ -26,6 +26,7 @@ const files = ref([])
 const ano = ref('')
 
 
+
 // Lista de categorias
 const categorias_agrupada_por_ano = ref([])
 const categorias_filtradas_por_ano = ref([])
@@ -47,6 +48,17 @@ const {
   previousPage,
   totalPages,
 } = usePagination(arquivos, 5);
+
+const paginationCat = usePagination(categorias, 5);
+const {
+  currentPage: currentPageCat,
+  paginatedItems: paginatedItemsCat,
+  nextPage: nextPageCat,
+  previousPage: previousPageCat,
+  totalPages: totalPagesCat,
+} = paginationCat;
+
+
 
 // --------------------Funções
 const anos = computed(() => {
@@ -206,13 +218,13 @@ async function getMenusList() {
 async function getCategoriasAgrupadas(){
   const response = await getCategoriasAgrupadaAno()
   categorias_agrupada_por_ano.value = response.data
-  console.log(response)
 }
 
 
 async function getCategoriasList(){
   const response = await getCategorias()
   categorias.value = response.data
+  console.log('Categorias', response.data)
 }
 
 async function getArquivosList(){
@@ -223,10 +235,10 @@ async function getArquivosList(){
 // ------------------- Ciclo de vida
 
 onMounted(() => {
-  getCategoriasList()
   getMenusList()
   getCategoriasAgrupadas()
   getArquivosList()
+  getCategoriasList()
 })
 
 </script>
@@ -300,16 +312,17 @@ onMounted(() => {
                 <button v-else label="Show" class="border-solid border-2 border-gray p-2 text-gray-400 rounded" >
                   <i class="pi pi-plus"></i>
                 </button>
-                <Dialog 
-                v-model:visible="dialogoVisivel" modal :style="{ width: '50vw', 'color': '#f0f0f0'}" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                <Dialog
+               :header="`Cadastrar Categoria para ${ano}`"
+                v-model:visible="dialogoVisivel" modal :style="{ width: '50vw'}" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
                   <div class="flex items-center justify-center">
                     <h1>Cadastrar categoria para {{ ano }}</h1>
                   </div>
                   
                     <div>
                       
-                      <input v-model.trim="txtTituloCat" type="text" placeholder="título" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-white w-full bg-transparent">
-                      <input v-model.trim="txtDescricaoCat" type="text" placeholder="descricao" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-white w-full bg-transparent">
+                      <input v-model.trim="txtTituloCat" type="text" placeholder="título" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent">
+                      <input v-model.trim="txtDescricaoCat" type="text" placeholder="descricao" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent">
                       <div class="flex items-center justify-end">
                         <button v-if="btnCadastraCat" class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32" @click="postCategoriaSave">Cadastrar</button>
                         <button v-else class="bg-gray-600 text-white mb-4 font-bold py-2 px-4 rounded h-10 w-32 flex items-center justify-center">
@@ -323,7 +336,7 @@ onMounted(() => {
                           </ul>
                       </div>
                   
-                  <table class="min-w-full bg-white shadow-md rounded-xl">
+                  <table class="min-w-full bg-white shadow-lg rounded-xl">
                   <thead>
                     <tr class="bg-blue-gray-100 text-gray-700">
                       <th class="py-3 px-4 text-left">Categoria</th>
@@ -331,7 +344,7 @@ onMounted(() => {
                     </tr>
                   </thead>
                   <tbody class="text-black">
-                    <tr class="border-b border-blue-gray-200" v-for="cat in categorias" :key="cat.idCategoriaPubArquivo"> 
+                    <tr class="border-b border-blue-gray-200" v-for="cat in paginatedItemsCat" :key="cat.idCategoriaPubArquivo"> 
                       <td class="py-3 px-4">{{cat.txtTitulo}}</td>
                       <td class="py-3 px-4 flex">
                         <button><img src="../../components/icons/IconAdd.svg" alt="add" @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)"></button>
@@ -342,6 +355,11 @@ onMounted(() => {
                     </tr>
                   </tbody>
                 </table>
+                <div class="flex items-center justify-center">
+                <button @click="previousPageCat" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPageCat === 1">Anterior</button>
+                <span>Página {{ currentPageCat }} de {{ totalPagesCat }}</span>
+                <button @click="nextPageCat" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPageCat === totalPagesCat">Próxima</button>
+              </div>
                 </Dialog>
                 </div>
                 <div class="md:col-span-5 text-right">
