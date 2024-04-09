@@ -1,5 +1,15 @@
 import api from './api'
 
+export const LerArquivoPorIdApi = (idArquivo) => {
+  return api
+    .get('/arquivo/downloadarquivoporidasync', {
+      params: { idArquivo: idArquivo },
+      responseType: 'blob'
+    })
+    .then((response) => response)
+    .catch((error) => console.error(error))
+}
+
 export function postArquivos(_oData) {
   console.log(_oData)
   return api
