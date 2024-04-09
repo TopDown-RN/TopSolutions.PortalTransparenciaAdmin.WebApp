@@ -99,7 +99,6 @@ function mensagemErro() {
 async function getMenusList() {
   const response = await getMenus()
   menus.value = response.data.reverse();
-  console.log('menus:', menus.value)
 }
 
 

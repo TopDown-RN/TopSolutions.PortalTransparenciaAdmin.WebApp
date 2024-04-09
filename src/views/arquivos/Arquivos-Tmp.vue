@@ -118,7 +118,6 @@ function deletarArquivoDaLista(arquivo) {
 
 async function getBaixarArquivo(idArq){
   const response = await LerArquivoPorIdApi(idArq)
-  console.log('Arquivo', response)
 }
 
 
@@ -154,7 +153,7 @@ async function postSaveArquivos() {
   }
 
   const idAnoCAtPubArq = await getAnoCategorias(idCategoriaArquivos.value, ano.value)
-  console.log('AnoCAtegora', idAnoCAtPubArq.data.idAnoCatPubArquivo)
+
   try {
     btnCadastraArquivo.value = false
     const formData = new FormData()
@@ -201,7 +200,6 @@ async function postCategoriaSave(){
       idMenu: id_Menu.value
     }
   
-    console.log(dados)
     const reponse = await postCategoria(dados)
 
     categorias.value.unshift(reponse.data)
@@ -220,7 +218,6 @@ async function postAnoCategoriaSave(idCategoria){
     ano: ano.value
   }
 
-  console.log('Dados AnoCat',dados)
   await postAnoCategoria(dados)
 }
 
@@ -241,7 +238,6 @@ async function getCategoriasAgrupadas(){
 async function getCategoriasList(){
   const response = await getCategorias()
   categorias.value = response.data
-  console.log('Categorias', response.data)
 }
 
 async function getArquivosList(){
