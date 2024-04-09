@@ -1,10 +1,11 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { postArquivos, getCategorias, getCategoriasAgrupadaAno, postCategoria, getArquivos, postAnoCategoria, getAnoCategorias } from '@/services/arquivos'
+import { postArquivos, getCategorias, getCategoriasAgrupadaAno, postCategoria, getArquivos, postAnoCategoria, getAnoCategorias, LerArquivoPorIdApi } from '@/services/arquivos'
 import { getMenus } from '@/services/menu'
-import { RiDeleteBin5Line, RiEdit2Line } from '@remixicon/vue'
+import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import Dialog from 'primevue/dialog';
 import usePagination from '@/utils/pagination'
+
 
 
 
@@ -24,7 +25,7 @@ const arquivos = ref([])
 const idCategoriaArquivos = ref(0)
 const files = ref([])
 const ano = ref('')
-
+const idArquivo = ref('') // para update
 
 
 // Lista de categorias
@@ -88,6 +89,15 @@ function ativarDialog(){
   }
 }
 
+function editar(arquivo){
+  idArquivo.value = arquivo.idArquivo
+  txtDescricao.value = arquivo.descCategoria
+  id_Menu.value = arquivo.idMenu
+  idCategoriaArquivos.value = arquivo.idCategoriaPubArquivo
+  ano.value = arquivo.anoPub
+}
+
+
 
 const setarArquivos = (event) => {
   const novosArquivos = Array.from(event.target.files);
@@ -106,8 +116,15 @@ function deletarArquivoDaLista(arquivo) {
   files.value = files.value.filter((item) => item.name !== arquivo);
 }
 
+async function getBaixarArquivo(idArq){
+  const response = await LerArquivoPorIdApi(idArq)
+  console.log('Arquivo', response)
+}
+
 
 // -----------------Requisições POST
+
+
 async function postSaveArquivos() {
   
   erros.value = []
@@ -306,12 +323,20 @@ onMounted(() => {
               </div>
 
               <div  class="flex flex-col items-start justify-end">
-                <button v-if="btnDialog" label="Show" @click="mostrarDialogo" class="border-solid border-2 border-gray p-2 hover:bg-gray-200 text-black rounded" >
-                  <i class="pi pi-plus"></i>
+                <button
+                  v-bind:disabled="!btnDialog" 
+                  v-bind:class="{
+                    'bg-blue-500 hover:bg-blue-700': btnDialog,
+                    'bg-blue-300': !btnDialog
+                  }"
+                  class="text-white font-bold py-2 px-4 rounded"
+                  @click="mostrarDialogo"
+                  >
+                  Mais categorias
                 </button>
-                <button v-else label="Show" class="border-solid border-2 border-gray p-2 text-gray-400 rounded" >
-                  <i class="pi pi-plus"></i>
-                </button>
+                <!-- <button v-else class="bg-blue-300 text-white font-bold py-2 px-4 rounded">
+                  Mais categorias
+                </button> -->
                 <Dialog
                :header="`Cadastrar Categoria para ${ano}`"
                 v-model:visible="dialogoVisivel" modal :style="{ width: '50vw'}" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
@@ -347,41 +372,57 @@ onMounted(() => {
                     <tr class="border-b border-blue-gray-200" v-for="cat in paginatedItemsCat" :key="cat.idCategoriaPubArquivo"> 
                       <td class="py-3 px-4">{{cat.txtTitulo}}</td>
                       <td class="py-3 px-4 flex">
-                        <button><img src="../../components/icons/IconAdd.svg" alt="add" @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)"></button>
-                        <a href="#" class="text-red-600" title="Excluir">
+                        <button @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)">
+                          <i class="pi pi-plus"></i>
+                        </button>
+                        <!-- <a href="#" class="text-red-600" title="Excluir">
                           <RiDeleteBin5Line />
-                        </a>
+                        </a> -->
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <div class="flex items-center justify-center">
-                <button @click="previousPageCat" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPageCat === 1">Anterior</button>
-                <span>Página {{ currentPageCat }} de {{ totalPagesCat }}</span>
-                <button @click="nextPageCat" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPageCat === totalPagesCat">Próxima</button>
-              </div>
+                <div class="flex items-center justify-center p-2">
+                  <button @click="previousPageCat" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageCat === 1">
+                    <RiArrowLeftFill></RiArrowLeftFill>
+                  </button>
+                        <span class="px-5 py-2">Página {{ currentPageCat }} de {{ totalPagesCat }}</span>
+                  <button @click="nextPageCat" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageCat === totalPagesCat">
+                    <RiArrowRightFill></RiArrowRightFill>
+                  </button>
+                </div>
                 </Dialog>
                 </div>
                 <div class="md:col-span-5 text-right">
                   <div class="inline-flex items-end">
                     <button
-                      v-if="btnCadastraArquivo"
-                      @click="postSaveArquivos"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      @click="btnCadastraArquivo ? postSaveArquivos() : null"
+                      v-bind:class="{
+                        'bg-blue-500 hover:bg-blue-700': btnCadastraArquivo,
+                        'bg-gray-600 cursor-not-allowed': !btnCadastraArquivo
+                      }"
+                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                     >
-                      Publicar
+                      <span v-if="btnCadastraArquivo">Publicar</span>
+                      <span v-else>
+                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                      </span>
                     </button>
                     <button 
-                    v-else
-                    class="bg-gray-600 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center">
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                      @click="limpar"
+                      class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                      >
+                      Limpar
                     </button>
                   </div>
               </div>
 
               <div class="md:col-span-5 mt-3 flex">
                 <div>
-                  <label for="inputarquivos" class="p-2 rounded-md bg-green-500 hover:bg-green-600 text-neutral-50">
+                  
+                  
+                  <label for="inputarquivos" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center">
+                    <i class="pi pi-upload mr-2"></i>
                     Selecionar arquivos
                   </label>
                   <input id="inputarquivos" hidden type="file" ref="fileInput" multiple @change="setarArquivos"/>
@@ -418,24 +459,29 @@ onMounted(() => {
             <td class="py-3 px-4">{{ arq.anoPub }}</td>
             <td class="py-3 px-4">{{ arq.descCategoria }}</td>
             <td class="py-3 px-4">
-              <a href="#" class="text-primary-700"> {{ arq.nomeArquivo }}</a>
+              <button @click="getBaixarArquivo(arq.idArquivo)" class="text-primary-700"> {{ arq.nomeArquivo }}</button>
             </td>
             <td class="py-3 px-4">Sem este campo</td>
             <td class="py-3 px-4 flex">
-              <a href="#" class="text-primary-700 pr-2" title="Editar">
+              <button @click="editar(arq)" class="text-primary-700 pr-2" title="Editar">
                 <RiEdit2Line />
-              </a>
-              <a href="#" class="text-red-600" title="Excluir">
+              </button>
+              <!-- <a href="#" class="text-red-600" title="Excluir">
                 <RiDeleteBin5Line />
-              </a>
+              </a> -->
             </td>
           </tr>
         </tbody>
       </table>
-      <div class="flex items-center justify-center">
-        <button @click="previousPage" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPage === 1">Anterior</button>
-        <span>Página {{ currentPage }} de {{ totalPages }}</span>
-        <button @click="nextPage" class="p-1 text-white rounded hover:bg-green-400 bg-green-600" :disabled="currentPage === totalPages">Próxima</button>
+      
+      <div class="flex items-center justify-center p-2">
+        <button @click="previousPage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPage === 1">
+          <RiArrowLeftFill></RiArrowLeftFill>
+        </button>
+              <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button @click="nextPage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPage === totalPages">
+          <RiArrowRightFill></RiArrowRightFill>
+        </button>
       </div>
         
     
@@ -444,7 +490,5 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.p-dialog .p-dialog-content {
-  background-color: #f0f0f0; /* Cor de fundo desejada */
-}
+
 </style>
