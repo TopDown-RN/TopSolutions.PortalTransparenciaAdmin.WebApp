@@ -116,8 +116,28 @@ function deletarArquivoDaLista(arquivo) {
   files.value = files.value.filter((item) => item.name !== arquivo);
 }
 
-async function getBaixarArquivo(idArq){
-  const response = await LerArquivoPorIdApi(idArq)
+
+// async function getBaixarArquivo(idArq){
+//   const response = await LerArquivoPorIdApi(idArq)
+// }
+
+async function downloadItem(_idarquivo, _nomearquivo) {
+  try {
+    console.log(_idarquivo)
+    const dados = await LerArquivoPorIdApi(_idarquivo)
+    const blob = new Blob([dados.data], { type: dados.data.type })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = _nomearquivo
+    link.setAttribute('download', '') // Adiciona a propriedade download
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (erro) {
+    console.error('Erro ao obter os arquivos:', erro)
+  }
 }
 
 
@@ -455,7 +475,7 @@ onMounted(() => {
             <td class="py-3 px-4">{{ arq.anoPub }}</td>
             <td class="py-3 px-4">{{ arq.descCategoria }}</td>
             <td class="py-3 px-4">
-              <button @click="getBaixarArquivo(arq.idArquivo)" class="text-primary-700"> {{ arq.nomeArquivo }}</button>
+              <button @click="downloadItem(arq.idArquivo, arq.nomeArquivo)" class="text-primary-700"> {{ arq.nomeArquivo }}</button>
             </td>
             <td class="py-3 px-4">Sem este campo</td>
             <td class="py-3 px-4 flex">
