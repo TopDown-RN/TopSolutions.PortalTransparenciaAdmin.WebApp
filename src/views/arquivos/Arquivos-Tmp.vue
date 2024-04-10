@@ -5,6 +5,7 @@ import { getMenus } from '@/services/menu'
 import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import Dialog from 'primevue/dialog';
 import usePagination from '@/utils/pagination'
+import Message from 'primevue/message';
 
 
 
@@ -40,6 +41,25 @@ const btnDialog = ref(false)
 const txtTituloCat = ref('')
 const txtDescricaoCat = ref('')
 
+// variáveis de controle de Messages
+const success = ref(false)
+const error = ref(false)
+
+
+// -------------------- Função para controle de messages
+function mensagemSucesso() {
+  success.value = true;
+  setTimeout(() => {
+    success.value = false;
+      }, 2000);
+}
+
+function mensagemErro() {
+    error.value = true;
+    setTimeout(() => {
+      error.value = false;
+    }, 2000);
+}
 
 // Paginação
 const {
@@ -188,8 +208,10 @@ async function postSaveArquivos() {
     formData.append('idMenu', id_Menu.value)
     await postArquivos(formData)
     btnCadastraArquivo.value = true
-
+    mensagemSucesso()
+    getArquivosList()
   } catch (error) {
+    mensagemErro()
     console.error('erro ao obter os arquivos:', error)
   }
 }
@@ -286,6 +308,10 @@ onMounted(() => {
   <div class="container max-w-screen-base mx-auto">
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+        <div>
+          <Message severity="success" :sticky="true" :life="2000" v-if="success">Arquivo salvo sucesso</Message>
+          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro ao salvar arquivo</Message>
+        </div>
         <div class="grid gap text-sm grid-cols-1">
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5 content-end">
