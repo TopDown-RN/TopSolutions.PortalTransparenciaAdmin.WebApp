@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted} from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { getRegistroImportacao } from '@/services/home'
 import { RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
+import ProgressSpinner from 'primevue/progressspinner'
 
 
 const registros = ref([])
+const loading = ref(true)
 
 async function getRegistros(){
   try{
@@ -35,6 +37,10 @@ function formatarData(data) {
       return `${dia}/${mes}/${ano}`;
     }
 
+watch(registros, () => {
+  loading.value = false
+})    
+
 onMounted(() => {
   getRegistros()
 })
@@ -42,7 +48,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <table class="min-w-full bg-white shadow-md rounded-xl">
+  <div v-if="loading" class="my-4 text-center">
+    <ProgressSpinner />
+  </div>
+  <div v-if="!loading">
+    <table class="min-w-full bg-white shadow-md rounded-xl">
     <thead>
       <tr class="bg-blue-gray-100 text-gray-700">
         <th class="py-3 px-4 text-left">Consulta</th>
@@ -67,6 +77,8 @@ onMounted(() => {
         <RiArrowRightFill></RiArrowRightFill>
       </button>
   </div>
+  </div>
+  
 </template>
 
 <style scoped></style>
