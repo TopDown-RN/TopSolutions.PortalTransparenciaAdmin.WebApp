@@ -3,6 +3,12 @@ import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
 import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
 //import router from '@/router'
+import ProgressSpinner from 'primevue/progressspinner'
+import Message from 'primevue/message';
+
+const btnAtualizar = ref(true)
+const success = ref(false)
+const error = ref(false)
 
 const logo = ref('')
 const extensaoLogo = ref('')
@@ -23,6 +29,21 @@ const email = ref('')
 const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
+
+// -------------------- Função para controle de messages
+function mensagemSucesso() {
+  success.value = true;
+  setTimeout(() => {
+    success.value = false;
+      }, 2000);
+}
+
+function mensagemErro() {
+    error.value = true;
+    setTimeout(() => {
+      error.value = false;
+    }, 2000);
+}
 
 const estadosOptions = ref([
   { codigo: 'AC', nome: 'Acre' },
@@ -83,6 +104,7 @@ async function pegarDadosAdmin() {
 
 async function atualizarDadosAdmin() {
   try {
+    btnAtualizar.value = false
     const formData = new FormData()
 
     const inputImagemLogo = document.getElementById('inputImagemLogo')
@@ -107,8 +129,11 @@ async function atualizarDadosAdmin() {
 
     console.log(response)
 
-    location.reload()
+    btnAtualizar.value = true
+    mensagemSucesso()
   } catch (error) {
+    btnAtualizar.value = true
+    mensagemErro()
     console.log(error)
   }
 }
@@ -135,6 +160,10 @@ onMounted(() => {
   <div class="container max-w-screen-base mx-auto">
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+        <div>
+          <Message severity="success" :sticky="true" :life="2000" v-if="success">Dados atualizados sucesso</Message>
+          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro ao atualizar dados</Message>
+        </div>
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
             <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
@@ -389,12 +418,26 @@ onMounted(() => {
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
-                  <button
+                  <!-- <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     @click="atualizarDadosAdmin"
                   >
                     Atualizar
-                  </button>
+                  </button> -->
+                  <button
+                      @click="btnAtualizar ? atualizarDadosAdmin() : null"
+                      :class="{
+                        'bg-blue-500 hover:bg-blue-700': btnAtualizar,
+                        'bg-blue-700 cursor-not-allowed': !btnAtualizar
+                        }"
+                      :disabled="!btnAtualizar"
+                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    >
+                      <span v-if="btnAtualizar">Atualizar</span>
+                      <span v-else>
+                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
+                      </span>
+                    </button>
                 </div>
               </div>
             </div>

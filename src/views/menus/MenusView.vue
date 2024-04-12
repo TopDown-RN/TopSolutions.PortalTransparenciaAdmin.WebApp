@@ -5,6 +5,9 @@ import {RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
 import { truncateUrl } from '@/utils/truncateString'
 import Message from 'primevue/message';
+import ProgressSpinner from 'primevue/progressspinner'
+
+const btnCadastraMenu = ref(true)
 
 // Campos de cadastrp de arquivo
 const idArquivo = ref(0)
@@ -106,6 +109,7 @@ async function getMenusList() {
 async function postGravarMenu() {
   
   try{
+    btnCadastraMenu.value = false
     const locaisSelecionados = locais.value.map((local) => parseInt(local))
     const menu = {
       idMenu: idArquivo.value,
@@ -125,6 +129,7 @@ async function postGravarMenu() {
     getMenusList()
     mensagemSucesso()
     limpar()
+    btnCadastraMenu.value = true
     
 
   }catch(error){
@@ -234,11 +239,25 @@ onMounted(() => {
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <div class="mr-2">
-                    <button
+                    <!-- <button
                       @click="postGravarMenu"
                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
                       Gravar
+                    </button> -->
+                    <button
+                      @click="btnCadastraMenu ? postGravarMenu() : null"
+                      :class="{
+                        'bg-blue-500 hover:bg-blue-700': btnCadastraMenu,
+                        'bg-blue-700 cursor-not-allowed': !btnCadastraMenu
+                        }"
+                      :disabled="!btnCadastraMenu"
+                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    >
+                      <span v-if="btnCadastraMenu">Gravar</span>
+                      <span v-else>
+                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
+                      </span>
                     </button>
                   </div>
                   <div>

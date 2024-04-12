@@ -6,6 +6,7 @@ import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import Dialog from 'primevue/dialog';
 import usePagination from '@/utils/pagination'
 import Message from 'primevue/message';
+import ProgressSpinner from 'primevue/progressspinner'
 
 
 
@@ -439,15 +440,16 @@ onMounted(() => {
                   <div class="inline-flex items-end">
                     <button
                       @click="btnCadastraArquivo ? postSaveArquivos() : null"
-                      v-bind:class="{
+                      :class="{
                         'bg-blue-500 hover:bg-blue-700': btnCadastraArquivo,
-                        'bg-gray-600 cursor-not-allowed': !btnCadastraArquivo
-                      }"
+                        'bg-blue-700 cursor-not-allowed': !btnCadastraArquivo
+                        }"
+                      :disabled="!btnCadastraArquivo"
                       class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                     >
                       <span v-if="btnCadastraArquivo">Publicar</span>
                       <span v-else>
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
                       </span>
                     </button>
                     <button 
