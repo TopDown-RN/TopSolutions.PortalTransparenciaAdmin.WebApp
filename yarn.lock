@@ -260,7 +260,7 @@
 
 "@remixicon/vue@^4.2.0":
   version "4.2.0"
-  resolved "https://registry.npmjs.org/@remixicon/vue/-/vue-4.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/@remixicon/vue/-/vue-4.2.0.tgz#c3ae86028472b06cbcb3f427bbf243452e038be4"
   integrity sha512-dFtPQPi45sZ4X3Jl2ZNxEE5j2dAmo8vfHA1wvjUCwybQnyAGKSBVQlqZqP0wKzrtBbVqRXK0tgQx+Fw8GZ45qg==
 
 "@rollup/rollup-android-arm-eabi@4.12.0":

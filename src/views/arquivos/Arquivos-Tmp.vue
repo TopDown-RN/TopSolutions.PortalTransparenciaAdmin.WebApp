@@ -69,9 +69,9 @@ const {
   nextPage,
   previousPage,
   totalPages,
-} = usePagination(arquivos, 5);
+} = usePagination(arquivos, 10);
 
-const paginationCat = usePagination(categorias, 5);
+const paginationCat = usePagination(categorias, 10);
 const {
   currentPage: currentPageCat,
   paginatedItems: paginatedItemsCat,

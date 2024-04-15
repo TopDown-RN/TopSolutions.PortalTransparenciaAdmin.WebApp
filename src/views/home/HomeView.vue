@@ -19,7 +19,7 @@ async function getRegistros(){
 }
 
 // ------------------- Paginação
-const paginationRegistros = usePagination(registros, 5);
+const paginationRegistros = usePagination(registros, 10);
 
 const {
   currentPage: currentPage,

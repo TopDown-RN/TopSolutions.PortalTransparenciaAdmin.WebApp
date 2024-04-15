@@ -71,7 +71,7 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menus, 5);
+const paginationMenus = usePagination(menus, 10);
 
 const {
   currentPage: currentPageMenu,

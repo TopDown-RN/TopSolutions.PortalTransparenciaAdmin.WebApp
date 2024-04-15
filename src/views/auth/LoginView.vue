@@ -4,11 +4,13 @@ import { onMounted, ref, watch } from 'vue'
 import router from '@/router'
 import { RiEyeLine, RiLoginBoxLine } from '@remixicon/vue'
 import ProgressSpinner from 'primevue/progressspinner'
+import Message from 'primevue/message';
 
 const tokenData = ref()
 const txtCpfCnpjEmail = ref('')
 const txtPass = ref('')
 const btnAcessar = ref(true)
+const error = ref(false)
 
 async function postAutenticar() {
   try {
@@ -25,8 +27,16 @@ async function postAutenticar() {
     btnAcessar.value = true
   } catch (error) {
     btnAcessar.value = true
+    mensagemErro()
     console.error('erro ao obter os arquivos:', error)
   }
+}
+
+function mensagemErro() {
+    error.value = true;
+    setTimeout(() => {
+      error.value = false;
+    }, 2000);
 }
 
 function fnisAuthenticated() {
@@ -77,6 +87,9 @@ onMounted(() => {
         >
           Painel Administrativo
         </p>
+        <div>
+          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro</Message>
+        </div>
         <div class="py-1">
           <label id="email" class="text-sm font-medium leading-none text-gray-800">CPF</label>
           <input
