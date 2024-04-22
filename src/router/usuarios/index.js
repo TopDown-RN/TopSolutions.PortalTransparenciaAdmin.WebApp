@@ -2,12 +2,20 @@ const routes = [
   {
     path: '/usuarios',
     name: 'usuarios',
+    meta: { requiresAuth: true },
     component: () => import('@/views/usuarios/ListaUsuarios.vue')
   },
   {
-    path: '/usuarios/novo-usuario',
+    path: '/usuarios/novo',
     name: 'novo-usuario',
-    component: () => import('@/views/usuarios/NovoUsuario.vue')
+    meta: { requiresAuth: true },
+    component: () => import('@/views/usuarios/DadosUsuario.vue')
+  },
+  {
+    path: '/usuarios/editar/:id',
+    name: 'usuario-editar',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/usuarios/DadosUsuario.vue')
   }
 ]
 

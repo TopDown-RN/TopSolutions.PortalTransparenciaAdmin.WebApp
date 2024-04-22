@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+
+
+function logout(){
+  localStorage.removeItem('token')
+  // Reflesh na tela
+  window.location.href = '/'
+}
+</script>
 
 <template>
   <header class="bg-white">
@@ -25,6 +33,7 @@
                 <div class="md:block lg:block sm:hidden max-w-md mx-auto">
                   <div class="flex space-x-4 hidden lg:block md:block">
                     <button class="text-white px-2 py-1 rounded-md">Usuário administrador</button>
+                    <button @click="logout" class="text-white px-2 py-1 rounded-md">Sair</button>
                   </div>
                 </div>
               </div>
