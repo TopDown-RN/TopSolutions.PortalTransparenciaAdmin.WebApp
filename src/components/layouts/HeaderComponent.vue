@@ -1,7 +1,5 @@
 <script setup>
-
-
-function logout(){
+function logout() {
   localStorage.removeItem('token')
   // Reflesh na tela
   window.location.href = '/'

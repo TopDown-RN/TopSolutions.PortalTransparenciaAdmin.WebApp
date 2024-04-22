@@ -4,7 +4,7 @@ import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
 //import router from '@/router'
 import ProgressSpinner from 'primevue/progressspinner'
-import Message from 'primevue/message';
+import Message from 'primevue/message'
 
 const btnAtualizar = ref(true)
 const success = ref(false)
@@ -32,17 +32,17 @@ const x = ref('')
 
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
-  success.value = true;
+  success.value = true
   setTimeout(() => {
-    success.value = false;
-      }, 2000);
+    success.value = false
+  }, 2000)
 }
 
 function mensagemErro() {
-    error.value = true;
-    setTimeout(() => {
-      error.value = false;
-    }, 2000);
+  error.value = true
+  setTimeout(() => {
+    error.value = false
+  }, 2000)
 }
 
 const estadosOptions = ref([
@@ -161,8 +161,12 @@ onMounted(() => {
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success">Dados atualizados sucesso</Message>
-          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro ao atualizar dados</Message>
+          <Message severity="success" :sticky="true" :life="2000" v-if="success"
+            >Dados atualizados sucesso</Message
+          >
+          <Message severity="error" :sticky="true" :life="2000" v-if="error"
+            >Erro ao atualizar dados</Message
+          >
         </div>
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
@@ -425,19 +429,23 @@ onMounted(() => {
                     Atualizar
                   </button> -->
                   <button
-                      @click="btnAtualizar ? atualizarDadosAdmin() : null"
-                      :class="{
-                        'bg-blue-500 hover:bg-blue-700': btnAtualizar,
-                        'bg-blue-700 cursor-not-allowed': !btnAtualizar
-                        }"
-                      :disabled="!btnAtualizar"
-                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
-                    >
-                      <span v-if="btnAtualizar">Atualizar</span>
-                      <span v-else>
-                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
-                      </span>
-                    </button>
+                    @click="btnAtualizar ? atualizarDadosAdmin() : null"
+                    :class="{
+                      'bg-blue-500 hover:bg-blue-700': btnAtualizar,
+                      'bg-blue-700 cursor-not-allowed': !btnAtualizar
+                    }"
+                    :disabled="!btnAtualizar"
+                    class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                  >
+                    <span v-if="btnAtualizar">Atualizar</span>
+                    <span v-else>
+                      <ProgressSpinner
+                        style="width: 20px; height: 20px"
+                        strokeWidth="8"
+                        aria-label="Custom ProgressSpinner"
+                      />
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>

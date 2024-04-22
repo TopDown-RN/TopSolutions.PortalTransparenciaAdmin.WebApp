@@ -10,8 +10,6 @@ import VueTheMask from 'vue-the-mask'
 
 const app = createApp(App)
 
-app.use(PrimeVue, { unstyled: true, pt: Lara }).use(router)
-
-app.use(VueTheMask)
+app.use(router).use(PrimeVue, { unstyled: true, pt: Lara }).use(VueTheMask)
 
 app.mount('#app')

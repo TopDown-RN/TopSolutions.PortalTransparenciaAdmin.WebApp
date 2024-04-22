@@ -44,10 +44,10 @@ export function postAnoCategoria(dados) {
       }
     })
     .then((response) => response.data)
-    .catch((error) => console.error(error)) 
+    .catch((error) => console.error(error))
 }
 
-export function getArquivos(){
+export function getArquivos() {
   return api
     .get(`arquivo/listararquivosAsync`, {
       headers: {
@@ -56,23 +56,20 @@ export function getArquivos(){
     })
     .then((response) => response.data)
     .catch((error) => console.error(error))
-
 }
 
-export function getCategoriasAgrupadaAno(){
+export function getCategoriasAgrupadaAno() {
   return api
     .get(`arquivo/listCategoriasAgrupadaPorAno`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
-
     })
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
 
-
-export function getCategorias(){
+export function getCategorias() {
   return api
     .get(`arquivo/listCategoriasArquivosAsync`, {
       headers: {
@@ -83,7 +80,7 @@ export function getCategorias(){
     .catch((error) => console.error(error))
 }
 
-export function getAnoCategorias(categoria, ano){
+export function getAnoCategorias(categoria, ano) {
   console.log('cat e ano', categoria, ano)
   return api
     .get(`arquivo/LerAnoCategoriaAsync?idcategoria=${categoria}&ano=${ano}`, {
@@ -94,7 +91,5 @@ export function getAnoCategorias(categoria, ano){
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
-
-
 
 export default api
