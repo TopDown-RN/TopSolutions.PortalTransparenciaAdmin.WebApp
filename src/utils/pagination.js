@@ -1,35 +1,35 @@
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
 function usePagination(items, itemsPerPage) {
-  const currentPage = ref(1);
+  const currentPage = ref(1)
 
   const paginatedItems = computed(() => {
-    const startIndex = (currentPage.value - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return items.value.slice(startIndex, endIndex);
-  });
+    const startIndex = (currentPage.value - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return items.value.slice(startIndex, endIndex)
+  })
 
   const nextPage = () => {
     if (currentPage.value < totalPages.value) {
-      currentPage.value++;
+      currentPage.value++
     }
-  };
+  }
 
   const previousPage = () => {
     if (currentPage.value > 1) {
-      currentPage.value--;
+      currentPage.value--
     }
-  };
+  }
 
-  const totalPages = computed(() => Math.ceil(items.value.length / itemsPerPage));
+  const totalPages = computed(() => Math.ceil(items.value.length / itemsPerPage))
 
   return {
     currentPage,
     paginatedItems,
     nextPage,
     previousPage,
-    totalPages,
-  };
+    totalPages
+  }
 }
 
-export default usePagination;
+export default usePagination

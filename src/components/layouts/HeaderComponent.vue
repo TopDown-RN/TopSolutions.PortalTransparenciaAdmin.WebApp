@@ -1,69 +1,64 @@
 <script setup>
+import { ref } from 'vue'
+import Avatar from 'primevue/avatar'
+import Menu from 'primevue/menu'
 
+const props = defineProps(['toggleSidebar'])
 
-function logout(){
+const items = ref([
+  {
+    label: 'Usuário',
+    items: [
+      {
+        label: 'Ajustes',
+        icon: 'pi pi-cog'
+      },
+      {
+        label: 'Sair',
+        icon: 'pi pi-sign-out',
+        command: () => {
+          logout()
+        }
+      }
+    ]
+  }
+])
+
+const menu = ref()
+
+function toggle(event) {
+  menu.value.toggle(event)
+}
+
+function logout() {
   localStorage.removeItem('token')
-  // Reflesh na tela
   window.location.href = '/'
 }
 </script>
 
 <template>
-  <header class="bg-white">
-    <div class="mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold tracking-tight text-gray-900">Top Solutions</h1>
+  <header class="bg-white shadow px-4 py-4">
+    <div class="flex justify-between items-center p-4">
+      <div class="cursor-pointer md:hidden" @click="props.toggleSidebar">
+        <i class="pi pi-bars"></i>
+      </div>
+      <div class="">
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900">Top Solutions</h1>
+      </div>
+      <div class="flex space-x-3 items-center justify-center px-3">
+        <div class="text-md">Administrador</div>
+        <Avatar
+          icon="pi pi-user"
+          class="mr-2 bg-primary-800 text-white cursor-pointer"
+          shape="circle"
+          @click="toggle"
+          aria-haspopup="true"
+          aria-controls="overlay_menu"
+        />
+        <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" />
+      </div>
     </div>
   </header>
-  <div class="min-h-full">
-    <nav class="bg-primary-900">
-      <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between">
-          <div class="flex items-center">
-            <div class="">
-              <div class="">
-                <a href="#" class="text-white py-2 text-lg font-medium" aria-current="page"
-                  >Portal da Transparência</a
-                >
-              </div>
-            </div>
-          </div>
-          <div class="hidden md:block">
-            <div class="">
-              <div class="relative ml-3">
-                <div class="md:block lg:block sm:hidden max-w-md mx-auto">
-                  <div class="flex space-x-4 hidden lg:block md:block">
-                    <button class="text-white px-2 py-1 rounded-md">Usuário administrador</button>
-                    <button @click="logout" class="text-white px-2 py-1 rounded-md">Sair</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <div class="bg-gray-200 flex">
-      <div class="max-w-7xl px-4 py-6 bg-gray-200 sm:px-6 lg:px-8">
-        <img
-          class="flex-1 w-24 h-24 rounded-full shadow-lg"
-          src="https://pbs.twimg.com/profile_images/638352739236491264/xYuKDYAY_400x400.jpg"
-          alt=""
-        />
-      </div>
-      <div class="bg-gray-200 py-6">
-        <h1 class="text-2xl font-sans tracking-tight text-gray-900">Prefeitura de Currais Novos</h1>
-        <div>
-          <span class="text-xs">
-            <b>Endereço: </b>Praça Desembargador Tomaz Salustino, n.º 90 Centro, Currais Novos - RN,
-            59380-000
-          </span>
-        </div>
-        <div>
-          <span class="text-xs"> <b>Telefone: </b>(84) 3405-2714 </span>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <style scoped></style>

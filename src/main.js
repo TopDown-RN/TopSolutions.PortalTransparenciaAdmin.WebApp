@@ -7,11 +7,10 @@ import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 import Lara from '@/presents/Lara'
 import VueTheMask from 'vue-the-mask'
+import Tooltip from 'primevue/tooltip'
 
 const app = createApp(App)
 
-app.use(PrimeVue, { unstyled: true, pt: Lara }).use(router)
-
-app.use(VueTheMask)
-
+app.use(router).use(PrimeVue, { unstyled: true, pt: Lara }).use(VueTheMask)
+app.directive('tooltip', Tooltip)
 app.mount('#app')

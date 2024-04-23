@@ -1,15 +1,21 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { postArquivos, getCategorias, getCategoriasAgrupadaAno, postCategoria, getArquivos, postAnoCategoria, getAnoCategorias, LerArquivoPorIdApi } from '@/services/arquivos'
+import {
+  postArquivos,
+  getCategorias,
+  getCategoriasAgrupadaAno,
+  postCategoria,
+  getArquivos,
+  postAnoCategoria,
+  getAnoCategorias,
+  LerArquivoPorIdApi
+} from '@/services/arquivos'
 import { getMenus } from '@/services/menu'
 import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
-import Dialog from 'primevue/dialog';
+import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
-import Message from 'primevue/message';
+import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
-
-
-
 
 // Variáveis de uso geral
 const categorias = ref([])
@@ -18,7 +24,6 @@ const dialogoVisivel = ref(false)
 const btnCadastraCat = ref(true)
 const erros = ref([])
 const btnCadastraArquivo = ref(true)
-
 
 // Campos para cadastro de Arquivo
 const txtDescricao = ref('')
@@ -29,11 +34,9 @@ const files = ref([])
 const ano = ref('')
 const idArquivo = ref('') // para update
 
-
 // Lista de categorias
 const categorias_agrupada_por_ano = ref([])
 const categorias_filtradas_por_ano = ref([])
-
 
 //ativar ou desativar botão de dialogo
 const btnDialog = ref(false)
@@ -46,41 +49,35 @@ const txtDescricaoCat = ref('')
 const success = ref(false)
 const error = ref(false)
 
-
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
-  success.value = true;
+  success.value = true
   setTimeout(() => {
-    success.value = false;
-      }, 2000);
+    success.value = false
+  }, 2000)
 }
 
 function mensagemErro() {
-    error.value = true;
-    setTimeout(() => {
-      error.value = false;
-    }, 2000);
+  error.value = true
+  setTimeout(() => {
+    error.value = false
+  }, 2000)
 }
 
 // Paginação
-const {
-  currentPage,
-  paginatedItems,
-  nextPage,
-  previousPage,
-  totalPages,
-} = usePagination(arquivos, 10);
+const { currentPage, paginatedItems, nextPage, previousPage, totalPages } = usePagination(
+  arquivos,
+  10
+)
 
-const paginationCat = usePagination(categorias, 10);
+const paginationCat = usePagination(categorias, 10)
 const {
   currentPage: currentPageCat,
   paginatedItems: paginatedItemsCat,
   nextPage: nextPageCat,
   previousPage: previousPageCat,
-  totalPages: totalPagesCat,
-} = paginationCat;
-
-
+  totalPages: totalPagesCat
+} = paginationCat
 
 // --------------------Funções
 const anos = computed(() => {
@@ -93,24 +90,23 @@ const anos = computed(() => {
 })
 
 function mostrarDialogo() {
-      dialogoVisivel.value = true;
-    }
-
-
-function filtrarCategoriasPorAno(ano){
-  const categorias = categorias_agrupada_por_ano.value.filter(item => item.ano == ano)
-  categorias_filtradas_por_ano.value = categorias
-
-  ativarDialog() 
+  dialogoVisivel.value = true
 }
 
-function ativarDialog(){
-  if(ano.value != '' && id_Menu.value != ''){
+function filtrarCategoriasPorAno(ano) {
+  const categorias = categorias_agrupada_por_ano.value.filter((item) => item.ano == ano)
+  categorias_filtradas_por_ano.value = categorias
+
+  ativarDialog()
+}
+
+function ativarDialog() {
+  if (ano.value != '' && id_Menu.value != '') {
     btnDialog.value = true
   }
 }
 
-function editar(arquivo){
+function editar(arquivo) {
   idArquivo.value = arquivo.idArquivo
   txtDescricao.value = arquivo.descCategoria
   id_Menu.value = arquivo.idMenu
@@ -118,25 +114,21 @@ function editar(arquivo){
   ano.value = arquivo.anoPub
 }
 
-
-
 const setarArquivos = (event) => {
-  const novosArquivos = Array.from(event.target.files);
-  
+  const novosArquivos = Array.from(event.target.files)
+
   // Verificar se cada arquivo já existe na lista antes de adicioná-lo
   novosArquivos.forEach((arquivo) => {
-    const arquivoExiste = files.value.some((item) => item.name === arquivo.name);
+    const arquivoExiste = files.value.some((item) => item.name === arquivo.name)
     if (!arquivoExiste) {
-      files.value.push(arquivo);
+      files.value.push(arquivo)
     }
-  });
+  })
 }
-
 
 function deletarArquivoDaLista(arquivo) {
-  files.value = files.value.filter((item) => item.name !== arquivo);
+  files.value = files.value.filter((item) => item.name !== arquivo)
 }
-
 
 // async function getBaixarArquivo(idArq){
 //   const response = await LerArquivoPorIdApi(idArq)
@@ -161,35 +153,32 @@ async function downloadItem(_idarquivo, _nomearquivo) {
   }
 }
 
-
 // -----------------Requisições POST
 
-
 async function postSaveArquivos() {
-  
   erros.value = []
 
-  if(txtDescricao.value == ''){
+  if (txtDescricao.value == '') {
     erros.value.push('Informe a descrição do arquivo')
   }
 
-  if(id_Menu.value == ''){
+  if (id_Menu.value == '') {
     erros.value.push('Selecione um menu')
   }
 
-  if(ano.value == ''){
+  if (ano.value == '') {
     erros.value.push('Selecione um ano')
   }
 
-  if(idCategoriaArquivos.value == ''){
+  if (idCategoriaArquivos.value == '') {
     erros.value.push('Selecione uma categoria')
   }
 
-  if(files.value.length == 0){
+  if (files.value.length == 0) {
     erros.value.push('Selecione um arquivo')
   }
 
-  if(erros.value.length > 0){
+  if (erros.value.length > 0) {
     return
   }
 
@@ -217,24 +206,22 @@ async function postSaveArquivos() {
   }
 }
 
-
-async function postCategoriaSave(){
-  try{
-    
+async function postCategoriaSave() {
+  try {
     erros.value = []
 
-    if(txtTituloCat.value == ''){
+    if (txtTituloCat.value == '') {
       erros.value.push('Informe o título da categoria')
     }
 
-    if(txtDescricaoCat.value == ''){
+    if (txtDescricaoCat.value == '') {
       erros.value.push('Informe a descrição da categoria')
     }
 
-    if(erros.value.length > 0){
+    if (erros.value.length > 0) {
       return
     }
-    
+
     btnCadastraCat.value = false
     const dados = {
       txtTitulo: txtTituloCat.value,
@@ -242,20 +229,18 @@ async function postCategoriaSave(){
       ano: ano.value,
       idMenu: id_Menu.value
     }
-  
+
     const reponse = await postCategoria(dados)
 
     categorias.value.unshift(reponse.data)
 
     btnCadastraCat.value = true
-
-  }catch(error){
+  } catch (error) {
     console.error('erro ao obter os arquivos:', error)
   }
 }
 
-
-async function postAnoCategoriaSave(idCategoria){
+async function postAnoCategoriaSave(idCategoria) {
   const dados = {
     idCategoria: idCategoria,
     ano: ano.value
@@ -272,19 +257,18 @@ async function getMenusList() {
   })
 }
 
-async function getCategoriasAgrupadas(){
+async function getCategoriasAgrupadas() {
   const response = await getCategoriasAgrupadaAno()
   categorias_agrupada_por_ano.value = response.data
 }
 
-
-async function getCategoriasList(){
+async function getCategoriasList() {
   const response = await getCategorias()
   categorias.value = response.data
 }
 
-async function getArquivosList(){
-  const response = await getArquivos();
+async function getArquivosList() {
+  const response = await getArquivos()
   arquivos.value = response.data
 }
 
@@ -296,7 +280,6 @@ onMounted(() => {
   getArquivosList()
   getCategoriasList()
 })
-
 </script>
 <template>
   <div class="mx-auto max-w-3xl text-center">
@@ -310,19 +293,25 @@ onMounted(() => {
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success">Arquivo salvo sucesso</Message>
-          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro ao salvar arquivo</Message>
+          <Message severity="success" :sticky="true" :life="2000" v-if="success"
+            >Arquivo salvo sucesso</Message
+          >
+          <Message severity="error" :sticky="true" :life="2000" v-if="error"
+            >Erro ao salvar arquivo</Message
+          >
         </div>
         <div class="grid gap text-sm grid-cols-1">
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5 content-end">
               <div class="md:col-span-5">
                 <label for="descricao">Descrição</label>
-                <input type="text" id="descricao" 
+                <input
+                  type="text"
+                  id="descricao"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                   placeholder="Informe uma descrição para o arquivo"
                   v-model.trim="txtDescricao"
-                  >
+                />
               </div>
               <div class="md:col-span-5">
                 <label>Menu</label>
@@ -333,15 +322,15 @@ onMounted(() => {
                 >
                   <option value="" disabled selected>Selecione</option>
                   <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
-                      {{ menu.txtDescricao }} 
+                    {{ menu.txtDescricao }}
                   </option>
                 </select>
               </div>
               <div class="md:col-span-1">
                 <label>Ano</label>
                 <select
-                v-model="ano"
-                @change="filtrarCategoriasPorAno($event.target.value)"
+                  v-model="ano"
+                  @change="filtrarCategoriasPorAno($event.target.value)"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
                   <option value="" disabled selected>Selecione</option>
@@ -350,7 +339,7 @@ onMounted(() => {
                   </option>
                 </select>
               </div>
-              
+
               <div class="md:col-span-3">
                 <label>Categoria</label>
                 <select
@@ -358,132 +347,193 @@ onMounted(() => {
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
                   <option value="0" disabled selected>Selecione</option>
-                  
-                  <optgroup v-for="dado in categorias_filtradas_por_ano" :label="dado.ano" :key="dado.ano">
-                    <option v-for="cat in dado.categorias" class="p-2" :key="cat.idCategoriaPubArquivo" :value="cat.idCategoriaPubArquivo">{{ cat.txtTitulo }}</option>
+
+                  <optgroup
+                    v-for="dado in categorias_filtradas_por_ano"
+                    :label="dado.ano"
+                    :key="dado.ano"
+                  >
+                    <option
+                      v-for="cat in dado.categorias"
+                      class="p-2"
+                      :key="cat.idCategoriaPubArquivo"
+                      :value="cat.idCategoriaPubArquivo"
+                    >
+                      {{ cat.txtTitulo }}
+                    </option>
                   </optgroup>
                 </select>
               </div>
 
-              <div  class="flex flex-col items-start justify-end">
+              <div class="flex flex-col items-start justify-end">
                 <button
-                  v-bind:disabled="!btnDialog" 
+                  v-bind:disabled="!btnDialog"
                   v-bind:class="{
                     'bg-blue-500 hover:bg-blue-700': btnDialog,
                     'bg-blue-300': !btnDialog
                   }"
                   class="text-white font-bold py-2 px-4 rounded"
                   @click="mostrarDialogo"
-                  >
+                >
                   Mais categorias
                 </button>
                 <!-- <button v-else class="bg-blue-300 text-white font-bold py-2 px-4 rounded">
                   Mais categorias
                 </button> -->
                 <Dialog
-               :header="`Cadastrar Categoria para ${ano}`"
-                v-model:visible="dialogoVisivel" modal :style="{ width: '50vw'}" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                  :header="`Cadastrar Categoria para ${ano}`"
+                  v-model:visible="dialogoVisivel"
+                  modal
+                  :style="{ width: '50vw' }"
+                  :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+                >
                   <div class="flex items-center justify-center">
                     <h1>Cadastrar categoria para {{ ano }}</h1>
                   </div>
-                  
-                    <div>
-                      
-                      <input v-model.trim="txtTituloCat" type="text" placeholder="título" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent">
-                      <input v-model.trim="txtDescricaoCat" type="text" placeholder="descricao" class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent">
-                      <div class="flex items-center justify-end">
-                        <button v-if="btnCadastraCat" class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32" @click="postCategoriaSave">Cadastrar</button>
-                        <button v-else class="bg-gray-600 text-white mb-4 font-bold py-2 px-4 rounded h-10 w-32 flex items-center justify-center">
-                          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-                        </button>
-                      </div>
+
+                  <div>
+                    <input
+                      v-model.trim="txtTituloCat"
+                      type="text"
+                      placeholder="título"
+                      class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent"
+                    />
+                    <input
+                      v-model.trim="txtDescricaoCat"
+                      type="text"
+                      placeholder="descricao"
+                      class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent"
+                    />
+                    <div class="flex items-center justify-end">
+                      <button
+                        v-if="btnCadastraCat"
+                        class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32"
+                        @click="postCategoriaSave"
+                      >
+                        Cadastrar
+                      </button>
+                      <button
+                        v-else
+                        class="bg-gray-600 text-white mb-4 font-bold py-2 px-4 rounded h-10 w-32 flex items-center justify-center"
+                      >
+                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                      </button>
                     </div>
-                    <div v-if="erros.length" class="pl-4 pb-4">
-                          <ul>
-                            <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
-                          </ul>
-                      </div>
-                  
+                  </div>
+                  <div v-if="erros.length" class="pl-4 pb-4">
+                    <ul>
+                      <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">
+                        {{ erro }}
+                      </li>
+                    </ul>
+                  </div>
+
                   <table class="min-w-full bg-white shadow-lg rounded-xl">
-                  <thead>
-                    <tr class="bg-blue-gray-100 text-gray-700">
-                      <th class="py-3 px-4 text-left">Categoria</th>
-                      <th class="py-3 px-4 text-left">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-black">
-                    <tr class="border-b border-blue-gray-200" v-for="cat in paginatedItemsCat" :key="cat.idCategoriaPubArquivo"> 
-                      <td class="py-3 px-4">{{cat.txtTitulo}}</td>
-                      <td class="py-3 px-4 flex">
-                        <button @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)">
-                          <i class="pi pi-plus"></i>
-                        </button>
-                        <!-- <a href="#" class="text-red-600" title="Excluir">
+                    <thead>
+                      <tr class="bg-blue-gray-100 text-gray-700">
+                        <th class="py-3 px-4 text-left">Categoria</th>
+                        <th class="py-3 px-4 text-left">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-black">
+                      <tr
+                        class="border-b border-blue-gray-200"
+                        v-for="cat in paginatedItemsCat"
+                        :key="cat.idCategoriaPubArquivo"
+                      >
+                        <td class="py-3 px-4">{{ cat.txtTitulo }}</td>
+                        <td class="py-3 px-4 flex">
+                          <button @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)">
+                            <i class="pi pi-plus"></i>
+                          </button>
+                          <!-- <a href="#" class="text-red-600" title="Excluir">
                           <RiDeleteBin5Line />
                         </a> -->
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="flex items-center justify-center p-2">
-                  <button @click="previousPageCat" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageCat === 1">
-                    <RiArrowLeftFill></RiArrowLeftFill>
-                  </button>
-                        <span class="px-5 py-2">Página {{ currentPageCat }} de {{ totalPagesCat }}</span>
-                  <button @click="nextPageCat" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageCat === totalPagesCat">
-                    <RiArrowRightFill></RiArrowRightFill>
-                  </button>
-                </div>
-                </Dialog>
-                </div>
-                <div class="md:col-span-5 text-right">
-                  <div class="inline-flex items-end">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="flex items-center justify-center p-2">
                     <button
-                      @click="btnCadastraArquivo ? postSaveArquivos() : null"
-                      :class="{
-                        'bg-blue-500 hover:bg-blue-700': btnCadastraArquivo,
-                        'bg-blue-700 cursor-not-allowed': !btnCadastraArquivo
-                        }"
-                      :disabled="!btnCadastraArquivo"
-                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                      @click="previousPageCat"
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+                      :disabled="currentPageCat === 1"
                     >
-                      <span v-if="btnCadastraArquivo">Publicar</span>
-                      <span v-else>
-                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
-                      </span>
+                      <RiArrowLeftFill></RiArrowLeftFill>
                     </button>
-                    <button 
-                      @click="limpar"
-                      class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
-                      >
-                      Limpar
+                    <span class="px-5 py-2"
+                      >Página {{ currentPageCat }} de {{ totalPagesCat }}</span
+                    >
+                    <button
+                      @click="nextPageCat"
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+                      :disabled="currentPageCat === totalPagesCat"
+                    >
+                      <RiArrowRightFill></RiArrowRightFill>
                     </button>
                   </div>
+                </Dialog>
+              </div>
+              <div class="md:col-span-5 text-right">
+                <div class="inline-flex items-end">
+                  <button
+                    @click="btnCadastraArquivo ? postSaveArquivos() : null"
+                    :class="{
+                      'bg-blue-500 hover:bg-blue-700': btnCadastraArquivo,
+                      'bg-blue-700 cursor-not-allowed': !btnCadastraArquivo
+                    }"
+                    :disabled="!btnCadastraArquivo"
+                    class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                  >
+                    <span v-if="btnCadastraArquivo">Publicar</span>
+                    <span v-else>
+                      <ProgressSpinner
+                        style="width: 20px; height: 20px"
+                        strokeWidth="8"
+                        aria-label="Custom ProgressSpinner"
+                      />
+                    </span>
+                  </button>
+                  <button
+                    @click="limpar"
+                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                  >
+                    Limpar
+                  </button>
+                </div>
               </div>
 
               <div class="md:col-span-5 mt-3 flex">
                 <div>
-                  
-                  
-                  <label for="inputarquivos" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center">
+                  <label
+                    for="inputarquivos"
+                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center"
+                  >
                     <i class="pi pi-upload mr-2"></i>
                     Selecionar arquivos
                   </label>
-                  <input id="inputarquivos" hidden type="file" ref="fileInput" multiple @change="setarArquivos"/>
+                  <input
+                    id="inputarquivos"
+                    hidden
+                    type="file"
+                    ref="fileInput"
+                    multiple
+                    @change="setarArquivos"
+                  />
                 </div>
                 <div class="ml-10">
                   <ul class="flex flex-col items-start justify-center">
-                    <li v-for="file in files" :key="file.name" class="list-disc">{{ file.name }} <button @click="deletarArquivoDaLista(file.name)">X</button></li>
+                    <li v-for="file in files" :key="file.name" class="list-disc">
+                      {{ file.name }} <button @click="deletarArquivoDaLista(file.name)">X</button>
+                    </li>
                   </ul>
                 </div>
-
               </div>
-              
             </div>
             <div>
-                <ul>
-                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
-                </ul>
+              <ul>
+                <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -499,11 +549,20 @@ onMounted(() => {
           </tr>
         </thead>
         <tbody class="text-blue-gray-900">
-          <tr v-for="arq in paginatedItems" :key="arq.idArquivo" class="border-b border-blue-gray-200">
+          <tr
+            v-for="arq in paginatedItems"
+            :key="arq.idArquivo"
+            class="border-b border-blue-gray-200"
+          >
             <td class="py-3 px-4">{{ arq.anoPub }}</td>
             <td class="py-3 px-4">{{ arq.descCategoria }}</td>
             <td class="py-3 px-4">
-              <button @click="downloadItem(arq.idArquivo, arq.nomeArquivo)" class="text-primary-700"> {{ arq.nomeArquivo }}</button>
+              <button
+                @click="downloadItem(arq.idArquivo, arq.nomeArquivo)"
+                class="text-primary-700"
+              >
+                {{ arq.nomeArquivo }}
+              </button>
             </td>
             <td class="py-3 px-4">Sem este campo</td>
             <td class="py-3 px-4 flex">
@@ -517,22 +576,26 @@ onMounted(() => {
           </tr>
         </tbody>
       </table>
-      
+
       <div class="flex items-center justify-center p-2">
-        <button @click="previousPage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPage === 1">
+        <button
+          @click="previousPage"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+          :disabled="currentPage === 1"
+        >
           <RiArrowLeftFill></RiArrowLeftFill>
         </button>
-              <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button @click="nextPage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPage === totalPages">
+        <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button
+          @click="nextPage"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+          :disabled="currentPage === totalPages"
+        >
           <RiArrowRightFill></RiArrowRightFill>
         </button>
       </div>
-        
-    
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

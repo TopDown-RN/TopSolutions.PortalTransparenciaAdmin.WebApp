@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
-import {RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
+import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
 import { truncateUrl } from '@/utils/truncateString'
-import Message from 'primevue/message';
+import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 
 const btnCadastraMenu = ref(true)
@@ -19,7 +19,7 @@ const blnArquivo = ref(false)
 const blnPopUp = ref(false)
 const locais = ref([])
 const idMenuPai = ref(0)
-const txtFiltro = ref('') // sem campo na tela ainda 
+const txtFiltro = ref('') // sem campo na tela ainda
 
 // Campos de listagem de menus
 const menus = ref([])
@@ -34,7 +34,7 @@ const locais_load = [
   { valor: 2, descricao: 'Nav' },
   { valor: 3, descricao: 'Body' },
   { valor: 4, descricao: 'Footer' },
-  { valor: 5, descricao: 'Custom' },
+  { valor: 5, descricao: 'Custom' }
 ]
 
 // ---------------------  Funções gerais
@@ -71,44 +71,40 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menus, 10);
+const paginationMenus = usePagination(menus, 10)
 
 const {
   currentPage: currentPageMenu,
   paginatedItems: paginatedItemsMenu,
   nextPage: nextPageMenu,
   previousPage: previousPageMenu,
-  totalPages: totalPagesMenu,
-} = paginationMenus;
-
+  totalPages: totalPagesMenu
+} = paginationMenus
 
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
-  success.value = true;
+  success.value = true
   setTimeout(() => {
-    success.value = false;
-      }, 2000);
+    success.value = false
+  }, 2000)
 }
 
 function mensagemErro() {
-    error.value = true;
-    setTimeout(() => {
-      error.value = false;
-    }, 2000);
+  error.value = true
+  setTimeout(() => {
+    error.value = false
+  }, 2000)
 }
-    
-    
+
 // ------------------------- Metódos GET
 async function getMenusList() {
   const response = await getMenus()
-  menus.value = response.data.reverse();
+  menus.value = response.data.reverse()
 }
-
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
-  
-  try{
+  try {
     btnCadastraMenu.value = false
     const locaisSelecionados = locais.value.map((local) => parseInt(local))
     const menu = {
@@ -123,16 +119,14 @@ async function postGravarMenu() {
       idMenuPai: idMenuPai.value,
       txtFiltro: txtFiltro.value
     }
-    
+
     await postMenu(menu)
-    
+
     getMenusList()
     mensagemSucesso()
     limpar()
     btnCadastraMenu.value = true
-    
-
-  }catch(error){
+  } catch (error) {
     mensagemErro()
   }
 }
@@ -154,8 +148,12 @@ onMounted(() => {
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success">Menu salvo sucesso</Message>
-          <Message severity="error" :sticky="true" :life="2000" v-if="error">Erro ao cadastrar Menu</Message>
+          <Message severity="success" :sticky="true" :life="2000" v-if="success"
+            >Menu salvo sucesso</Message
+          >
+          <Message severity="error" :sticky="true" :life="2000" v-if="error"
+            >Erro ao cadastrar Menu</Message
+          >
         </div>
         <div class="grid gap text-sm grid-cols-1">
           <div class="lg:col-span-2">
@@ -198,15 +196,33 @@ onMounted(() => {
                 <label>Configurações</label>
                 <div class="grid grid-cols-4 gap-x-4 mt-2">
                   <div class="flex items-center col-span-1">
-                    <input v-model="blnAtivo" type="checkbox" name="ativo" id="ativo" class="mr-2" />
+                    <input
+                      v-model="blnAtivo"
+                      type="checkbox"
+                      name="ativo"
+                      id="ativo"
+                      class="mr-2"
+                    />
                     <label for="ativo">Ativo</label>
                   </div>
                   <div class="flex items-center col-span-1">
-                    <input v-model="blnArquivo" type="checkbox" name="arquivo" id="arquivo" class="mr-2" />
+                    <input
+                      v-model="blnArquivo"
+                      type="checkbox"
+                      name="arquivo"
+                      id="arquivo"
+                      class="mr-2"
+                    />
                     <label for="arquivo">Arquivo</label>
                   </div>
                   <div class="flex items-center col-span-1">
-                    <input v-model="blnPopUp" type="checkbox" name="popup" id="popup" class="mr-2" />
+                    <input
+                      v-model="blnPopUp"
+                      type="checkbox"
+                      name="popup"
+                      id="popup"
+                      class="mr-2"
+                    />
                     <label for="popup">Pop-Up</label>
                   </div>
                   <!-- <div class="flex items-center col-span-1">
@@ -218,7 +234,10 @@ onMounted(() => {
 
               <div class="md:col-span-5">
                 <label>É submenu de outro ítem?</label>
-                <select v-model="idMenuPai" class="h-10 border mt-1 rounded px-4 w-full bg-transparent">
+                <select
+                  v-model="idMenuPai"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
+                >
                   <option value="0">Selecione</option>
                   <option v-for="menu in menusSorted" :key="menu.idMenu" :value="menu.idMenu">
                     {{ menu.txtDescricao }}
@@ -229,8 +248,19 @@ onMounted(() => {
               <div class="md:col-span-5">
                 <label>Local do Menu</label>
                 <div class="grid grid-cols-5 gap-x-4 mt-2">
-                  <div v-for="item in locais_load" :key="item.valor" class="flex items-center col-span-1">
-                    <input v-model="locais" :value="item.valor" type="checkbox" name="menuLocal" :id="item.valor" class="mr-2" />
+                  <div
+                    v-for="item in locais_load"
+                    :key="item.valor"
+                    class="flex items-center col-span-1"
+                  >
+                    <input
+                      v-model="locais"
+                      :value="item.valor"
+                      type="checkbox"
+                      name="menuLocal"
+                      :id="item.valor"
+                      class="mr-2"
+                    />
                     <label :for="item.valor">{{ item.descricao }}</label>
                   </div>
                 </div>
@@ -250,13 +280,17 @@ onMounted(() => {
                       :class="{
                         'bg-blue-500 hover:bg-blue-700': btnCadastraMenu,
                         'bg-blue-700 cursor-not-allowed': !btnCadastraMenu
-                        }"
+                      }"
                       :disabled="!btnCadastraMenu"
                       class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                     >
                       <span v-if="btnCadastraMenu">Gravar</span>
                       <span v-else>
-                        <ProgressSpinner style="width: 20px; height: 20px;" strokeWidth="8" aria-label="Custom ProgressSpinner"/>
+                        <ProgressSpinner
+                          style="width: 20px; height: 20px"
+                          strokeWidth="8"
+                          aria-label="Custom ProgressSpinner"
+                        />
                       </span>
                     </button>
                   </div>
@@ -284,7 +318,11 @@ onMounted(() => {
           </tr>
         </thead>
         <tbody class="text-blue-gray-900">
-          <tr v-for="menu in paginatedItemsMenu" :key="menu.idMenu" class="border-b border-blue-gray-200">
+          <tr
+            v-for="menu in paginatedItemsMenu"
+            :key="menu.idMenu"
+            class="border-b border-blue-gray-200"
+          >
             <td class="py-3 px-4">{{ menu.txtDescricao }}</td>
             <td class="py-3 px-4">
               <a :href="menu.txtUrl" v-text="truncateUrl(menu.txtUrl, 30)"></a>
@@ -298,23 +336,30 @@ onMounted(() => {
             </td>
             <td class="py-3 px-4 flex">
               <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
-                <RiEdit2Line/>
+                <RiEdit2Line />
               </button>
               <!-- <button class="text-red-600">
                 <RiDeleteBin5Line />
               </button> -->
-
             </td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="flex items-center justify-center p-2">
-      <button @click="previousPageMenu" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageMenu === 1">
+      <button
+        @click="previousPageMenu"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+        :disabled="currentPageMenu === 1"
+      >
         <RiArrowLeftFill></RiArrowLeftFill>
       </button>
-            <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
-      <button @click="nextPageMenu" class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded" :disabled="currentPageMenu === totalPagesMenu">
+      <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
+      <button
+        @click="nextPageMenu"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+        :disabled="currentPageMenu === totalPagesMenu"
+      >
         <RiArrowRightFill></RiArrowRightFill>
       </button>
     </div>

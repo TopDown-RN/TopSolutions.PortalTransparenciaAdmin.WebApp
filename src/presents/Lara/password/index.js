@@ -4,19 +4,15 @@ export default {
       'inline-flex relative',
       {
         'opacity-60 select-none pointer-events-none cursor-default': props.disabled
-      }
+      },
+      { '[&>input]:pr-10': props.toggleMask }
     ]
   }),
   panel: {
     class: [
-      // Spacing
       'p-5',
-
-      // Shape
       'border-0 dark:border',
       'shadow-md rounded-md',
-
-      // Colors
       'bg-surface-0 dark:bg-surface-900',
       'text-surface-700 dark:text-white/80',
       'dark:border-surface-700'
@@ -24,52 +20,50 @@ export default {
   },
   meter: {
     class: [
-      // Position and Overflow
       'overflow-hidden',
       'relative',
-
-      // Shape and Size
       'border-0',
       'h-3',
-
-      // Spacing
       'mb-2',
-
-      // Colors
       'bg-surface-100 dark:bg-surface-700'
     ]
   },
-  meterlabel: ({ instance }) => ({
-    class: [
-      // Size
-      'h-full',
-
-      // Colors
-      {
-        'bg-red-500 dark:bg-red-400/50': instance?.meter?.strength == 'weak',
-        'bg-orange-500 dark:bg-orange-400/50': instance?.meter?.strength == 'medium',
-        'bg-green-500 dark:bg-green-400/50': instance?.meter?.strength == 'strong'
-      },
-
-      // Transitions
-      'transition-all duration-1000 ease-in-out'
-    ]
-  }),
+  meterlabel: ({ instance }) => {
+    var _a, _b, _c
+    return {
+      class: [
+        // Size
+        'h-full',
+        // Colors
+        {
+          'bg-red-500 dark:bg-red-400/50':
+            ((_a = instance == null ? void 0 : instance.meter) == null ? void 0 : _a.strength) ==
+            'weak',
+          'bg-orange-500 dark:bg-orange-400/50':
+            ((_b = instance == null ? void 0 : instance.meter) == null ? void 0 : _b.strength) ==
+            'medium',
+          'bg-green-500 dark:bg-green-400/50':
+            ((_c = instance == null ? void 0 : instance.meter) == null ? void 0 : _c.strength) ==
+            'strong'
+        },
+        // Transitions
+        'transition-all duration-1000 ease-in-out'
+      ]
+    }
+  },
   showicon: {
-    class: ['absolute top-1/2 right-3 -mt-2', 'text-surface-600 dark:text-white/70']
+    class: ['absolute top-1/2 right-3 -mt-2 z-10', 'text-surface-600 dark:text-white/70']
   },
   hideicon: {
-    class: ['absolute top-1/2 right-3 -mt-2', 'text-surface-600 dark:text-white/70']
+    class: ['absolute top-1/2 right-3 -mt-2 z-10', 'text-surface-600 dark:text-white/70']
   },
   input: {
     root: ({ props, context, parent }) => ({
       class: [
         // Font
         'font-sans leading-none',
-
         // Flex
         { 'flex-1 w-[1%]': parent.instance.$name == 'InputGroup' },
-
         // Spacing
         'm-0',
         {
@@ -78,7 +72,6 @@ export default {
           'p-3': props.size == null
         },
         'w-full',
-
         // Shape
         { 'rounded-md': parent.instance.$name !== 'InputGroup' },
         {
@@ -86,17 +79,14 @@ export default {
         },
         { 'border-0 border-y border-l last:border-r': parent.instance.$name == 'InputGroup' },
         { 'first:ml-0 -ml-px': parent.instance.$name == 'InputGroup' && !props.showButtons },
-
         // Colors
         'text-surface-600 dark:text-surface-200',
         'placeholder:text-surface-400 dark:placeholder:text-surface-500',
         'bg-surface-0 dark:bg-surface-900',
         'border',
         { 'border-surface-300 dark:border-surface-600': !parent.props.invalid },
-
         // Invalid State
         { 'border-red-500 dark:border-red-400': parent.props.invalid },
-
         // States
         {
           'hover:border-primary-500 dark:hover:border-primary-400':
@@ -105,7 +95,6 @@ export default {
             !context.disabled,
           'opacity-60 select-none pointer-events-none cursor-default': context.disabled
         },
-
         // Misc
         'appearance-none',
         'transition-colors duration-200'
