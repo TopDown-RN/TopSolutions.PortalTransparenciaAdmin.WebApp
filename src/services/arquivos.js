@@ -58,9 +58,10 @@ export function getArquivos() {
     .catch((error) => console.error(error))
 }
 
-export function getCategoriasAgrupadaAno(ano) {
+export function getCategoriasAgrupadaAno(ano, idmenu) {
+  console.log('ano e idmenu', ano, idmenu)
   return api
-    .get(`arquivo/listCategoriasAgrupadaPorAno?ano=${ano}`, {
+    .get(`arquivo/listCategoriasAgrupadaPorAno?ano=${ano}&idmenu=${idmenu}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -81,7 +82,7 @@ export function getCategorias() {
 }
 
 export function getAnoCategorias(categoria, ano) {
-  console.log('cat e ano', categoria, ano)
+  
   return api
     .get(`arquivo/LerAnoCategoriaAsync?idcategoria=${categoria}&ano=${ano}`, {
       headers: {

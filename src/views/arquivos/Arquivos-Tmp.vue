@@ -7,7 +7,7 @@ import {
   postCategoria,
   getArquivos,
   postAnoCategoria,
-  getAnoCategorias,
+  //getAnoCategorias,
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenus } from '@/services/menu'
@@ -36,10 +36,11 @@ const idArquivo = ref('') // para update
 
 // Lista de categorias
 const categorias_agrupada_por_ano = ref([])
-const categorias_filtradas_por_ano = ref([])
+//const categorias_filtradas_por_ano = ref([])
 
 //ativar ou desativar botão de dialogo
 const btnDialog = ref(false)
+const ddlCategorias = ref(false)
 
 // campos para cadastro de categoria
 const txtTituloCat = ref('')
@@ -94,7 +95,7 @@ function mostrarDialogo() {
 }
 
 function filtrarCategoriasPorAno(ano) {
-  getCategoriasAgrupadas(ano)
+  getCategoriasAgrupadas(ano, id_Menu.value)
   //const categorias = getCategoriasAgrupadas(ano)//categorias_agrupada_por_ano.value;//.filter((item) => item.ano == ano)
   //categorias_filtradas_por_ano.value = categorias_agrupada_por_ano.value
 
@@ -104,6 +105,7 @@ function filtrarCategoriasPorAno(ano) {
 function ativarDialog() {
   if (ano.value != '' && id_Menu.value != '') {
     btnDialog.value = true
+    ddlCategorias.value = true
   }
 }
 
@@ -261,7 +263,7 @@ async function getMenusList() {
 }
 
 async function getCategoriasAgrupadas(ano) {
-  const response = await getCategoriasAgrupadaAno(ano)
+  const response = await getCategoriasAgrupadaAno(ano, id_Menu.value)
   categorias_agrupada_por_ano.value = response.data
 }
 
@@ -349,7 +351,8 @@ onMounted(() => {
 
               <div class="md:col-span-3">
                 <label>Categoria</label>
-                <select
+                <select 
+                  v-bind:disabled="!ddlCategorias"
                   v-model="idCategoriaArquivos"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
