@@ -83,7 +83,7 @@ const {
 const anos = computed(() => {
   const anoAtual = new Date().getFullYear()
   const anos = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     anos.push(anoAtual - i)
   }
   return anos
@@ -94,8 +94,9 @@ function mostrarDialogo() {
 }
 
 function filtrarCategoriasPorAno(ano) {
-  const categorias = categorias_agrupada_por_ano.value.filter((item) => item.ano == ano)
-  categorias_filtradas_por_ano.value = categorias
+  getCategoriasAgrupadas(ano)
+  //const categorias = getCategoriasAgrupadas(ano)//categorias_agrupada_por_ano.value;//.filter((item) => item.ano == ano)
+  //categorias_filtradas_por_ano.value = categorias_agrupada_por_ano.value
 
   ativarDialog()
 }
@@ -158,9 +159,9 @@ async function downloadItem(_idarquivo, _nomearquivo) {
 async function postSaveArquivos() {
   erros.value = []
 
-  if (txtDescricao.value == '') {
-    erros.value.push('Informe a descrição do arquivo')
-  }
+  // if (txtDescricao.value == '') {
+  //   erros.value.push('Informe a descrição do arquivo')
+  // }
 
   if (id_Menu.value == '') {
     erros.value.push('Selecione um menu')
@@ -182,7 +183,7 @@ async function postSaveArquivos() {
     return
   }
 
-  const idAnoCAtPubArq = await getAnoCategorias(idCategoriaArquivos.value, ano.value)
+  //const idAnoCAtPubArq = await getAnoCategorias(idCategoriaArquivos.value, ano.value)
 
   try {
     btnCadastraArquivo.value = false
@@ -193,7 +194,9 @@ async function postSaveArquivos() {
       formData.append('Arquivo', file)
     })
     formData.append('idUsuario', 3)
-    formData.append('idAnoCatPubArquivo', idAnoCAtPubArq.data.idAnoCatPubArquivo)
+    formData.append('Ano', ano.value)
+    formData.append('idCategoria', idCategoriaArquivos.value)
+    //formData.append('idAnoCatPubArquivo', idAnoCAtPubArq.data.idAnoCatPubArquivo)
     formData.append('anoPub', ano.value)
     formData.append('idMenu', id_Menu.value)
     await postArquivos(formData)
@@ -257,8 +260,8 @@ async function getMenusList() {
   })
 }
 
-async function getCategoriasAgrupadas() {
-  const response = await getCategoriasAgrupadaAno()
+async function getCategoriasAgrupadas(ano) {
+  const response = await getCategoriasAgrupadaAno(ano)
   categorias_agrupada_por_ano.value = response.data
 }
 
@@ -276,7 +279,7 @@ async function getArquivosList() {
 
 onMounted(() => {
   getMenusList()
-  getCategoriasAgrupadas()
+  //getCategoriasAgrupadas()
   getArquivosList()
   getCategoriasList()
 })
@@ -313,10 +316,12 @@ onMounted(() => {
                   v-model.trim="txtDescricao"
                 />
               </div>
+              
               <div class="md:col-span-5">
-                <label>Menu</label>
-                <select
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                <label for="ddMenu"  class="block text-sm font-medium leading-6 text-gray-900">Menu</label>
+                <div>
+                <select name="ddMenu"
+                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 bg-transparent"
                   v-model="id_Menu"
                   @change="ativarDialog"
                 >
@@ -326,6 +331,7 @@ onMounted(() => {
                   </option>
                 </select>
               </div>
+              </div>
               <div class="md:col-span-1">
                 <label>Ano</label>
                 <select
@@ -334,6 +340,7 @@ onMounted(() => {
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
                   <option value="" disabled selected>Selecione</option>
+                  <option value="1900">Listagem Geral de Arquivos</option>
                   <option v-for="ano in anos" :key="ano" :value="ano">
                     {{ ano }}
                   </option>
@@ -349,8 +356,8 @@ onMounted(() => {
                   <option value="0" disabled selected>Selecione</option>
 
                   <optgroup
-                    v-for="dado in categorias_filtradas_por_ano"
-                    :label="dado.ano"
+                    v-for="dado in categorias_agrupada_por_ano"
+                    :label="dado.descricao"
                     :key="dado.ano"
                   >
                     <option
@@ -474,6 +481,32 @@ onMounted(() => {
                   </div>
                 </Dialog>
               </div>
+              <div class="md:col-span-5 mt-3 flex">
+                <div>
+                  <label
+                    for="inputarquivos"
+                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center"
+                  >
+                    <i class="pi pi-upload mr-2"></i>
+                    Selecionar arquivos
+                  </label>
+                  <input
+                    id="inputarquivos"
+                    hidden
+                    type="file"
+                    ref="fileInput"
+                    multiple
+                    @change="setarArquivos"
+                  />
+                </div>
+                <div class="ml-10">
+                  <ul class="flex flex-col items-start justify-center">
+                    <li v-for="file in files" :key="file.name" class="list-disc">
+                      {{ file.name }} <button @click="deletarArquivoDaLista(file.name)">X</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <button
@@ -503,32 +536,7 @@ onMounted(() => {
                 </div>
               </div>
 
-              <div class="md:col-span-5 mt-3 flex">
-                <div>
-                  <label
-                    for="inputarquivos"
-                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center"
-                  >
-                    <i class="pi pi-upload mr-2"></i>
-                    Selecionar arquivos
-                  </label>
-                  <input
-                    id="inputarquivos"
-                    hidden
-                    type="file"
-                    ref="fileInput"
-                    multiple
-                    @change="setarArquivos"
-                  />
-                </div>
-                <div class="ml-10">
-                  <ul class="flex flex-col items-start justify-center">
-                    <li v-for="file in files" :key="file.name" class="list-disc">
-                      {{ file.name }} <button @click="deletarArquivoDaLista(file.name)">X</button>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+             
             </div>
             <div>
               <ul>

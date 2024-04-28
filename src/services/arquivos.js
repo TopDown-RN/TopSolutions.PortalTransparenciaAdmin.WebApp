@@ -58,9 +58,9 @@ export function getArquivos() {
     .catch((error) => console.error(error))
 }
 
-export function getCategoriasAgrupadaAno() {
+export function getCategoriasAgrupadaAno(ano) {
   return api
-    .get(`arquivo/listCategoriasAgrupadaPorAno`, {
+    .get(`arquivo/listCategoriasAgrupadaPorAno?ano=${ano}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
