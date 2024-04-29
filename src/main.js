@@ -8,9 +8,10 @@ import 'primeicons/primeicons.css'
 import Lara from '@/presents/Lara'
 import VueTheMask from 'vue-the-mask'
 import Tooltip from 'primevue/tooltip'
+import ConfirmationService from 'primevue/confirmationservice'
 
 const app = createApp(App)
 
-app.use(router).use(PrimeVue, { unstyled: true, pt: Lara }).use(VueTheMask)
+app.use(router).use(PrimeVue, { unstyled: true, pt: Lara }).use(VueTheMask).use(ConfirmationService)
 app.directive('tooltip', Tooltip)
 app.mount('#app')

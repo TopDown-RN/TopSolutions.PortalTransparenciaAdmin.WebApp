@@ -11,11 +11,31 @@ import {
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenus } from '@/services/menu'
-import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
+import { RiEdit2Line, RiDeleteBin2Fill, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
+import ConfirmDialog from "primevue/confirmdialog";
+import {useConfirm} from "primevue/useconfirm";
+
+const confirm = useConfirm();
+
+ const handleRemoveThing = () => {
+     // bye
+ };
+
+// const onRemoveThing = () => {
+//     confirm.require({
+//         message: 'Are you sure you want to remove some thing?',
+//         header: 'Remove Thing',
+//         icon: 'icon-delete',
+//         rejectLabel: 'Cancel',
+//         acceptLabel: 'Remove',
+//         acceptClass: 'p-button-danger',
+//         accept: handleRemoveThing,
+//     });
+// };
 
 // Variáveis de uso geral
 const categorias = ref([])
@@ -117,6 +137,63 @@ function editar(arquivo) {
   ano.value = arquivo.anoPub
 }
 
+function excluir(arquivo) {
+  console.log(arquivo.idArquivo)
+    //  confirm.require({
+    //     message: 'Are you sure you want to remove some thing?',
+    //    header: 'Remove Thing',
+    //     icon: 'icon-delete',
+    //    rejectLabel: 'Cancel',
+    //      acceptLabel: 'Remove',
+    //     acceptClass: 'p-button-danger',
+    //     accept: handleRemoveThing,
+    // });
+  
+    confirm.require({
+        group: 'templating',
+        header: 'Confirmation',
+        message: 'Please confirm to proceed moving forward.',
+        icon: 'pi pi-exclamation-circle',
+        acceptIcon: 'pi pi-check',
+        rejectIcon: 'pi pi-times',
+        rejectClass: 'p-button-outlined p-button-sm',
+        acceptClass: 'p-button-sm',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Save',
+        accept: () => {
+           // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+        },
+        reject: () => {
+           // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+
+  // confirm.require({
+  //   header: "Really add 1",
+  //   message: "Are you sure?",
+  //   accept: () => {
+  //     //add();
+  //     //test.value.$el.focus();
+  //   }
+  // });
+
+  //
+  // const confirm = useConfirm();
+  //  // Use the confirm function to show a confirmation dialog
+  //  confirm({
+  //       title: 'Confirm Action',
+  //       message: 'Are you sure you want to perform this action?',
+  //       onConfirm: () => {
+  //         console.log('Confirmed!');
+  //         // Add your action to perform when confirmed
+  //       },
+  //       onCancel: () => {
+  //         console.log('Canceled!');
+  //         // Add your action to perform when canceled
+  //       }
+  //     });
+}
+
 const setarArquivos = (event) => {
   const novosArquivos = Array.from(event.target.files)
 
@@ -131,6 +208,16 @@ const setarArquivos = (event) => {
 
 function deletarArquivoDaLista(arquivo) {
   files.value = files.value.filter((item) => item.name !== arquivo)
+}
+
+
+function formatDate(dateTimeString) {
+  const date = new Date(dateTimeString);
+      
+      // Format the date as "dd/MM/yyyy"
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+  return formattedDate;;
 }
 
 // async function getBaixarArquivo(idArq){
@@ -287,6 +374,14 @@ onMounted(() => {
 })
 </script>
 <template>
+ <ConfirmDialog group="templating">
+        <template #message="slotProps">
+            <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
+                <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
+                <p>{{ slotProps.message.message }}</p>
+            </div>
+        </template>
+    </ConfirmDialog>
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
@@ -549,7 +644,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <table class="min-w-full bg-white shadow-md rounded-xl">
+        <table class="min-w-full bg-white shadow-md rounded-xl">
         <thead>
           <tr class="bg-blue-gray-100 text-gray-700">
             <th class="py-3 px-4 text-left">Ano</th>
@@ -575,14 +670,16 @@ onMounted(() => {
                 {{ arq.nomeArquivo }}
               </button>
             </td>
-            <td class="py-3 px-4">Sem este campo</td>
+            <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>
             <td class="py-3 px-4 flex">
               <button @click="editar(arq)" class="text-primary-700 pr-2" title="Editar">
                 <RiEdit2Line />
               </button>
-              <!-- <a href="#" class="text-red-600" title="Excluir">
-                <RiDeleteBin5Line />
-              </a> -->
+              
+              <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Editar">
+                <RiDeleteBin2Fill />
+              </button>
+             
             </td>
           </tr>
         </tbody>
