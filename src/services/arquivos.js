@@ -35,17 +35,28 @@ export function postCategoria(dados) {
     .catch((error) => console.error(error))
 }
 
-export function postAnoCategoria(dados) {
+export function deleteArquivo(id) {
   return api
-    .post('arquivo/adicionaranocategoriaasync', dados, {
+    .delete(`arquivo/DeletarCategoriaArquivoAsync?idArquivo=${id}`, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
+
+// export function postAnoCategoria(dados) {
+//   return api
+//     .post('arquivo/adicionaranocategoriaasync', dados, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${localStorage.getItem('token')}`
+//       }
+//     })
+//     .then((response) => response.data)
+//     .catch((error) => console.error(error))
+// }
 
 export function getArquivos() {
   return api
@@ -58,17 +69,17 @@ export function getArquivos() {
     .catch((error) => console.error(error))
 }
 
-export function getCategoriasAgrupadaAno(ano, idmenu) {
-  console.log('ano e idmenu', ano, idmenu)
-  return api
-    .get(`arquivo/listCategoriasAgrupadaPorAno?ano=${ano}&idmenu=${idmenu}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then((response) => response.data)
-    .catch((error) => console.error(error))
-}
+// export function getCategoriasAgrupadaAno(ano, idmenu) {
+//   console.log('ano e idmenu', ano, idmenu)
+//   return api
+//     .get(`arquivo/listCategoriasAgrupadaPorAno?ano=${ano}&idmenu=${idmenu}`, {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem('token')}`
+//       }
+//     })
+//     .then((response) => response.data)
+//     .catch((error) => console.error(error))
+// }
 
 export function getCategorias() {
   return api
@@ -81,16 +92,16 @@ export function getCategorias() {
     .catch((error) => console.error(error))
 }
 
-export function getAnoCategorias(categoria, ano) {
+// export function getAnoCategorias(categoria, ano) {
   
-  return api
-    .get(`arquivo/LerAnoCategoriaAsync?idcategoria=${categoria}&ano=${ano}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then((response) => response.data)
-    .catch((error) => console.error(error))
-}
+//   return api
+//     .get(`arquivo/LerAnoCategoriaAsync?idcategoria=${categoria}&ano=${ano}`, {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem('token')}`
+//       }
+//     })
+//     .then((response) => response.data)
+//     .catch((error) => console.error(error))
+// }
 
 export default api

@@ -1,12 +1,13 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import {
   postArquivos,
   getCategorias,
-  getCategoriasAgrupadaAno,
+  //getCategoriasAgrupadaAno,
   postCategoria,
   getArquivos,
-  postAnoCategoria,
+  deleteArquivo,
+  //postAnoCategoria,
   //getAnoCategorias,
   LerArquivoPorIdApi
 } from '@/services/arquivos'
@@ -44,25 +45,27 @@ const dialogoVisivel = ref(false)
 const btnCadastraCat = ref(true)
 const erros = ref([])
 const btnCadastraArquivo = ref(true)
+const arquivosListOriginal = ref([])
 
 // Campos para cadastro de Arquivo
 const txtDescricao = ref('')
 const id_Menu = ref('')
 const arquivos = ref([])
-const idCategoriaArquivos = ref(0)
+const idCategoriaArquivos = ref('')
 const files = ref([])
 const ano = ref('')
 const idArquivo = ref('') // para update
 
 // Lista de categorias
-const categorias_agrupada_por_ano = ref([])
+//const categorias_agrupada_por_ano = ref([])
 //const categorias_filtradas_por_ano = ref([])
 
 //ativar ou desativar botão de dialogo
 const btnDialog = ref(false)
-const ddlCategorias = ref(false)
+//const ddlCategorias = ref(false)
 
 // campos para cadastro de categoria
+const idCategoriaPubArquivoCat = ref(0)
 const txtTituloCat = ref('')
 const txtDescricaoCat = ref('')
 
@@ -114,18 +117,18 @@ function mostrarDialogo() {
   dialogoVisivel.value = true
 }
 
-function filtrarCategoriasPorAno(ano) {
-  getCategoriasAgrupadas(ano, id_Menu.value)
-  //const categorias = getCategoriasAgrupadas(ano)//categorias_agrupada_por_ano.value;//.filter((item) => item.ano == ano)
-  //categorias_filtradas_por_ano.value = categorias_agrupada_por_ano.value
+// function filtrarCategoriasPorAno(ano) {
+//   getCategoriasAgrupadas(ano, id_Menu.value)
+//   //const categorias = getCategoriasAgrupadas(ano)//categorias_agrupada_por_ano.value;//.filter((item) => item.ano == ano)
+//   //categorias_filtradas_por_ano.value = categorias_agrupada_por_ano.value
 
-  ativarDialog()
-}
+//   ativarDialog()
+// }
 
 function ativarDialog() {
   if (ano.value != '' && id_Menu.value != '') {
     btnDialog.value = true
-    ddlCategorias.value = true
+    //ddlCategorias.value = true
   }
 }
 
@@ -137,7 +140,7 @@ function editar(arquivo) {
   ano.value = arquivo.anoPub
 }
 
-function excluir(arquivo) {
+async function excluir(arquivo) {
   console.log(arquivo.idArquivo)
     //  confirm.require({
     //     message: 'Are you sure you want to remove some thing?',
@@ -160,8 +163,11 @@ function excluir(arquivo) {
         acceptClass: 'p-button-sm',
         rejectLabel: 'Cancel',
         acceptLabel: 'Save',
-        accept: () => {
+        accept: async () => {
            // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+           await deleteArquivo(arquivo.idArquivo)
+           await getArquivosList()
+           filtrarArquivos()
         },
         reject: () => {
            // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
@@ -217,7 +223,7 @@ function formatDate(dateTimeString) {
       // Format the date as "dd/MM/yyyy"
       const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-  return formattedDate;;
+  return formattedDate;
 }
 
 // async function getBaixarArquivo(idArq){
@@ -226,7 +232,7 @@ function formatDate(dateTimeString) {
 
 async function downloadItem(_idarquivo, _nomearquivo) {
   try {
-    console.log(_idarquivo)
+    //console.log(_idarquivo)
     const dados = await LerArquivoPorIdApi(_idarquivo)
     const blob = new Blob([dados.data], { type: dados.data.type })
     const url = URL.createObjectURL(blob)
@@ -264,7 +270,7 @@ async function postSaveArquivos() {
     erros.value.push('Selecione uma categoria')
   }
 
-  if (files.value.length == 0) {
+  if (files.value.length == 0 && idCategoriaArquivos.value == '') {
     erros.value.push('Selecione um arquivo')
   }
 
@@ -291,7 +297,9 @@ async function postSaveArquivos() {
     await postArquivos(formData)
     btnCadastraArquivo.value = true
     mensagemSucesso()
-    getArquivosList()
+    await getArquivosList()
+    filtrarArquivos()
+    files.value = []
   } catch (error) {
     mensagemErro()
     console.error('erro ao obter os arquivos:', error)
@@ -314,32 +322,35 @@ async function postCategoriaSave() {
       return
     }
 
-    btnCadastraCat.value = false
     const dados = {
+      idCategoriaPubArquivo: idCategoriaPubArquivoCat.value,
       txtTitulo: txtTituloCat.value,
-      txtDescricao: txtDescricaoCat.value,
-      ano: ano.value,
-      idMenu: id_Menu.value
+      txtDescricao: txtDescricaoCat.value
     }
 
+
+    console.log(dados)
+    
     const reponse = await postCategoria(dados)
+    
+    idCategoriaArquivos.value = reponse.data.idCategoriaPubArquivo
+    await getCategoriasList()
+    mensagemSucesso()
 
-    categorias.value.unshift(reponse.data)
-
-    btnCadastraCat.value = true
   } catch (error) {
+    mensagemErro()
     console.error('erro ao obter os arquivos:', error)
   }
 }
 
-async function postAnoCategoriaSave(idCategoria) {
-  const dados = {
-    idCategoria: idCategoria,
-    ano: ano.value
-  }
+// async function postAnoCategoriaSave(idCategoria) {
+//   const dados = {
+//     idCategoria: idCategoria,
+//     ano: ano.value
+//   }
 
-  await postAnoCategoria(dados)
-}
+//   await postAnoCategoria(dados)
+// }
 
 // ------------------- Requisições GET
 async function getMenusList() {
@@ -349,19 +360,45 @@ async function getMenusList() {
   })
 }
 
-async function getCategoriasAgrupadas(ano) {
-  const response = await getCategoriasAgrupadaAno(ano, id_Menu.value)
-  categorias_agrupada_por_ano.value = response.data
+// async function getCategoriasAgrupadas() {
+//   const response = await getCategoriasAgrupadaAno()
+//   categorias_agrupada_por_ano.value = response.data
+//   console.log(categorias_agrupada_por_ano.value)
+// }
+
+watch( ano, async () => {
+  filtrarArquivos()
+})
+
+watch( idCategoriaArquivos, async () => {
+  filtrarArquivos()
+})
+
+
+function filtrarArquivos(){
+  if(ano.value == '' && idCategoriaArquivos.value == ''){
+    arquivos.value = arquivosListOriginal.value
+  } else if(ano.value == '' && idCategoriaArquivos.value != ''){
+    arquivos.value = arquivosListOriginal.value.filter((item) => item.idCategoriaPubArquivo == idCategoriaArquivos.value)
+  } else if(ano.value != '' && idCategoriaArquivos.value == ''){
+    arquivos.value = arquivosListOriginal.value.filter((item) => item.anoPub == ano.value)
+  } else {
+    arquivos.value = arquivosListOriginal.value.filter((item) => (item.anoPub == ano.value && item.idCategoriaPubArquivo == idCategoriaArquivos.value))
+  }
+
 }
 
 async function getCategoriasList() {
   const response = await getCategorias()
   categorias.value = response.data
+  console.log('List de categorias:', categorias.value)
 }
 
 async function getArquivosList() {
   const response = await getArquivos()
   arquivos.value = response.data
+  arquivosListOriginal.value = response.data
+  //console.log('List de arquivos:', arquivos.value)
 }
 
 // ------------------- Ciclo de vida
@@ -433,11 +470,10 @@ onMounted(() => {
                 <label>Ano</label>
                 <select
                   v-model="ano"
-                  @change="filtrarCategoriasPorAno($event.target.value)"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
                   <option value="" disabled selected>Selecione</option>
-                  <option value="1900">Listagem Geral de Arquivos</option>
+                  <!-- <option value="1900">Listagem Geral de Arquivos</option> -->
                   <option v-for="ano in anos" :key="ano" :value="ano">
                     {{ ano }}
                   </option>
@@ -447,37 +483,25 @@ onMounted(() => {
               <div class="md:col-span-3">
                 <label>Categoria</label>
                 <select 
-                  v-bind:disabled="!ddlCategorias"
                   v-model="idCategoriaArquivos"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
-                  <option value="0" disabled selected>Selecione</option>
-
-                  <optgroup
-                    v-for="dado in categorias_agrupada_por_ano"
-                    :label="dado.descricao"
-                    :key="dado.ano"
+                  <option value="" disabled selected>Selecione</option>
+                  <option
+                    v-for="cat in categorias"
+                    class="p-2"
+                    :key="cat.idCategoriaPubArquivo"
+                    :value="cat.idCategoriaPubArquivo"
                   >
-                    <option
-                      v-for="cat in dado.categorias"
-                      class="p-2"
-                      :key="cat.idCategoriaPubArquivo"
-                      :value="cat.idCategoriaPubArquivo"
-                    >
-                      {{ cat.txtTitulo }}
-                    </option>
-                  </optgroup>
+                    {{ cat.txtTitulo }}
+                  </option>
+                  
                 </select>
               </div>
 
               <div class="flex flex-col items-start justify-end">
                 <button
-                  v-bind:disabled="!btnDialog"
-                  v-bind:class="{
-                    'bg-blue-500 hover:bg-blue-700': btnDialog,
-                    'bg-blue-300': !btnDialog
-                  }"
-                  class="text-white font-bold py-2 px-4 rounded"
+                  class="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700"
                   @click="mostrarDialogo"
                 >
                   Mais categorias
@@ -486,16 +510,21 @@ onMounted(() => {
                   Mais categorias
                 </button> -->
                 <Dialog
-                  :header="`Cadastrar Categoria para ${ano}`"
+                  header="Cadastrar Categoria"
                   v-model:visible="dialogoVisivel"
                   modal
                   :style="{ width: '50vw' }"
                   :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
                 >
                   <div class="flex items-center justify-center">
-                    <h1>Cadastrar categoria para {{ ano }}</h1>
+                    <h1>Cadastrar categoria para</h1>
                   </div>
-
+                  <Message severity="success" :sticky="true" :life="2000" v-if="success"
+                    >Categirua cadastrada sucesso</Message
+                  >
+                  <Message severity="error" :sticky="true" :life="2000" v-if="error"
+                    >Erro ao cadastrar categoria</Message
+                  >
                   <div>
                     <input
                       v-model.trim="txtTituloCat"
@@ -511,17 +540,16 @@ onMounted(() => {
                     />
                     <div class="flex items-center justify-end">
                       <button
-                        v-if="btnCadastraCat"
                         class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32"
                         @click="postCategoriaSave"
                       >
                         Cadastrar
                       </button>
                       <button
-                        v-else
-                        class="bg-gray-600 text-white mb-4 font-bold py-2 px-4 rounded h-10 w-32 flex items-center justify-center"
+                        class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32 ml-1"
+                        @click="idCategoriaPubArquivoCat = 0, txtTituloCat = '', txtDescricaoCat = ''"
                       >
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                        Limpar
                       </button>
                     </div>
                   </div>
@@ -548,12 +576,9 @@ onMounted(() => {
                       >
                         <td class="py-3 px-4">{{ cat.txtTitulo }}</td>
                         <td class="py-3 px-4 flex">
-                          <button @click="postAnoCategoriaSave(cat.idCategoriaPubArquivo)">
-                            <i class="pi pi-plus"></i>
+                          <button @click="idCategoriaPubArquivoCat=cat.idCategoriaPubArquivo, txtDescricaoCat=cat.txtDescricao, txtTituloCat=cat.txtTitulo" class="text-primary-700 pr-2">
+                            <RiEdit2Line />
                           </button>
-                          <!-- <a href="#" class="text-red-600" title="Excluir">
-                          <RiDeleteBin5Line />
-                        </a> -->
                         </td>
                       </tr>
                     </tbody>
@@ -626,7 +651,7 @@ onMounted(() => {
                     </span>
                   </button>
                   <button
-                    @click="limpar"
+                    @click="txtDescricao='', id_Menu='', idCategoriaArquivos='', ano='', files=[], getArquivosList()"
                     class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                   >
                     Limpar
