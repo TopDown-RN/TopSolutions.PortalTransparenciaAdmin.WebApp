@@ -13,3 +13,10 @@ export function getMenus() {
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
+
+export function getMenusArquivo(){
+  return api
+    .get('menu/ListarMenusArquivoAsync')
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}

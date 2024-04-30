@@ -11,7 +11,7 @@ import {
   //getAnoCategorias,
   LerArquivoPorIdApi
 } from '@/services/arquivos'
-import { getMenus } from '@/services/menu'
+import { getMenusArquivo } from '@/services/menu'
 import { RiEdit2Line, RiDeleteBin2Fill, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
@@ -22,9 +22,9 @@ import {useConfirm} from "primevue/useconfirm";
 
 const confirm = useConfirm();
 
- const handleRemoveThing = () => {
-     // bye
- };
+//  const handleRemoveThing = () => {
+//      // bye
+//  };
 
 // const onRemoveThing = () => {
 //     confirm.require({
@@ -42,7 +42,7 @@ const confirm = useConfirm();
 const categorias = ref([])
 const menus = ref([])
 const dialogoVisivel = ref(false)
-const btnCadastraCat = ref(true)
+//const btnCadastraCat = ref(true)
 const erros = ref([])
 const btnCadastraArquivo = ref(true)
 const arquivosListOriginal = ref([])
@@ -132,25 +132,19 @@ function ativarDialog() {
   }
 }
 
-function editar(arquivo) {
+async function editar(arquivo) {
   idArquivo.value = arquivo.idArquivo
-  txtDescricao.value = arquivo.descCategoria
+  txtDescricao.value = arquivo.descArquivo
   id_Menu.value = arquivo.idMenu
   idCategoriaArquivos.value = arquivo.idCategoriaPubArquivo
   ano.value = arquivo.anoPub
+
+  const response = await LerArquivoPorIdApi(arquivo.idArquivo)
+  console.log(response.data)
 }
 
 async function excluir(arquivo) {
   console.log(arquivo.idArquivo)
-    //  confirm.require({
-    //     message: 'Are you sure you want to remove some thing?',
-    //    header: 'Remove Thing',
-    //     icon: 'icon-delete',
-    //    rejectLabel: 'Cancel',
-    //      acceptLabel: 'Remove',
-    //     acceptClass: 'p-button-danger',
-    //     accept: handleRemoveThing,
-    // });
   
     confirm.require({
         group: 'templating',
@@ -173,31 +167,6 @@ async function excluir(arquivo) {
            // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         }
     });
-
-  // confirm.require({
-  //   header: "Really add 1",
-  //   message: "Are you sure?",
-  //   accept: () => {
-  //     //add();
-  //     //test.value.$el.focus();
-  //   }
-  // });
-
-  //
-  // const confirm = useConfirm();
-  //  // Use the confirm function to show a confirmation dialog
-  //  confirm({
-  //       title: 'Confirm Action',
-  //       message: 'Are you sure you want to perform this action?',
-  //       onConfirm: () => {
-  //         console.log('Confirmed!');
-  //         // Add your action to perform when confirmed
-  //       },
-  //       onCancel: () => {
-  //         console.log('Canceled!');
-  //         // Add your action to perform when canceled
-  //       }
-  //     });
 }
 
 const setarArquivos = (event) => {
@@ -225,10 +194,6 @@ function formatDate(dateTimeString) {
 
   return formattedDate;
 }
-
-// async function getBaixarArquivo(idArq){
-//   const response = await LerArquivoPorIdApi(idArq)
-// }
 
 async function downloadItem(_idarquivo, _nomearquivo) {
   try {
@@ -343,28 +308,15 @@ async function postCategoriaSave() {
   }
 }
 
-// async function postAnoCategoriaSave(idCategoria) {
-//   const dados = {
-//     idCategoria: idCategoria,
-//     ano: ano.value
-//   }
-
-//   await postAnoCategoria(dados)
-// }
 
 // ------------------- Requisições GET
 async function getMenusList() {
-  const response = await getMenus()
+  const response = await getMenusArquivo()
   menus.value = response.data.slice().sort((a, b) => {
     return a.txtDescricao.localeCompare(b.txtDescricao)
   })
 }
 
-// async function getCategoriasAgrupadas() {
-//   const response = await getCategoriasAgrupadaAno()
-//   categorias_agrupada_por_ano.value = response.data
-//   console.log(categorias_agrupada_por_ano.value)
-// }
 
 watch( ano, async () => {
   filtrarArquivos()
@@ -391,21 +343,18 @@ function filtrarArquivos(){
 async function getCategoriasList() {
   const response = await getCategorias()
   categorias.value = response.data
-  console.log('List de categorias:', categorias.value)
 }
 
 async function getArquivosList() {
   const response = await getArquivos()
   arquivos.value = response.data
   arquivosListOriginal.value = response.data
-  //console.log('List de arquivos:', arquivos.value)
 }
 
 // ------------------- Ciclo de vida
 
 onMounted(() => {
   getMenusList()
-  //getCategoriasAgrupadas()
   getArquivosList()
   getCategoriasList()
 })
