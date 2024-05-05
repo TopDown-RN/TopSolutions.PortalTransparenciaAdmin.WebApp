@@ -30,7 +30,7 @@ jobs:
         run: echo ${{secrets.DOCKERHUB_PWD}} | docker login -u ${{secrets.DOCKERHUB_USER}} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag gitmaster/transparencia-web:latest
+        run: docker build . --file Dockerfile --tag gitmaster/transparencia-adminweb:latest
 
       - name: Push to Docker Hub
         run: docker push gitmaster/transparencia-adminweb:latest
