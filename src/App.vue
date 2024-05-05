@@ -12,7 +12,7 @@ function fnisAuthenticated() {
   return token !== null
 }
 //console.log(fnisAuthenticated())
-//console.log(route.path != '/')
+
 </script>
 
 <template>

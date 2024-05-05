@@ -13,10 +13,17 @@ const api = axios.create({
 // Axios response interceptor
 api.interceptors.response.use(
   (response) => {
+   // console.log("PASSA")
     return response
   },
   (error) => {
-    if (error.response && error.response.status === 404) {
+    if (error.response && error.response.status === 401)  {
+      const token = localStorage.getItem('token')
+      if (token != '') localStorage.removeItem('token')
+      window.location.href = "./"
+      //console.log(error.response)
+      //router.push({ path: '/' }) // Assuming you have Vue Router set up
+    } else if (error.response && error.response.status === 404) {
       // Handle specific error codes
       console.log('Page not found')
       // Redirect to home page
@@ -26,8 +33,8 @@ api.interceptors.response.use(
       console.log('Network error')
       // Redirect to home page
       router.push({ path: '/' }) // Assuming you have Vue Router set up
-    }
-    return Promise.reject(error)
+    } 
+    return Promise.reject(error.status)
   }
 )
 
