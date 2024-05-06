@@ -1,10 +1,19 @@
 import axios from 'axios'
 import router from '@/router'
 
+function getBaseUrl() {
+  if (import.meta.env.DEV) {
+    return 'https://localhost:7011'
+  }
+
+  return window.location.hostname ===
+    'top-solutions-portal-transparencia-admin-web-app-develop.vercel.app'
+    ? 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin'
+    : `http://api.${window.location.hostname}`
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.DEV
-    ? 'https://localhost:7011'
-    : 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json'
   }
@@ -13,14 +22,14 @@ const api = axios.create({
 // Axios response interceptor
 api.interceptors.response.use(
   (response) => {
-   // console.log("PASSA")
+    // console.log("PASSA")
     return response
   },
   (error) => {
-    if (error.response && error.response.status === 401)  {
+    if (error.response && error.response.status === 401) {
       const token = localStorage.getItem('token')
       if (token != '') localStorage.removeItem('token')
-      window.location.href = "./"
+      window.location.href = './'
       //console.log(error.response)
       //router.push({ path: '/' }) // Assuming you have Vue Router set up
     } else if (error.response && error.response.status === 404) {
@@ -33,7 +42,7 @@ api.interceptors.response.use(
       console.log('Network error')
       // Redirect to home page
       router.push({ path: '/' }) // Assuming you have Vue Router set up
-    } 
+    }
     return Promise.reject(error.status)
   }
 )

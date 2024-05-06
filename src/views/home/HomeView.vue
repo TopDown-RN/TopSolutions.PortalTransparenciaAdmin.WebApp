@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { getRegistroImportacao } from '@/services/home'
-import { RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
-import usePagination from '@/utils/pagination'
 import ProgressSpinner from 'primevue/progressspinner'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
 const registros = ref([])
 const loading = ref(true)
@@ -17,27 +17,19 @@ async function getRegistros() {
   }
 }
 
-// ------------------- Paginação
-const paginationRegistros = usePagination(registros, 10)
-
-const {
-  currentPage: currentPage,
-  paginatedItems: paginatedItems,
-  nextPage: nextPage,
-  previousPage: previousPage,
-  totalPages: totalPages
-} = paginationRegistros
-
-function formatarData(data) {
+function formatData(data) {
   const dataObj = new Date(data)
-  const dia = String(dataObj.getDate()).padStart(2, '0')
-  const mes = String(dataObj.getMonth() + 1).padStart(2, '0')
-  const ano = dataObj.getFullYear()
-  const hora = String(dataObj.getHours()).padStart(2, '0')
-  const minutos = String(dataObj.getMinutes()).padStart(2, '0')
-  const segundos = String(dataObj.getSeconds()).padStart(2, '0')
 
-  return `${dia}/${mes}/${ano} ${hora}:${minutos}:${segundos}`
+  const options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  }
+
+  return dataObj.toLocaleDateString('pt-BR', options)
 }
 
 watch(registros, () => {
@@ -53,44 +45,16 @@ onMounted(() => {
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
-  <div v-if="!loading">
-    <table class="min-w-full bg-white shadow-md rounded-xl">
-      <thead>
-        <tr class="bg-blue-gray-100 text-gray-700">
-          <th class="py-3 px-4 text-left">Consulta</th>
-          <th class="py-3 px-4 text-left">Última atualização em</th>
-          <th class="py-3 px-4 text-left">Atualizado por</th>
-        </tr>
-      </thead>
-      <tbody class="text-blue-gray-900">
-        <tr
-          v-for="registro in paginatedItems"
-          :key="registro.idRegistroImportacao"
-          class="border-b border-blue-gray-200"
-        >
-          <td class="py-3 px-4">{{ registro.txtDestinoImportacao }}</td>
-          <td class="py-3 px-4">{{ formatarData(registro.dtImportacao) }}</td>
-          <td class="py-3 px-4">{{ registro.txtNomeUsuario }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="flex items-center justify-center p-2">
-      <button
-        @click="previousPage"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPage === 1"
-      >
-        <RiArrowLeftFill></RiArrowLeftFill>
-      </button>
-      <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-      <button
-        @click="nextPage"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPage === totalPages"
-      >
-        <RiArrowRightFill></RiArrowRightFill>
-      </button>
-    </div>
+  <div class="relative overflow-x-auto border rounded-lg" v-if="!loading">
+    <DataTable :value="registros" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]">
+      <Column field="txtDestinoImportacao" header="Consulta"></Column>
+      <Column field="dtImportacao" header="Última atualização em">
+        <template #body="slotProps">
+          {{ formatData(slotProps.data.dtImportacao) }}
+        </template>
+      </Column>
+      <Column field="txtNomeUsuario" header="Atualizado por"></Column>
+    </DataTable>
   </div>
 </template>
 

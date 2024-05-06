@@ -93,7 +93,7 @@ export function getCategorias() {
 }
 
 // export function getAnoCategorias(categoria, ano) {
-  
+
 //   return api
 //     .get(`arquivo/LerAnoCategoriaAsync?idcategoria=${categoria}&ano=${ano}`, {
 //       headers: {

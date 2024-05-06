@@ -14,7 +14,7 @@ export function getMenus() {
     .catch((error) => console.error(error))
 }
 
-export function getMenusArquivo(){
+export function getMenusArquivo() {
   return api
     .get('menu/ListarMenusArquivoAsync')
     .then((response) => response.data)

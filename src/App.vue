@@ -12,7 +12,6 @@ function fnisAuthenticated() {
   return token !== null
 }
 //console.log(fnisAuthenticated())
-
 </script>
 
 <template>
