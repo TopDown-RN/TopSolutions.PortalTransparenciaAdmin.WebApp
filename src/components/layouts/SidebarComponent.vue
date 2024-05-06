@@ -45,7 +45,7 @@ const menusConfig = ref([
 <template>
   <div
     class="bg-gradient-to-br from-primary-900 text-white to-primary-900 w-[300px] space-y-6 px-2 py-4 absolute inset-y-0 left-0 md:relative md:translate-x-0 transform -translate-x-full transition duration-200 ease-in-out"
-    :class="{ 'relative -translate-x-0': props.dataShowSidebar }"
+    :class="{ 'relative translate-x-0': props.dataShowSidebar }"
   >
     <a class="flex items-center justify-center space-x-2 px-4">
       <span class="text-lg font-medium">Portal da Transparência</span>

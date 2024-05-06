@@ -47,7 +47,7 @@ onMounted(() => {
   </div>
   <div class="relative overflow-x-auto border rounded-lg" v-if="!loading">
     <DataTable :value="registros" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]">
-      <Column field="txtDestinoImportacao" header="Consulta"></Column>
+      <Column field="txtDestinoImportacao" header="Consulta" />
       <Column field="dtImportacao" header="Última atualização em">
         <template #body="slotProps">
           {{ formatData(slotProps.data.dtImportacao) }}
