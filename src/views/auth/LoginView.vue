@@ -1,7 +1,7 @@
 <script setup>
-import { Autenticar } from '@/services/autenticacao'
-import { onMounted, ref, watch } from 'vue'
-import router from '@/router'
+import { login } from '@/services/auth/autenticacao.js'
+import { addToken } from '@/services/auth/authToken'
+import { ref } from 'vue'
 import { RiLoginBoxLine } from '@remixicon/vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
@@ -18,14 +18,9 @@ async function postAutenticar() {
   try {
     error.value = false
     btnAcessar.value = false
-    const response = await Autenticar(txtCpfCnpjEmail.value, txtPass.value)
+    const response = await login(txtCpfCnpjEmail.value, txtPass.value)
     tokenData.value = response.data
-
-    const token = localStorage.getItem('token')
-    if (token != '') localStorage.removeItem('token')
-
-    localStorage.setItem('token', tokenData.value.token)
-    router.push('/home')
+    addToken(tokenData.value.token)
     window.location.reload()
     btnAcessar.value = true
   } catch (e) {
@@ -34,21 +29,6 @@ async function postAutenticar() {
     console.error('erro ao obter os arquivos:', e)
   }
 }
-
-function fnisAuthenticated() {
-  const token = localStorage.getItem('token')
-  return token !== null
-}
-
-watch(tokenData, () => {
-  //loading.value = false
-})
-
-onMounted(() => {
-  //localStorage.removeItem('token');
-  //fetchArp()
-  if (fnisAuthenticated()) router.push('/home')
-})
 </script>
 
 <template>

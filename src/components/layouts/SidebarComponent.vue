@@ -1,8 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { getDadosAdmin } from '@/services/dadosAdmin'
 
 const props = defineProps(['dataShowSidebar'])
+const logo = ref('')
+const extensaoLogo = ref('')
 
 const menuActive = ref()
 const menusPrincipal = ref([
@@ -10,7 +13,7 @@ const menusPrincipal = ref([
     id: 1,
     nome: 'Dashboard',
     icon: 'pi pi-home',
-    rota: '/home'
+    rota: '/'
   },
   {
     id: 2,
@@ -40,6 +43,21 @@ const menusConfig = ref([
     rota: '/usuarios'
   }
 ])
+
+async function getLogo() {
+  try {
+    const response = await getDadosAdmin()
+    console.log(response.data)
+    logo.value = response.data.imgLogo
+    extensaoLogo.value = response.data.txtLogoExtensao
+  } catch (e) {
+    console.error('Não foi possível obter dados da api: ', e)
+  }
+}
+
+onMounted(() => {
+  //getLogo()
+})
 </script>
 
 <template>
@@ -54,9 +72,10 @@ const menusConfig = ref([
       <div class="flex justify-center p-5">
         <div class="flex flex-col justify-center items-center">
           <img
-            src="https://pbs.twimg.com/profile_images/638352739236491264/xYuKDYAY_400x400.jpg"
+            :src="'data:image/' + extensaoLogo + ';base64,' + logo"
             class="p-1 w-24 h-24 rounded-full ring-2 ring-gray-300 mb-4"
-            alt="Avatar"
+            alt="Base64 Image"
+            width="100px"
           />
           <h5 class="text-lg font-medium leading-tight mb-2">Prefeitura de Currais Novos</h5>
           <span class="text-xs text-gray-300"> Painel Administrativo </span>
