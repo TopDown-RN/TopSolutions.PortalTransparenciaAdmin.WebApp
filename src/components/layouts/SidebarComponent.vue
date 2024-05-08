@@ -56,7 +56,7 @@ async function getLogo() {
 }
 
 onMounted(() => {
-  //getLogo()
+  getLogo()
 })
 </script>
 
