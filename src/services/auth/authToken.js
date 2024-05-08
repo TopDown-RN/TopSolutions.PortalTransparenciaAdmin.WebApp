@@ -8,5 +8,5 @@ export function removeToken() {
 
 export function getToken() {
   const token = localStorage.getItem('token')
-  return token !== null
+  return token
 }
