@@ -2,7 +2,9 @@ name: Main - TopSolutions Portal Transparencia Admin - Web
 
 on:
   workflow_dispatch:
-
+  pull_request:
+    types: [closed]
+    
 jobs:
   Docker:
     runs-on: ubuntu-latest
