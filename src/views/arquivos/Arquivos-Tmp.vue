@@ -9,6 +9,7 @@ import {
   deleteArquivo,
   //postAnoCategoria,
   //getAnoCategorias,
+  deleteCategoria,
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
@@ -119,6 +120,46 @@ const anos = computed(() => {
 function mostrarDialogo() {
   dialogoVisivel.value = true
 }
+
+
+const msgDeleteCat = ref({})
+
+async function excluirCategoria(idCategoria) {
+  console.log('idCategoria', idCategoria)
+  const response = await deleteCategoria(idCategoria)
+  
+  
+  const status = response.metadata.statusCode
+  
+  if (status == 200) {
+
+    msgDeleteCat.value.msg = response.data
+    msgDeleteCat.value.severity = 'success'
+    msgDeleteCat.value.sticky = true
+    setTimeout(() => {
+      msgDeleteCat.value.sticky = false
+    }, 5000);
+
+  } else {
+    
+    msgDeleteCat.value.msg = response.data
+    msgDeleteCat.value.severity = 'error'
+    msgDeleteCat.value.sticky = true
+    setTimeout(() => {
+      msgDeleteCat.value.sticky = false
+    }, 5000);
+
+  }
+  
+  console.log('msgDeleteCat', msgDeleteCat.value)
+
+  getCategoriasList()
+}
+
+{/* <Message severity="error" :sticky="true" :life="2000" v-if="error"
+                    >Erro ao cadastrar categoria</Message
+                  > */}
+
 
 function truncateFileName(fileName, maxLength) {
     if (fileName.length > maxLength) {
@@ -331,7 +372,6 @@ async function getMenusList() {
   })
 }
 
-
 watch( ano, async () => {
   filtrarArquivos()
 })
@@ -359,6 +399,7 @@ function filtrarArquivos() {
     }
     return true;
   });
+  currentPage.value = 1;
 }
 
 
@@ -493,11 +534,16 @@ onMounted(() => {
                     <h1>Cadastrar categoria para</h1>
                   </div>
                   <Message severity="success" :sticky="true" :life="2000" v-if="success"
-                    >Categirua cadastrada sucesso</Message
+                    >Categoria cadastrada sucesso</Message
                   >
                   <Message severity="error" :sticky="true" :life="2000" v-if="error"
                     >Erro ao cadastrar categoria</Message
                   >
+
+                  <Message :severity="msgDeleteCat.severity" :sticky="msgDeleteCat.sticky" :life="2000" v-if="msgDeleteCat.sticky"
+                    >{{msgDeleteCat.msg}}</Message
+                  >
+                  
                   <div>
                     <input
                       v-model.trim="txtTituloCat"
@@ -552,6 +598,9 @@ onMounted(() => {
                           <button @click="idCategoriaPubArquivoCat=cat.idCategoriaPubArquivo, txtDescricaoCat=cat.txtDescricao, txtTituloCat=cat.txtTitulo" class="text-primary-700 pr-2">
                             <RiEdit2Line />
                           </button>
+                          <button @click="excluirCategoria(cat.idCategoriaPubArquivo)" class="text-primary-700 pr-2" title="Excluir">
+                            <RiDeleteBin2Fill />
+                        </button>
                         </td>
                       </tr>
                     </tbody>
@@ -681,7 +730,7 @@ onMounted(() => {
                   <RiEdit2Line />
                 </button>
                 
-                <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Editar">
+                <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Excluir">
                   <RiDeleteBin2Fill />
                 </button>
               
