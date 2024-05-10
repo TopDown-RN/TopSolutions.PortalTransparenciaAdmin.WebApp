@@ -41,11 +41,11 @@ const locais_load = [
 ]
 
 // ---------------------  Funções gerais
-const menusSorted = computed(() => {
-  return menus.value.slice().sort((a, b) => {
-    return a.txtDescricao.localeCompare(b.txtDescricao)
-  })
-})
+// const menusSorted = computed(() => {
+//   return menus.value.slice().sort((a, b) => {
+//     return a.txtDescricao.localeCompare(b.txtDescricao)
+//   })
+// })
 
 function limpar() {
   idArquivo.value = 0
@@ -74,7 +74,7 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menusSorted, 10)
+const paginationMenus = usePagination(menus, 10)
 
 const {
   currentPage: currentPageMenu,
@@ -103,32 +103,17 @@ function mensagemErro() {
 async function getMenusList() {
   loading.value = true
   const response = await getMenus()
-  menus.value = response.data.reverse()
+  menus.value = response.data
+  //console.log(menus.value)
   loading.value = false
 }
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
 
-  // if (!txtDescricao.value) {
-  //   erros.value.push('Nome do menu é obrigatório')
-  // }
-
-  // if (!txtDescricaoGeral.value) {
-  //   erros.value.push('Descrição do menu é obrigatório')
-  // }
-
-  // if (!txtUrl.value) {
-  //   erros.value.push('Url do menu é obrigatório')
-  // }
-
-  // if (!locais.value.length) {
-  //   erros.value.push('Local do menu é obrigatório')
-  // }
-
-  // if (erros.value.length) {
-  //   return
-  // }
+  if (!validaCampos()) {
+    return
+  }
 
   try {
     btnCadastraMenu.value = false
@@ -146,8 +131,6 @@ async function postGravarMenu() {
       txtFiltro: txtFiltro.value
     }
 
-    console.log('menu', menu)
-
     await postMenu(menu)
 
     getMenusList()
@@ -157,6 +140,34 @@ async function postGravarMenu() {
   } catch (error) {
     mensagemErro()
   }
+}
+
+
+// Validação de campos
+
+function validaCampos() {
+  erros.value = []
+  if (!txtDescricao.value) {
+    erros.value.push('Nome do menu é obrigatório')
+  }
+
+  if (!txtDescricaoGeral.value) {
+    erros.value.push('Descrição do menu é obrigatório')
+  }
+
+  // if (!txtUrl.value) {
+  //   erros.value.push('Url do menu é obrigatório')
+  // }
+
+  if (!locais.value.length) {
+    erros.value.push('Informe ao menos um local para o menu')
+  }
+
+  if (erros.value.length) {
+    return false
+  }
+
+  return true
 }
 
 onMounted(() => {
@@ -267,7 +278,7 @@ onMounted(() => {
                   class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
                 >
                   <option value="0">Selecione</option>
-                  <option v-for="menu in menusSorted" :key="menu.idMenu" :value="menu.idMenu">
+                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
                     {{ menu.txtDescricao }}
                   </option>
                 </select>
@@ -331,11 +342,24 @@ onMounted(() => {
                     </button>
                   </div>
                 </div>
+                
               </div>
+              
+              <div md:col-span-5 text-right>
+                <ul>
+                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
+                </ul>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
+
+      <!-- <div class="border bg-white rounded p-2 px-3 mt-6 mb-2">
+        <input type="text" placeholder="Buscar Menu" class="outline-0 w-full h-full" >
+      </div> -->
+
       <div v-if="loading" class="my-4 text-center">
         <ProgressSpinner/>
       </div>
@@ -346,6 +370,7 @@ onMounted(() => {
             <th class="py-3 px-4 text-left">Menu</th>
             <th class="py-3 px-4 text-left">URL</th>
             <th class="py-3 px-4 text-left">Local</th>
+            <th class="py-3 px-4 text-left">Ativo</th>
             <th class="py-3 px-4 text-left">Ações</th>
           </tr>
         </thead>
@@ -365,6 +390,10 @@ onMounted(() => {
                     {{ locais_load.find((item) => item.valor === local).descricao }}
                     <template v-if="index !== menu.locais.length - 1"> </template>
                   </span>
+                </td>
+                <td class="py-3 px-4">
+                  <span v-if="menu.blnAtivo">Sim</span>
+                  <span v-else>Não</span>
                 </td>
                 <td class="py-3 px-4 flex">
                   <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">

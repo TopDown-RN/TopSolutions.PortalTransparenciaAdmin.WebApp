@@ -6,6 +6,7 @@ import { getDadosAdmin } from '@/services/dadosAdmin'
 const props = defineProps(['dataShowSidebar'])
 const logo = ref('')
 const extensaoLogo = ref('')
+const txtCliente = ref('')
 
 const menuActive = ref()
 const menusPrincipal = ref([
@@ -47,9 +48,9 @@ const menusConfig = ref([
 async function getLogo() {
   try {
     const response = await getDadosAdmin()
-    console.log(response.data)
     logo.value = response.data.imgLogo
     extensaoLogo.value = response.data.txtLogoExtensao
+    txtCliente.value = response.data.txtCliente
   } catch (e) {
     console.error('Não foi possível obter dados da api: ', e)
   }
@@ -77,7 +78,7 @@ onMounted(() => {
             alt="Base64 Image"
             width="100px"
           />
-          <h5 class="text-lg font-medium leading-tight mb-2">Prefeitura de Currais Novos</h5>
+          <h5 class="text-lg font-medium leading-tight mb-2">{{ txtCliente }}</h5>
           <span class="text-xs text-gray-300"> Painel Administrativo </span>
         </div>
       </div>

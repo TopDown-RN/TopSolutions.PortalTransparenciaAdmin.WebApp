@@ -30,6 +30,9 @@ const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
 
+const srcImgLogo = ref('')
+const srcImgCapa = ref('')
+
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
   success.value = true
@@ -97,9 +100,24 @@ async function pegarDadosAdmin() {
     facebook.value = response.data.txtFacebook
     instagram.value = response.data.txtInstagram
     x.value = response.data.txtX
+
+    srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
+    srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
+
+
   } catch (error) {
     console.log(error)
   }
+}
+
+function logoPrevio(event){
+  const file = event.target.files[0];
+  srcImgLogo.value = URL.createObjectURL(file);
+}
+
+function capaPrevio(event){
+  const file = event.target.files[0];
+  srcImgCapa.value = URL.createObjectURL(file);
 }
 
 async function atualizarDadosAdmin() {
@@ -127,10 +145,14 @@ async function atualizarDadosAdmin() {
 
     const response = await postDadosAdmin(formData)
 
-    console.log(response)
-
     btnAtualizar.value = true
+    
     mensagemSucesso()
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 2000)
+
   } catch (error) {
     btnAtualizar.value = true
     mensagemErro()
@@ -142,9 +164,7 @@ onMounted(() => {
   pegarDadosAdmin()
 })
 
-// watch(orgao, (newValue, oldValue) => {
-//   console.log('Orgão foi modificado de', oldValue, 'para', newValue)
-// })
+
 </script>
 
 <template>
@@ -170,7 +190,7 @@ onMounted(() => {
         </div>
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
-            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
+            <!-- <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
               <div>
                 <label for="inputImagemPerfil">Logo do Município</label>
                 <div
@@ -206,7 +226,7 @@ onMounted(() => {
                   />
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <p class="font-medium text-lg pt-10">Redes Sociais</p>
 
@@ -269,6 +289,46 @@ onMounted(() => {
           </div>
 
           <div class="lg:col-span-2">
+            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
+              <div>
+                <label for="inputImagemPerfil">Logo do Município</label>
+                <div
+                  class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative"
+                >
+                  <input
+                    type="file"
+                    id="inputImagemLogo"
+                    accept="image/*"
+                    @change="logoPrevio"
+                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <img
+                    :src="srcImgLogo"
+                    alt="Base64 Image"
+                    width="100px"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="inputImagemCapa">Foto de Capa</label>
+                <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
+                  <input
+                    type="file"
+                    id="inputImagemCapa"
+                    accept="image/*"
+                    @change="capaPrevio"
+                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <img
+                    :src="srcImgCapa"
+                    alt="Base64 Image"
+                    width="100px"
+                  />
+                </div>
+              </div>
+            </div>
+            
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>
