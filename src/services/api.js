@@ -9,7 +9,7 @@ function getBaseUrl() {
   return window.location.hostname ===
     'top-solutions-portal-transparencia-admin-web-app-develop.vercel.app'
     ? 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin'
-    : `https://api.${window.location.hostname}`
+    : `https://api${window.location.hostname}`
 }
 
 const api = axios.create({
