@@ -1,6 +1,6 @@
-import api from './api'
+import api from '../api.js'
 
-export function Autenticar(_usuario, _senha) {
+export function login(_usuario, _senha) {
   return api
     .post('autenticacao/usuario', {
       txtCpfCnpjEmail: _usuario,
@@ -15,6 +15,5 @@ export function verifyToken(_token) {
     .post('usuario/verifyToken', { token: _token })
     .then((response) => response.data)
     .catch((error) => console.error(error))
-  //const token = localStorage.getItem('token');
 }
 export default api

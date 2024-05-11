@@ -1,8 +1,9 @@
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
-    component: () => import('@/views/auth/LoginView.vue')
+    component: () => import('@/views/auth/LoginView.vue'),
+    meta: { requiresGuest: true }
   },
   {
     path: '/logout',

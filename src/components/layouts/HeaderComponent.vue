@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Avatar from 'primevue/avatar'
 import Menu from 'primevue/menu'
+import { removeToken } from '@/services/auth/authToken'
 
 const props = defineProps(['toggleSidebar'])
 
@@ -31,8 +32,8 @@ function toggle(event) {
 }
 
 function logout() {
-  localStorage.removeItem('token')
-  window.location.href = '/'
+  removeToken()
+  window.location.reload()
 }
 </script>
 

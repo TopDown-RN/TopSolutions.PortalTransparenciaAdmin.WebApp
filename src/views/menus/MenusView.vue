@@ -8,6 +8,7 @@ import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 
 const btnCadastraMenu = ref(true)
+const erros = ref([])
 
 // Campos de cadastrp de arquivo
 const idArquivo = ref(0)
@@ -28,6 +29,8 @@ const menus = ref([])
 const success = ref(false)
 const error = ref(false)
 
+const loading = ref(true)
+
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
   { valor: 1, descricao: 'Header' },
@@ -38,11 +41,11 @@ const locais_load = [
 ]
 
 // ---------------------  Funções gerais
-const menusSorted = computed(() => {
-  return menus.value.slice().sort((a, b) => {
-    return a.txtDescricao.localeCompare(b.txtDescricao)
-  })
-})
+// const menusSorted = computed(() => {
+//   return menus.value.slice().sort((a, b) => {
+//     return a.txtDescricao.localeCompare(b.txtDescricao)
+//   })
+// })
 
 function limpar() {
   idArquivo.value = 0
@@ -71,7 +74,7 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menusSorted, 10)
+const paginationMenus = usePagination(menus, 10)
 
 const {
   currentPage: currentPageMenu,
@@ -98,12 +101,20 @@ function mensagemErro() {
 
 // ------------------------- Metódos GET
 async function getMenusList() {
+  loading.value = true
   const response = await getMenus()
-  menus.value = response.data.reverse()
+  menus.value = response.data
+  //console.log(menus.value)
+  loading.value = false
 }
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
+
+  if (!validaCampos()) {
+    return
+  }
+
   try {
     btnCadastraMenu.value = false
     const locaisSelecionados = locais.value.map((local) => parseInt(local))
@@ -131,6 +142,34 @@ async function postGravarMenu() {
   }
 }
 
+
+// Validação de campos
+
+function validaCampos() {
+  erros.value = []
+  if (!txtDescricao.value) {
+    erros.value.push('Nome do menu é obrigatório')
+  }
+
+  if (!txtDescricaoGeral.value) {
+    erros.value.push('Descrição do menu é obrigatório')
+  }
+
+  // if (!txtUrl.value) {
+  //   erros.value.push('Url do menu é obrigatório')
+  // }
+
+  if (!locais.value.length) {
+    erros.value.push('Informe ao menos um local para o menu')
+  }
+
+  if (erros.value.length) {
+    return false
+  }
+
+  return true
+}
+
 onMounted(() => {
   getMenusList()
 })
@@ -149,7 +188,7 @@ onMounted(() => {
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Menu salvo sucesso</Message
+            >Menu salvo com sucesso</Message
           >
           <Message severity="error" :sticky="true" :life="2000" v-if="error"
             >Erro ao cadastrar Menu</Message
@@ -239,7 +278,7 @@ onMounted(() => {
                   class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
                 >
                   <option value="0">Selecione</option>
-                  <option v-for="menu in menusSorted" :key="menu.idMenu" :value="menu.idMenu">
+                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
                     {{ menu.txtDescricao }}
                   </option>
                 </select>
@@ -303,17 +342,35 @@ onMounted(() => {
                     </button>
                   </div>
                 </div>
+                
               </div>
+              
+              <div md:col-span-5 text-right>
+                <ul>
+                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
+                </ul>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
-      <table class="min-w-full bg-white shadow-md rounded-xl">
+
+      <!-- <div class="border bg-white rounded p-2 px-3 mt-6 mb-2">
+        <input type="text" placeholder="Buscar Menu" class="outline-0 w-full h-full" >
+      </div> -->
+
+      <div v-if="loading" class="my-4 text-center">
+        <ProgressSpinner/>
+      </div>
+      <div v-if="!loading">
+        <table class="min-w-full bg-white shadow-md rounded-xl">
         <thead>
           <tr class="bg-blue-gray-100 text-gray-700">
             <th class="py-3 px-4 text-left">Menu</th>
             <th class="py-3 px-4 text-left">URL</th>
             <th class="py-3 px-4 text-left">Local</th>
+            <th class="py-3 px-4 text-left">Ativo</th>
             <th class="py-3 px-4 text-left">Ações</th>
           </tr>
         </thead>
@@ -328,41 +385,48 @@ onMounted(() => {
               <a :href="menu.txtUrl" v-text="truncateUrl(menu.txtUrl, 30)"></a>
             </td>
 
-            <td class="py-3 px-4">
-              <span v-for="(local, index) in menu.locais" :key="index">
-                {{ locais_load.find((item) => item.valor === local).descricao }}
-                <template v-if="index !== menu.locais.length - 1"> </template>
-              </span>
-            </td>
-            <td class="py-3 px-4 flex">
-              <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
-                <RiEdit2Line />
-              </button>
-              <!-- <button class="text-red-600">
-                <RiDeleteBin5Line />
-              </button> -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <td class="py-3 px-4">
+                  <span v-for="(local, index) in menu.locais" :key="index">
+                    {{ locais_load.find((item) => item.valor === local).descricao }}
+                    <template v-if="index !== menu.locais.length - 1"> </template>
+                  </span>
+                </td>
+                <td class="py-3 px-4">
+                  <span v-if="menu.blnAtivo">Sim</span>
+                  <span v-else>Não</span>
+                </td>
+                <td class="py-3 px-4 flex">
+                  <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
+                    <RiEdit2Line />
+                  </button>
+                  <!-- <button class="text-red-600">
+                    <RiDeleteBin5Line />
+                  </button> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="flex items-center justify-center p-2">
+          <button
+            @click="previousPageMenu"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            :disabled="currentPageMenu === 1"
+          >
+            <RiArrowLeftFill></RiArrowLeftFill>
+          </button>
+          <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
+          <button
+            @click="nextPageMenu"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            :disabled="currentPageMenu === totalPagesMenu"
+          >
+            <RiArrowRightFill></RiArrowRightFill>
+          </button>
+        </div>
+      </div>
+      
     </div>
-    <div class="flex items-center justify-center p-2">
-      <button
-        @click="previousPageMenu"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPageMenu === 1"
-      >
-        <RiArrowLeftFill></RiArrowLeftFill>
-      </button>
-      <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
-      <button
-        @click="nextPageMenu"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPageMenu === totalPagesMenu"
-      >
-        <RiArrowRightFill></RiArrowRightFill>
-      </button>
-    </div>
+    
   </div>
 </template>
 

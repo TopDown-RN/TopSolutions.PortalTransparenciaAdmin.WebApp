@@ -9,6 +9,7 @@ import {
   deleteArquivo,
   //postAnoCategoria,
   //getAnoCategorias,
+  deleteCategoria,
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
@@ -17,10 +18,11 @@ import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
+import ConfirmDialog from "primevue/confirmdialog";
+import {useConfirm} from "primevue/useconfirm";
 
-const confirm = useConfirm()
+
+const confirm = useConfirm();
 
 //  const handleRemoveThing = () => {
 //      // bye
@@ -37,6 +39,8 @@ const confirm = useConfirm()
 //         accept: handleRemoveThing,
 //     });
 // };
+
+const loading = ref(true)
 
 // Variáveis de uso geral
 const categorias = ref([])
@@ -117,6 +121,57 @@ function mostrarDialogo() {
   dialogoVisivel.value = true
 }
 
+
+const msgDeleteCat = ref({})
+
+async function excluirCategoria(idCategoria) {
+  console.log('idCategoria', idCategoria)
+  const response = await deleteCategoria(idCategoria)
+  
+  
+  const status = response.metadata.statusCode
+  
+  if (status == 200) {
+
+    msgDeleteCat.value.msg = response.data
+    msgDeleteCat.value.severity = 'success'
+    msgDeleteCat.value.sticky = true
+    setTimeout(() => {
+      msgDeleteCat.value.sticky = false
+    }, 5000);
+
+  } else {
+    
+    msgDeleteCat.value.msg = response.data
+    msgDeleteCat.value.severity = 'error'
+    msgDeleteCat.value.sticky = true
+    setTimeout(() => {
+      msgDeleteCat.value.sticky = false
+    }, 5000);
+
+  }
+  
+  console.log('msgDeleteCat', msgDeleteCat.value)
+
+  getCategoriasList()
+}
+
+{/* <Message severity="error" :sticky="true" :life="2000" v-if="error"
+                    >Erro ao cadastrar categoria</Message
+                  > */}
+
+
+function truncateFileName(fileName, maxLength) {
+    if (fileName.length > maxLength) {
+      const firstHalfLength = Math.ceil(maxLength / 2);
+      const secondHalfLength = Math.floor(maxLength / 2);
+      const firstHalf = fileName.slice(0, firstHalfLength);
+      const secondHalf = fileName.slice(-secondHalfLength);
+      return `${firstHalf} ... ${secondHalf}`;
+    }
+    return fileName;
+  }
+
 // function filtrarCategoriasPorAno(ano) {
 //   getCategoriasAgrupadas(ano, id_Menu.value)
 //   //const categorias = getCategoriasAgrupadas(ano)//categorias_agrupada_por_ano.value;//.filter((item) => item.ano == ano)
@@ -145,28 +200,28 @@ async function editar(arquivo) {
 
 async function excluir(arquivo) {
   console.log(arquivo.idArquivo)
-
-  confirm.require({
-    group: 'templating',
-    header: 'Confirmation',
-    message: 'Please confirm to proceed moving forward.',
-    icon: 'pi pi-exclamation-circle',
-    acceptIcon: 'pi pi-check',
-    rejectIcon: 'pi pi-times',
-    rejectClass: 'p-button-outlined p-button-sm',
-    acceptClass: 'p-button-sm',
-    rejectLabel: 'Cancel',
-    acceptLabel: 'Save',
-    accept: async () => {
-      // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
-      await deleteArquivo(arquivo.idArquivo)
-      await getArquivosList()
-      filtrarArquivos()
-    },
-    reject: () => {
-      // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-    }
-  })
+  
+    confirm.require({
+        group: 'templating',
+        header: 'Confirmation',
+        message: 'Please confirm to proceed moving forward.',
+        icon: 'pi pi-exclamation-circle',
+        acceptIcon: 'pi pi-check',
+        rejectIcon: 'pi pi-times',
+        rejectClass: 'p-button-outlined p-button-sm',
+        acceptClass: 'p-button-sm',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Save',
+        accept: async () => {
+           // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+           await deleteArquivo(arquivo.idArquivo)
+           await getArquivosList()
+           filtrarArquivos()
+        },
+        reject: () => {
+           // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
 }
 
 const setarArquivos = (event) => {
@@ -185,13 +240,14 @@ function deletarArquivoDaLista(arquivo) {
   files.value = files.value.filter((item) => item.name !== arquivo)
 }
 
+
 function formatDate(dateTimeString) {
-  const date = new Date(dateTimeString)
+  const date = new Date(dateTimeString);
+      
+      // Format the date as "dd/MM/yyyy"
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-  // Format the date as "dd/MM/yyyy"
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-
-  return formattedDate
+  return formattedDate;
 }
 
 async function downloadItem(_idarquivo, _nomearquivo) {
@@ -292,18 +348,21 @@ async function postCategoriaSave() {
       txtDescricao: txtDescricaoCat.value
     }
 
+
     console.log(dados)
-
+    
     const reponse = await postCategoria(dados)
-
+    
     idCategoriaArquivos.value = reponse.data.idCategoriaPubArquivo
     await getCategoriasList()
     mensagemSucesso()
+
   } catch (error) {
     mensagemErro()
     console.error('erro ao obter os arquivos:', error)
   }
 }
+
 
 // ------------------- Requisições GET
 async function getMenusList() {
@@ -313,29 +372,36 @@ async function getMenusList() {
   })
 }
 
-watch(ano, async () => {
+watch( ano, async () => {
   filtrarArquivos()
 })
 
-watch(idCategoriaArquivos, async () => {
+watch( idCategoriaArquivos, async () => {
+  filtrarArquivos()
+})
+
+watch(id_Menu, async () => {
   filtrarArquivos()
 })
 
 function filtrarArquivos() {
-  if (ano.value == '' && idCategoriaArquivos.value == '') {
-    arquivos.value = arquivosListOriginal.value
-  } else if (ano.value == '' && idCategoriaArquivos.value != '') {
-    arquivos.value = arquivosListOriginal.value.filter(
-      (item) => item.idCategoriaPubArquivo == idCategoriaArquivos.value
-    )
-  } else if (ano.value != '' && idCategoriaArquivos.value == '') {
-    arquivos.value = arquivosListOriginal.value.filter((item) => item.anoPub == ano.value)
-  } else {
-    arquivos.value = arquivosListOriginal.value.filter(
-      (item) => item.anoPub == ano.value && item.idCategoriaPubArquivo == idCategoriaArquivos.value
-    )
-  }
+  const filtros = {
+    anoPub: ano.value,
+    idCategoriaPubArquivo: idCategoriaArquivos.value,
+    idMenu: id_Menu.value,
+  };
+
+  arquivos.value = arquivosListOriginal.value.filter(item => {
+    for (const key in filtros) {
+      if (filtros[key] !== '' && item[key] !== filtros[key]) {
+        return false;
+      }
+    }
+    return true;
+  });
+  currentPage.value = 1;
 }
+
 
 async function getCategoriasList() {
   const response = await getCategorias()
@@ -343,9 +409,11 @@ async function getCategoriasList() {
 }
 
 async function getArquivosList() {
+  loading.value = true
   const response = await getArquivos()
   arquivos.value = response.data
   arquivosListOriginal.value = response.data
+  loading.value = false
 }
 
 // ------------------- Ciclo de vida
@@ -357,14 +425,14 @@ onMounted(() => {
 })
 </script>
 <template>
-  <ConfirmDialog group="templating">
-    <template #message="slotProps">
-      <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
-        <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
-        <p>{{ slotProps.message.message }}</p>
-      </div>
-    </template>
-  </ConfirmDialog>
+ <ConfirmDialog group="templating">
+        <template #message="slotProps">
+            <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
+                <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
+                <p>{{ slotProps.message.message }}</p>
+            </div>
+        </template>
+    </ConfirmDialog>
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
@@ -377,7 +445,7 @@ onMounted(() => {
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Arquivo salvo sucesso</Message
+            >Arquivo salvo com sucesso</Message
           >
           <Message severity="error" :sticky="true" :life="2000" v-if="error"
             >Erro ao salvar arquivo</Message
@@ -396,24 +464,21 @@ onMounted(() => {
                   v-model.trim="txtDescricao"
                 />
               </div>
-
+              
               <div class="md:col-span-5">
-                <label for="ddMenu" class="block text-sm font-medium leading-6 text-gray-900"
-                  >Menu</label
-                >
+                <label for="ddMenu"  class="block text-sm font-medium leading-6 text-gray-900">Menu</label>
                 <div>
-                  <select
-                    name="ddMenu"
-                    class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 bg-transparent"
-                    v-model="id_Menu"
-                    @change="ativarDialog"
-                  >
-                    <option value="" disabled selected>Selecione</option>
-                    <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
-                      {{ menu.txtDescricao }}
-                    </option>
-                  </select>
-                </div>
+                <select name="ddMenu"
+                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 bg-transparent"
+                  v-model="id_Menu"
+                  @change="ativarDialog"
+                >
+                  <option value="" disabled selected>Selecione</option>
+                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
+                    {{ menu.txtDescricao }}
+                  </option>
+                </select>
+              </div>
               </div>
               <div class="md:col-span-1">
                 <label>Ano</label>
@@ -431,7 +496,7 @@ onMounted(() => {
 
               <div class="md:col-span-3">
                 <label>Categoria</label>
-                <select
+                <select 
                   v-model="idCategoriaArquivos"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
@@ -444,6 +509,7 @@ onMounted(() => {
                   >
                     {{ cat.txtTitulo }}
                   </option>
+                  
                 </select>
               </div>
 
@@ -468,11 +534,16 @@ onMounted(() => {
                     <h1>Cadastrar categoria para</h1>
                   </div>
                   <Message severity="success" :sticky="true" :life="2000" v-if="success"
-                    >Categirua cadastrada sucesso</Message
+                    >Categoria cadastrada sucesso</Message
                   >
                   <Message severity="error" :sticky="true" :life="2000" v-if="error"
                     >Erro ao cadastrar categoria</Message
                   >
+
+                  <Message :severity="msgDeleteCat.severity" :sticky="msgDeleteCat.sticky" :life="2000" v-if="msgDeleteCat.sticky"
+                    >{{msgDeleteCat.msg}}</Message
+                  >
+                  
                   <div>
                     <input
                       v-model.trim="txtTituloCat"
@@ -495,11 +566,7 @@ onMounted(() => {
                       </button>
                       <button
                         class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32 ml-1"
-                        @click="
-                          (idCategoriaPubArquivoCat = 0),
-                            (txtTituloCat = ''),
-                            (txtDescricaoCat = '')
-                        "
+                        @click="idCategoriaPubArquivoCat = 0, txtTituloCat = '', txtDescricaoCat = ''"
                       >
                         Limpar
                       </button>
@@ -512,7 +579,7 @@ onMounted(() => {
                       </li>
                     </ul>
                   </div>
-
+                  
                   <table class="min-w-full bg-white shadow-lg rounded-xl">
                     <thead>
                       <tr class="bg-blue-gray-100 text-gray-700">
@@ -528,16 +595,12 @@ onMounted(() => {
                       >
                         <td class="py-3 px-4">{{ cat.txtTitulo }}</td>
                         <td class="py-3 px-4 flex">
-                          <button
-                            @click="
-                              (idCategoriaPubArquivoCat = cat.idCategoriaPubArquivo),
-                                (txtDescricaoCat = cat.txtDescricao),
-                                (txtTituloCat = cat.txtTitulo)
-                            "
-                            class="text-primary-700 pr-2"
-                          >
+                          <button @click="idCategoriaPubArquivoCat=cat.idCategoriaPubArquivo, txtDescricaoCat=cat.txtDescricao, txtTituloCat=cat.txtTitulo" class="text-primary-700 pr-2">
                             <RiEdit2Line />
                           </button>
+                          <button @click="excluirCategoria(cat.idCategoriaPubArquivo)" class="text-primary-700 pr-2" title="Excluir">
+                            <RiDeleteBin2Fill />
+                        </button>
                         </td>
                       </tr>
                     </tbody>
@@ -610,20 +673,15 @@ onMounted(() => {
                     </span>
                   </button>
                   <button
-                    @click="
-                      (txtDescricao = ''),
-                        (id_Menu = ''),
-                        (idCategoriaArquivos = ''),
-                        (ano = ''),
-                        (files = []),
-                        getArquivosList()
-                    "
+                    @click="txtDescricao='', id_Menu='', idCategoriaArquivos='', ano='', files=[], getArquivosList()"
                     class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                   >
                     Limpar
                   </button>
                 </div>
               </div>
+
+             
             </div>
             <div>
               <ul>
@@ -633,65 +691,82 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <table class="min-w-full bg-white shadow-md rounded-xl">
-        <thead>
-          <tr class="bg-blue-gray-100 text-gray-700">
-            <th class="py-3 px-4 text-left">Ano</th>
-            <th class="py-3 px-4 text-left">Categoria</th>
-            <th class="py-3 px-4 text-left">Arquivo</th>
-            <th class="py-3 px-4 text-left">Publicado em</th>
-            <th class="py-3 px-4 text-left">Ações</th>
-          </tr>
-        </thead>
-        <tbody class="text-blue-gray-900">
-          <tr
-            v-for="arq in paginatedItems"
-            :key="arq.idArquivo"
-            class="border-b border-blue-gray-200"
-          >
-            <td class="py-3 px-4">{{ arq.anoPub }}</td>
-            <td class="py-3 px-4">{{ arq.descCategoria }}</td>
-            <td class="py-3 px-4">
-              <button
-                @click="downloadItem(arq.idArquivo, arq.nomeArquivo)"
-                class="text-primary-700"
-              >
-                {{ arq.nomeArquivo }}
-              </button>
-            </td>
-            <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>
-            <td class="py-3 px-4 flex">
-              <button @click="editar(arq)" class="text-primary-700 pr-2" title="Editar">
-                <RiEdit2Line />
-              </button>
-
-              <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Editar">
-                <RiDeleteBin2Fill />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="flex items-center justify-center p-2">
-        <button
-          @click="previousPage"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-          :disabled="currentPage === 1"
-        >
-          <RiArrowLeftFill></RiArrowLeftFill>
-        </button>
-        <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button
-          @click="nextPage"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-          :disabled="currentPage === totalPages"
-        >
-          <RiArrowRightFill></RiArrowRightFill>
-        </button>
+      <div v-if="loading" class="my-4 text-center">
+        <ProgressSpinner />
       </div>
+      <div v-if="!loading">
+          <table class="min-w-full bg-white shadow-md rounded-xl">
+          <thead>
+            <tr class="bg-blue-gray-100 text-gray-700">
+              <th class="py-3 px-4 text-left">Ano</th>
+              <th class="py-3 px-4 text-left">Categoria</th>
+              <th class="py-3 px-4 text-left">Menu</th>
+              <th class="py-3 px-4 text-left">Arquivo</th>
+              <th class="py-3 px-4 text-left">Publicado em</th>
+              <th class="py-3 px-4 text-left">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="text-blue-gray-900">
+            <tr
+              v-for="arq in paginatedItems"
+              :key="arq.idArquivo"
+              class="border-b border-blue-gray-200"
+            >
+              <td class="py-3 px-4">{{ arq.anoPub }}</td>
+              <td class="py-3 px-4">{{ arq.descCategoria }}</td>
+              <td class="py-3 px-4">{{ arq.descMenu }}</td>
+              <td class="py-3 px-4">
+                <button
+                  @click="downloadItem(arq.idArquivo, arq.nomeArquivo)"
+                  class="text-primary-700"
+                >
+                <!-- {{ arq.nomeArquivo.length > 20 ? arq.nomeArquivo.slice(0, 100) + '...' : arq.nomeArquivo }} -->
+                {{ truncateFileName(arq.nomeArquivo, 50) }}
+                </button>
+              </td>
+              <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>
+              <td class="py-3 px-4 flex">
+                <button @click="editar(arq)" class="text-primary-700 pr-2" title="Editar">
+                  <RiEdit2Line />
+                </button>
+                
+                <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Excluir">
+                  <RiDeleteBin2Fill />
+                </button>
+              
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex items-center justify-center p-2">
+          <button
+            @click="previousPage"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            :disabled="currentPage === 1"
+          >
+            <RiArrowLeftFill></RiArrowLeftFill>
+          </button>
+          <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
+          <button
+            @click="nextPage"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            :disabled="currentPage === totalPages"
+          >
+            <RiArrowRightFill></RiArrowRightFill>
+          </button>
+        </div>
+      </div>
+        
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.truncate-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 400px; /* Defina o tamanho máximo que deseja exibir */
+}
+</style>
