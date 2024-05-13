@@ -5,12 +5,19 @@ import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ProgressSpinner from 'primevue/progressspinner'
-import router from '@/router/index.js'
 import InputText from 'primevue/inputtext'
 import { FilterMatchMode } from 'primevue/api'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+import { useStore } from 'vuex'
 
 const loading = ref(true)
 const result = ref()
+
+const store = useStore()
+const toast = useToast()
+
+const toastMessage = ref('')
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -29,12 +36,9 @@ async function fetchUsuario() {
   }
 }
 
-function editUsuario(event) {
-  router.push({
-    name: 'usuario-editar',
-    params: { id: event.data.idUsuario }
-  })
-}
+watch(toastMessage, (newToast) => {
+  toast.add({ severity: 'success', summary: 'Sucesso!', detail: newToast, life: 3000 })
+})
 
 watch(result, () => {
   loading.value = false
@@ -42,10 +46,12 @@ watch(result, () => {
 
 onMounted(() => {
   fetchUsuario()
+  toastMessage.value = store.state.toastMessage
 })
 </script>
 
 <template>
+  <Toast />
   <div class="flex md:justify-end m-2">
     <Button
       type="button"
