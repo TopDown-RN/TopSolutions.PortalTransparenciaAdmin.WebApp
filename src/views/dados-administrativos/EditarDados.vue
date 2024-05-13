@@ -103,21 +103,19 @@ async function pegarDadosAdmin() {
 
     srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
     srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
-
-
   } catch (error) {
     console.log(error)
   }
 }
 
-function logoPrevio(event){
-  const file = event.target.files[0];
-  srcImgLogo.value = URL.createObjectURL(file);
+function logoPrevio(event) {
+  const file = event.target.files[0]
+  srcImgLogo.value = URL.createObjectURL(file)
 }
 
-function capaPrevio(event){
-  const file = event.target.files[0];
-  srcImgCapa.value = URL.createObjectURL(file);
+function capaPrevio(event) {
+  const file = event.target.files[0]
+  srcImgCapa.value = URL.createObjectURL(file)
 }
 
 async function atualizarDadosAdmin() {
@@ -146,13 +144,12 @@ async function atualizarDadosAdmin() {
     const response = await postDadosAdmin(formData)
 
     btnAtualizar.value = true
-    
+
     mensagemSucesso()
 
     setTimeout(() => {
       window.location.reload()
     }, 2000)
-
   } catch (error) {
     btnAtualizar.value = true
     mensagemErro()
@@ -163,8 +160,6 @@ async function atualizarDadosAdmin() {
 onMounted(() => {
   pegarDadosAdmin()
 })
-
-
 </script>
 
 <template>
@@ -302,11 +297,7 @@ onMounted(() => {
                     @change="logoPrevio"
                     class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <img
-                    :src="srcImgLogo"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
+                  <img :src="srcImgLogo" alt="Base64 Image" width="100px" />
                 </div>
               </div>
 
@@ -320,15 +311,11 @@ onMounted(() => {
                     @change="capaPrevio"
                     class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <img
-                    :src="srcImgCapa"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
+                  <img :src="srcImgCapa" alt="Base64 Image" width="100px" />
                 </div>
               </div>
             </div>
-            
+
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>

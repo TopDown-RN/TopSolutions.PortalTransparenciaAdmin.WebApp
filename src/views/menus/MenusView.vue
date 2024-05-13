@@ -1,11 +1,15 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
-import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
 import { truncateUrl } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import { FilterMatchMode } from 'primevue/api'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -39,6 +43,10 @@ const locais_load = [
   { valor: 4, descricao: 'Footer' },
   { valor: 5, descricao: 'Custom' }
 ]
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+})
 
 // ---------------------  Funções gerais
 // const menusSorted = computed(() => {
@@ -110,7 +118,6 @@ async function getMenusList() {
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
-
   if (!validaCampos()) {
     return
   }
@@ -141,7 +148,6 @@ async function postGravarMenu() {
     mensagemErro()
   }
 }
-
 
 // Validação de campos
 
@@ -176,7 +182,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl text-center">
+  <div id="gridMenu" class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.
@@ -185,7 +191,7 @@ onMounted(() => {
   </div>
   <div class="container max-w-screen-base mx-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Menu salvo com sucesso</Message
@@ -317,8 +323,8 @@ onMounted(() => {
                     <button
                       @click="btnCadastraMenu ? postGravarMenu() : null"
                       :class="{
-                        'bg-blue-500 hover:bg-blue-700': btnCadastraMenu,
-                        'bg-blue-700 cursor-not-allowed': !btnCadastraMenu
+                        'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
+                        'bg-primary-700 cursor-not-allowed': !btnCadastraMenu
                       }"
                       :disabled="!btnCadastraMenu"
                       class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
@@ -336,21 +342,21 @@ onMounted(() => {
                   <div>
                     <button
                       @click="limpar"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded"
                     >
                       Limpar
                     </button>
                   </div>
                 </div>
-                
-              </div>
-              
-              <div md:col-span-5 text-right>
-                <ul>
-                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
-                </ul>
               </div>
 
+              <div class="md:col-span-5 text-right">
+                <ul>
+                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">
+                    {{ erro }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -361,72 +367,71 @@ onMounted(() => {
       </div> -->
 
       <div v-if="loading" class="my-4 text-center">
-        <ProgressSpinner/>
+        <ProgressSpinner />
       </div>
-      <div v-if="!loading">
-        <table class="min-w-full bg-white shadow-md rounded-xl">
-        <thead>
-          <tr class="bg-blue-gray-100 text-gray-700">
-            <th class="py-3 px-4 text-left">Menu</th>
-            <th class="py-3 px-4 text-left">URL</th>
-            <th class="py-3 px-4 text-left">Local</th>
-            <th class="py-3 px-4 text-left">Ativo</th>
-            <th class="py-3 px-4 text-left">Ações</th>
-          </tr>
-        </thead>
-        <tbody class="text-blue-gray-900">
-          <tr
-            v-for="menu in paginatedItemsMenu"
-            :key="menu.idMenu"
-            class="border-b border-blue-gray-200"
-          >
-            <td class="py-3 px-4">{{ menu.txtDescricao }}</td>
-            <td class="py-3 px-4">
-              <a :href="menu.txtUrl" v-text="truncateUrl(menu.txtUrl, 30)"></a>
-            </td>
-
-                <td class="py-3 px-4">
-                  <span v-for="(local, index) in menu.locais" :key="index">
-                    {{ locais_load.find((item) => item.valor === local).descricao }}
-                    <template v-if="index !== menu.locais.length - 1"> </template>
-                  </span>
-                </td>
-                <td class="py-3 px-4">
-                  <span v-if="menu.blnAtivo">Sim</span>
-                  <span v-else>Não</span>
-                </td>
-                <td class="py-3 px-4 flex">
-                  <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
-                    <RiEdit2Line />
-                  </button>
-                  <!-- <button class="text-red-600">
-                    <RiDeleteBin5Line />
-                  </button> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="flex items-center justify-center p-2">
-          <button
-            @click="previousPageMenu"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-            :disabled="currentPageMenu === 1"
-          >
-            <RiArrowLeftFill></RiArrowLeftFill>
-          </button>
-          <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
-          <button
-            @click="nextPageMenu"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-            :disabled="currentPageMenu === totalPagesMenu"
-          >
-            <RiArrowRightFill></RiArrowRightFill>
-          </button>
-        </div>
+      <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
+        <DataTable
+          :value="menus"
+          v-model:filters="filters"
+          size="small"
+          :paginator="true"
+          :rows="5"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          stripedRows
+        >
+          <template #header>
+            <div class="flex justify-end">
+              <span class="relative">
+                <i
+                  class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+                />
+                <InputText
+                  size="small"
+                  v-model="filters['global'].value"
+                  placeholder="Pesquisar..."
+                  class="pl-10 font-normal"
+                />
+              </span>
+            </div>
+          </template>
+          <Column field="txtDescricao" header="Menu"></Column>
+          <Column field="txtUrl" header="URL">
+            <template #body="rowData">
+              {{ truncateUrl(rowData.data.txtUrl, 30) }}
+            </template>
+          </Column>
+          <Column header="Local">
+            <template #body="rowData">
+              {{
+                rowData.data.locais
+                  .map((local) => locais_load.find((item) => item.valor === local)?.descricao)
+                  .join(', ')
+              }}
+            </template>
+          </Column>
+          <Column field="blnAtivo" header="Ativo">
+            <template #body="rowData">
+              {{ rowData.data.blnAtivo ? 'Sim' : 'Não' }}
+            </template>
+          </Column>
+          <Column header="Ações">
+            <template #body="rowData">
+              <a href="#gridMenu">
+                <Button
+                  icon="pi pi-pencil"
+                  size="small"
+                  outlined
+                  rounded
+                  @click="editar(rowData.data)"
+                  class="text-primary-700"
+                  title="Editar"
+                />
+              </a>
+            </template>
+          </Column>
+        </DataTable>
       </div>
-      
     </div>
-    
   </div>
 </template>
 

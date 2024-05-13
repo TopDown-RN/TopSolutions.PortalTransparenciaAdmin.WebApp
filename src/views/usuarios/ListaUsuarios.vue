@@ -6,9 +6,15 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ProgressSpinner from 'primevue/progressspinner'
 import router from '@/router/index.js'
+import InputText from 'primevue/inputtext'
+import { FilterMatchMode } from 'primevue/api'
 
 const loading = ref(true)
 const result = ref()
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+})
 
 async function fetchUsuario() {
   try {
@@ -54,19 +60,44 @@ onMounted(() => {
   </div>
 
   <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
-    <DataTable :value="result" paginator :rows="10">
+    <DataTable
+      :value="result"
+      v-model:filters="filters"
+      size="small"
+      paginator
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      stripedRows
+    >
       <template #header>
-        <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-          <h4 class="m-0">Usuários</h4>
+        <div class="flex justify-end">
+          <span class="relative">
+            <i
+              class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+            />
+            <InputText
+              size="small"
+              v-model="filters['global'].value"
+              placeholder="Pesquisar..."
+              class="pl-10 font-normal"
+            />
+          </span>
         </div>
       </template>
       <Column field="txtNome" header="Nome"></Column>
       <Column field="txtCpfCnpj" header="CPF"></Column>
       <Column field="txtEmail" header="E-mail"></Column>
-      <Column header="Ações" :exportable="false" style="min-width: 8rem">
+      <Column header="Ações" :exportable="false">
         <template #body="event">
-          <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editUsuario(event)" />
-          <Button icon="pi pi-trash" outlined rounded severity="danger" />
+          <Button
+            icon="pi pi-pencil"
+            size="small"
+            outlined
+            rounded
+            class="mr-2"
+            @click="editUsuario(event)"
+          />
+          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />
         </template>
       </Column>
     </DataTable>
