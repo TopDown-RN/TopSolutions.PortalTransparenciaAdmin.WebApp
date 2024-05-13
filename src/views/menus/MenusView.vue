@@ -9,6 +9,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import { FilterMatchMode } from 'primevue/api'
 
 const btnCadastraMenu = ref(true)
