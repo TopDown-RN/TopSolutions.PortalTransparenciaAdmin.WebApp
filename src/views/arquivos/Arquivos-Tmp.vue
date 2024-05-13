@@ -20,6 +20,7 @@ import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import ConfirmDialog from "primevue/confirmdialog";
 import {useConfirm} from "primevue/useconfirm";
+import { truncateNoMeio } from "@/utils/truncateString"
 
 
 const confirm = useConfirm();
@@ -161,16 +162,16 @@ async function excluirCategoria(idCategoria) {
                   > */}
 
 
-function truncateFileName(fileName, maxLength) {
-    if (fileName.length > maxLength) {
-      const firstHalfLength = Math.ceil(maxLength / 2);
-      const secondHalfLength = Math.floor(maxLength / 2);
-      const firstHalf = fileName.slice(0, firstHalfLength);
-      const secondHalf = fileName.slice(-secondHalfLength);
-      return `${firstHalf} ... ${secondHalf}`;
-    }
-    return fileName;
-  }
+// function truncateFileName(fileName, maxLength) {
+//     if (fileName.length > maxLength) {
+//       const firstHalfLength = Math.ceil(maxLength / 2);
+//       const secondHalfLength = Math.floor(maxLength / 2);
+//       const firstHalf = fileName.slice(0, firstHalfLength);
+//       const secondHalf = fileName.slice(-secondHalfLength);
+//       return `${firstHalf} ... ${secondHalf}`;
+//     }
+//     return fileName;
+//   }
 
 // function filtrarCategoriasPorAno(ano) {
 //   getCategoriasAgrupadas(ano, id_Menu.value)
@@ -721,7 +722,7 @@ onMounted(() => {
                   class="text-primary-700"
                 >
                 <!-- {{ arq.nomeArquivo.length > 20 ? arq.nomeArquivo.slice(0, 100) + '...' : arq.nomeArquivo }} -->
-                {{ truncateFileName(arq.nomeArquivo, 50) }}
+                {{ truncateNoMeio(arq.nomeArquivo, 50) }}
                 </button>
               </td>
               <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>

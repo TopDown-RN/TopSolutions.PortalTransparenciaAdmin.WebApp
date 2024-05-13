@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
 import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
-import { truncateUrl } from '@/utils/truncateString'
+import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 
@@ -382,7 +382,7 @@ onMounted(() => {
           >
             <td class="py-3 px-4">{{ menu.txtDescricao }}</td>
             <td class="py-3 px-4">
-              <a :href="menu.txtUrl" v-text="truncateUrl(menu.txtUrl, 30)"></a>
+              <a :href="menu.txtUrl" v-text="truncateNoFim(menu.txtUrl, 30)"></a>
             </td>
 
                 <td class="py-3 px-4">
