@@ -10,10 +10,10 @@ export const LerArquivoPorIdApi = (idArquivo) => {
     .catch((error) => console.error(error))
 }
 
-export function deleteCategoria(idCategoria){
+export function deleteCategoria(idCategoria) {
   return api
     .delete(`arquivo/ExcluirCategoriaAsync`, {
-      params: { idCategoria: idCategoria },
+      params: { idCategoria: idCategoria }
     })
     .then((response) => response.data)
     .catch((error) => console.error(error))

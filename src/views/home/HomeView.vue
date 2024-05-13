@@ -46,7 +46,14 @@ onMounted(() => {
     <ProgressSpinner />
   </div>
   <div class="relative overflow-x-auto border rounded-lg" v-if="!loading">
-    <DataTable :value="registros" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]">
+    <DataTable
+      :value="registros"
+      size="small"
+      paginator
+      :rows="10"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      stripedRows
+    >
       <Column field="txtDestinoImportacao" header="Consulta" />
       <Column field="dtImportacao" header="Última atualização em">
         <template #body="slotProps">
