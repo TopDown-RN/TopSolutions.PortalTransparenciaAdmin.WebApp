@@ -5,6 +5,8 @@ import { ref, onMounted } from 'vue'
 //import router from '@/router'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
+//import { mask } from 'vue-the-mask'
+import { manterNumeros } from '@/utils/manterNumeros'
 
 const btnAtualizar = ref(true)
 const success = ref(false)
@@ -103,21 +105,19 @@ async function pegarDadosAdmin() {
 
     srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
     srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
-
-
   } catch (error) {
     console.log(error)
   }
 }
 
-function logoPrevio(event){
-  const file = event.target.files[0];
-  srcImgLogo.value = URL.createObjectURL(file);
+function logoPrevio(event) {
+  const file = event.target.files[0]
+  srcImgLogo.value = URL.createObjectURL(file)
 }
 
-function capaPrevio(event){
-  const file = event.target.files[0];
-  srcImgCapa.value = URL.createObjectURL(file);
+function capaPrevio(event) {
+  const file = event.target.files[0]
+  srcImgCapa.value = URL.createObjectURL(file)
 }
 
 async function atualizarDadosAdmin() {
@@ -127,6 +127,10 @@ async function atualizarDadosAdmin() {
 
     const inputImagemLogo = document.getElementById('inputImagemLogo')
     const inputImagemCapa = document.getElementById('inputImagemCapa')
+
+    cep.value = manterNumeros(cep.value)
+    telefone.value = manterNumeros(telefone.value)
+    cnpj.value = manterNumeros(cnpj.value)
 
     formData.append('txtCliente', orgao.value)
     formData.append('CpfCnpj', cnpj.value)
@@ -146,13 +150,12 @@ async function atualizarDadosAdmin() {
     const response = await postDadosAdmin(formData)
 
     btnAtualizar.value = true
-    
+
     mensagemSucesso()
 
     setTimeout(() => {
       window.location.reload()
     }, 2000)
-
   } catch (error) {
     btnAtualizar.value = true
     mensagemErro()
@@ -163,8 +166,6 @@ async function atualizarDadosAdmin() {
 onMounted(() => {
   pegarDadosAdmin()
 })
-
-
 </script>
 
 <template>
@@ -302,11 +303,7 @@ onMounted(() => {
                     @change="logoPrevio"
                     class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <img
-                    :src="srcImgLogo"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
+                  <img :src="srcImgLogo" alt="Base64 Image" width="100px" />
                 </div>
               </div>
 
@@ -320,15 +317,11 @@ onMounted(() => {
                     @change="capaPrevio"
                     class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <img
-                    :src="srcImgCapa"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
+                  <img :src="srcImgCapa" alt="Base64 Image" width="100px" />
                 </div>
               </div>
             </div>
-            
+
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>
@@ -349,7 +342,8 @@ onMounted(() => {
                   id="numero"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cnpj"
-                  placeholder=""
+                  placeholder="##.###.###/####-##"
+                  v-mask="['##.###.###/####-##']"
                 />
               </div>
               <div class="md:col-span-4">
@@ -402,50 +396,6 @@ onMounted(() => {
                     {{ estado.nome }}
                   </option>
                 </select>
-
-                <!-- <div class="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                  <input
-                    name="estado"
-                    id="estado"
-                    placeholder="RN"
-                    class="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                    v-model="estado"
-                  />
-                  <button
-                    tabindex="-1"
-                    class="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600"
-                  >
-                    <svg
-                      class="w-4 h-4 mx-2 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                  <button
-                    tabindex="-1"
-                    for="show_more"
-                    class="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                  >
-                    <svg
-                      class="w-4 h-4 mx-2 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <polyline points="18 15 12 9 6 15"></polyline>
-                    </svg>
-                  </button>
-                </div>-->
               </div>
               <div class="md:col-span-1">
                 <label for="cep">CEP</label>
@@ -454,8 +404,9 @@ onMounted(() => {
                   name="cep"
                   id="cep"
                   class="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="59380-000"
+                  placeholder="#####-###"
                   v-model="cep"
+                  v-mask="['#####-###']"
                 />
               </div>
               <div class="md:col-span-2">
@@ -466,7 +417,8 @@ onMounted(() => {
                   id="telefone"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="telefone"
-                  placeholder="(84) 3405-2714"
+                  placeholder="(##) #####-####"
+                  v-mask="['(##) ####-####', '(##) #####-####']"
                 />
               </div>
               <div class="md:col-span-3">
@@ -491,8 +443,8 @@ onMounted(() => {
                   <button
                     @click="btnAtualizar ? atualizarDadosAdmin() : null"
                     :class="{
-                      'bg-blue-500 hover:bg-blue-700': btnAtualizar,
-                      'bg-blue-700 cursor-not-allowed': !btnAtualizar
+                      'bg-primary-500 hover:bg-primary-700': btnAtualizar,
+                      'bg-primary-700 cursor-not-allowed': !btnAtualizar
                     }"
                     :disabled="!btnAtualizar"
                     class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"

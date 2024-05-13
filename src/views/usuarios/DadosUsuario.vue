@@ -7,10 +7,17 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
+import { useStore } from 'vuex'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 
 const idUsuario = ref(0)
+
 const route = useRoute()
 const router1 = useRouter()
+
+const store = useStore()
+const toast = useToast()
 
 function extractParamFromPath() {
   const matchedRoute = router1.resolve(route.path)
@@ -31,7 +38,7 @@ const blnAcessoExterno = ref(false)
 
 async function SaveUsuario() {
   try {
-    const response = await postSaveUsuario(
+    await postSaveUsuario(
       idUsuario.value,
       txtNome.value,
       txtCpfCnpj.value,
@@ -39,11 +46,16 @@ async function SaveUsuario() {
       txtPass.value,
       blnAcessoExterno.value
     )
-    //result.value = response.data
-    //console.log(idUsuario.value, txtNome.value);
-    //localStorage.setItem('token', response.token)
+    const toastMessage = 'Usuário cadastrado com sucesso!'
+    store.dispatch('displayToast', toastMessage)
     router.push({ name: 'usuarios' })
   } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Ocorreu um erro ao salvar usuário',
+      life: 5000
+    })
     console.error('erro ao obter os arquivos:', error)
   }
 }
@@ -71,16 +83,18 @@ watch(result, () => {
 onMounted(() => {
   //fetchArp()
   extractParamFromPath()
-  if (idUsuario.value != null) {
+  if (idUsuario.value !== 0) {
     fetchUsuario(idUsuario.value)
   }
 })
 </script>
 
 <template>
+  <Toast />
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      Cadastrar novo usuário
+      <span v-if="route.name === 'usuario-editar'"> Editar usuário </span>
+      <span v-else> Cadastrar usuário </span>
     </h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Novos usuários podem acessar e fazer edições através do Painel Administrativo.
@@ -137,6 +151,7 @@ onMounted(() => {
             v-model="blnAcessoExterno"
             inputId="acesso"
             name="blnAcessoExterno"
+            :binary="true"
             value="blnAcessoExterno"
           />
           <label for="acesso" class="ml-2">Acesso Externo</label>
