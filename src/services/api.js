@@ -9,7 +9,7 @@ function getBaseUrl() {
   return window.location.hostname ===
     'top-solutions-portal-transparencia-admin-web-app-develop.vercel.app'
     ? 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin'
-    : `http://api.${window.location.hostname}`
+    : `https://api${window.location.hostname}`
 }
 
 const api = axios.create({
@@ -19,15 +19,18 @@ const api = axios.create({
   }
 })
 
-api.interceptors.request.use((config) => {
-  const token = getToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
   }
-  return config
-}, error => {
-  return Promise.reject(error)
-})
+)
 
 // Axios response interceptor
 // api.interceptors.response.use(

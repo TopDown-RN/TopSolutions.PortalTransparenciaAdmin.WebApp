@@ -1,11 +1,15 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
-import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import usePagination from '@/utils/pagination'
 import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import { FilterMatchMode } from 'primevue/api'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -39,6 +43,10 @@ const locais_load = [
   { valor: 4, descricao: 'Footer' },
   { valor: 5, descricao: 'Custom' }
 ]
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+})
 
 // ---------------------  Funções gerais
 // const menusSorted = computed(() => {
@@ -110,7 +118,6 @@ async function getMenusList() {
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
-
   if (!validaCampos()) {
     return
   }
@@ -141,7 +148,6 @@ async function postGravarMenu() {
     mensagemErro()
   }
 }
-
 
 // Validação de campos
 
@@ -176,7 +182,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl text-center">
+  <div id="gridMenu" class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.
@@ -185,7 +191,7 @@ onMounted(() => {
   </div>
   <div class="container max-w-screen-base mx-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Menu salvo com sucesso</Message
@@ -317,8 +323,8 @@ onMounted(() => {
                     <button
                       @click="btnCadastraMenu ? postGravarMenu() : null"
                       :class="{
-                        'bg-blue-500 hover:bg-blue-700': btnCadastraMenu,
-                        'bg-blue-700 cursor-not-allowed': !btnCadastraMenu
+                        'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
+                        'bg-primary-700 cursor-not-allowed': !btnCadastraMenu
                       }"
                       :disabled="!btnCadastraMenu"
                       class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
@@ -336,21 +342,21 @@ onMounted(() => {
                   <div>
                     <button
                       @click="limpar"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded"
                     >
                       Limpar
                     </button>
                   </div>
                 </div>
-                
-              </div>
-              
-              <div md:col-span-5 text-right>
-                <ul>
-                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
-                </ul>
               </div>
 
+              <div class="md:col-span-5 text-right">
+                <ul>
+                  <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">
+                    {{ erro }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -361,7 +367,7 @@ onMounted(() => {
       </div> -->
 
       <div v-if="loading" class="my-4 text-center">
-        <ProgressSpinner/>
+        <ProgressSpinner />
       </div>
       <div v-if="!loading">
         <table class="min-w-full bg-white shadow-md rounded-xl">
@@ -423,10 +429,9 @@ onMounted(() => {
             <RiArrowRightFill></RiArrowRightFill>
           </button>
         </div>
+
       </div>
-      
     </div>
-    
   </div>
 </template>
 
