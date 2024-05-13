@@ -9,7 +9,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
+// import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import { FilterMatchMode } from 'primevue/api'
 
 const btnCadastraMenu = ref(true)
@@ -83,15 +83,15 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menus, 10)
+// const paginationMenus = usePagination(menus, 10)
 
-const {
-  currentPage: currentPageMenu,
-  paginatedItems: paginatedItemsMenu,
-  nextPage: nextPageMenu,
-  previousPage: previousPageMenu,
-  totalPages: totalPagesMenu
-} = paginationMenus
+// const {
+//   currentPage: currentPageMenu,
+//   paginatedItems: paginatedItemsMenu,
+//   nextPage: nextPageMenu,
+//   previousPage: previousPageMenu,
+//   totalPages: totalPagesMenu
+// } = paginationMenus
 
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
@@ -370,67 +370,67 @@ onMounted(() => {
       <div v-if="loading" class="my-4 text-center">
         <ProgressSpinner />
       </div>
-      <div v-if="!loading">
-        <table class="min-w-full bg-white shadow-md rounded-xl">
-        <thead>
-          <tr class="bg-blue-gray-100 text-gray-700">
-            <th class="py-3 px-4 text-left">Menu</th>
-            <th class="py-3 px-4 text-left">URL</th>
-            <th class="py-3 px-4 text-left">Local</th>
-            <th class="py-3 px-4 text-left">Ativo</th>
-            <th class="py-3 px-4 text-left">Ações</th>
-          </tr>
-        </thead>
-        <tbody class="text-blue-gray-900">
-          <tr
-            v-for="menu in paginatedItemsMenu"
-            :key="menu.idMenu"
-            class="border-b border-blue-gray-200"
-          >
-            <td class="py-3 px-4">{{ menu.txtDescricao }}</td>
-            <td class="py-3 px-4">
-              <a :href="menu.txtUrl" v-text="truncateNoFim(menu.txtUrl, 30)"></a>
-            </td>
-
-                <td class="py-3 px-4">
-                  <span v-for="(local, index) in menu.locais" :key="index">
-                    {{ locais_load.find((item) => item.valor === local).descricao }}
-                    <template v-if="index !== menu.locais.length - 1"> </template>
-                  </span>
-                </td>
-                <td class="py-3 px-4">
-                  <span v-if="menu.blnAtivo">Sim</span>
-                  <span v-else>Não</span>
-                </td>
-                <td class="py-3 px-4 flex">
-                  <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
-                    <RiEdit2Line />
-                  </button>
-                  <!-- <button class="text-red-600">
-                    <RiDeleteBin5Line />
-                  </button> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="flex items-center justify-center p-2">
-          <button
-            @click="previousPageMenu"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-            :disabled="currentPageMenu === 1"
-          >
-            <RiArrowLeftFill></RiArrowLeftFill>
-          </button>
-          <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
-          <button
-            @click="nextPageMenu"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-            :disabled="currentPageMenu === totalPagesMenu"
-          >
-            <RiArrowRightFill></RiArrowRightFill>
-          </button>
-        </div>
-
+      <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
+        <DataTable
+          :value="menus"
+          v-model:filters="filters"
+          size="small"
+          :paginator="true"
+          :rows="5"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          stripedRows
+        >
+          <template #header>
+            <div class="flex justify-end">
+              <span class="relative">
+                <i
+                  class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+                />
+                <InputText
+                  size="small"
+                  v-model="filters['global'].value"
+                  placeholder="Pesquisar..."
+                  class="pl-10 font-normal"
+                />
+              </span>
+            </div>
+          </template>
+          <Column field="txtDescricao" header="Menu"></Column>
+          <Column field="txtUrl" header="URL">
+            <template #body="rowData">
+              {{ truncateNoFim(rowData.data.txtUrl, 30) }}
+            </template>
+          </Column>
+          <Column header="Local">
+            <template #body="rowData">
+              {{
+                rowData.data.locais
+                  .map((local) => locais_load.find((item) => item.valor === local)?.descricao)
+                  .join(', ')
+              }}
+            </template>
+          </Column>
+          <Column field="blnAtivo" header="Ativo">
+            <template #body="rowData">
+              {{ rowData.data.blnAtivo ? 'Sim' : 'Não' }}
+            </template>
+          </Column>
+          <Column header="Ações">
+            <template #body="rowData">
+              <a href="#gridMenu">
+                <Button
+                  icon="pi pi-pencil"
+                  size="small"
+                  outlined
+                  rounded
+                  @click="editar(rowData.data)"
+                  class="text-primary-700"
+                  title="Editar"
+                />
+              </a>
+            </template>
+          </Column>
+        </DataTable>
       </div>
     </div>
   </div>

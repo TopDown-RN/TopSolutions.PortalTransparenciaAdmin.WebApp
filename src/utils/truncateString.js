@@ -6,14 +6,13 @@ export function truncateNoFim(url, maxLength) {
   }
 }
 
-
 export function truncateNoMeio(fileName, maxLength) {
   if (fileName.length > maxLength) {
-    const firstHalfLength = Math.ceil(maxLength / 2);
-    const secondHalfLength = Math.floor(maxLength / 2);
-    const firstHalf = fileName.slice(0, firstHalfLength);
-    const secondHalf = fileName.slice(-secondHalfLength);
-    return `${firstHalf} ... ${secondHalf}`;
+    const firstHalfLength = Math.ceil(maxLength / 2)
+    const secondHalfLength = Math.floor(maxLength / 2)
+    const firstHalf = fileName.slice(0, firstHalfLength)
+    const secondHalf = fileName.slice(-secondHalfLength)
+    return `${firstHalf} ... ${secondHalf}`
   }
-  return fileName;
+  return fileName
 }

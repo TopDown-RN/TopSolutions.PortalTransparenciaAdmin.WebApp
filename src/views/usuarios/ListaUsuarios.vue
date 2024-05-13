@@ -10,6 +10,7 @@ import { FilterMatchMode } from 'primevue/api'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { useStore } from 'vuex'
+import router from '@/router/index.js'
 
 const loading = ref(true)
 const result = ref()
@@ -34,6 +35,13 @@ async function fetchUsuario() {
     result.value = []
     console.error('erro ao obter os arquivos:', error)
   }
+}
+
+function editUsuario(event) {
+  router.push({
+    name: 'usuario-editar',
+    params: { id: event.data.idUsuario }
+  })
 }
 
 watch(toastMessage, (newToast) => {
@@ -103,7 +111,7 @@ onMounted(() => {
             class="mr-2"
             @click="editUsuario(event)"
           />
-          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />
+          <!--          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />-->
         </template>
       </Column>
     </DataTable>
