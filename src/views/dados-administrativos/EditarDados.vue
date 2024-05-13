@@ -478,8 +478,8 @@ onMounted(() => {
                   <button
                     @click="btnAtualizar ? atualizarDadosAdmin() : null"
                     :class="{
-                      'bg-blue-500 hover:bg-blue-700': btnAtualizar,
-                      'bg-blue-700 cursor-not-allowed': !btnAtualizar
+                      'bg-primary-500 hover:bg-primary-700': btnAtualizar,
+                      'bg-primary-700 cursor-not-allowed': !btnAtualizar
                     }"
                     :disabled="!btnAtualizar"
                     class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
