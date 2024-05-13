@@ -35,6 +35,8 @@ const x = ref('')
 const srcImgLogo = ref('')
 const srcImgCapa = ref('')
 
+const erros = ref([])
+
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
   success.value = true
@@ -123,6 +125,54 @@ function capaPrevio(event) {
 async function atualizarDadosAdmin() {
   try {
     btnAtualizar.value = false
+
+    erros.value = []
+    if(!orgao.value) {
+      erros.value.push('O campo Órgão é obrigatório')
+    }
+
+    if(!cnpj.value) {
+      erros.value.push('O campo CNPJ é obrigatório')
+    }
+
+    if(!rua_avenida.value) {
+      erros.value.push('O campo Rua/Avenida é obrigatório')
+    }
+
+    if(!numero.value) {
+      erros.value.push('O campo Número é obrigatório')
+    }
+
+    if(!cidade.value) {
+      erros.value.push('O campo Cidade é obrigatório')
+    }
+
+    if(!estado.value) {
+      erros.value.push('O campo Estado é obrigatório')
+    }
+
+    if(!cep.value) {
+      erros.value.push('O campo CEP é obrigatório')
+    }
+
+    if(!telefone.value) {
+      erros.value.push('O campo Telefone é obrigatório')
+    }
+
+    if(!email.value) {
+      erros.value.push('O campo E-mail é obrigatório')
+    }
+
+    if(!numero.value) {
+      erros.value.push('O campo Número é obrigatório')
+    }
+
+    if(erros.value.length > 0) {
+      btnAtualizar.value = true
+      return
+    }
+
+
     const formData = new FormData()
 
     const inputImagemLogo = document.getElementById('inputImagemLogo')
@@ -245,7 +295,7 @@ onMounted(() => {
                   x-model="input3"
                   v-model="facebook"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="Prefeitura de Currais Novos"
+                  placeholder="facebook.com/nome"
                 />
               </div>
             </div>
@@ -264,7 +314,7 @@ onMounted(() => {
                   x-model="input1"
                   v-model="instagram"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="@prefeituradecurraisnovos"
+                  placeholder="@instagram"
                 />
               </div>
             </div>
@@ -283,7 +333,7 @@ onMounted(() => {
                   x-model="input2"
                   v-model="x"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="@prefeituracn"
+                  placeholder="@twitter"
                 />
               </div>
             </div>
@@ -330,7 +380,7 @@ onMounted(() => {
                   name="orgao"
                   id="orgao"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="Prefeitura de Currais Novos"
+                  placeholder="Informe o órgão"
                   v-model="orgao"
                 />
               </div>
@@ -354,7 +404,7 @@ onMounted(() => {
                   id="rua"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="rua_avenida"
-                  placeholder="Praça Desembargador Tomaz Salustino"
+                  placeholder="Informe a rua ou avenida"
                 />
               </div>
               <div class="md:col-span-1">
@@ -365,7 +415,7 @@ onMounted(() => {
                   id="numero"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="numero"
-                  placeholder="90"
+                  placeholder="Informe o número"
                 />
               </div>
               <div class="md:col-span-2">
@@ -376,7 +426,7 @@ onMounted(() => {
                   id="cidade"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cidade"
-                  placeholder="Currais Novos"
+                  placeholder="Informe a cidade"
                 />
               </div>
               <div class="md:col-span-2">
@@ -429,8 +479,13 @@ onMounted(() => {
                   id="email"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="email"
-                  placeholder="curraisnovos@email.com"
+                  placeholder="Informe o e-mail"
                 />
+              </div>
+              <div class="md:col-span-3">
+                <ul>
+                  <li v-for="erro in erros" :key="erro" class="text-red-600 list-disc"> {{ erro }}</li>
+                </ul>
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">

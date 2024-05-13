@@ -31,5 +31,8 @@ export function postDadosAdmin(formData) {
       }
     })
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      console.log('error', error)
+      throw error
+    })
 }
