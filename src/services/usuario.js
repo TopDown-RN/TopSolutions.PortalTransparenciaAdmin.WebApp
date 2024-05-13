@@ -15,7 +15,9 @@ export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _bl
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function getListaUsuarios(_blnAcessoExterno) {
@@ -26,7 +28,9 @@ export function getListaUsuarios(_blnAcessoExterno) {
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function getUsuario(_idUsuario) {
@@ -37,7 +41,9 @@ export function getUsuario(_idUsuario) {
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export default api

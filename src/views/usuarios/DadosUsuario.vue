@@ -8,6 +8,8 @@ import Password from 'primevue/password'
 import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
 import { useStore } from 'vuex'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 
 const idUsuario = ref(0)
 
@@ -15,6 +17,7 @@ const route = useRoute()
 const router1 = useRouter()
 
 const store = useStore()
+const toast = useToast()
 
 function extractParamFromPath() {
   const matchedRoute = router1.resolve(route.path)
@@ -47,6 +50,12 @@ async function SaveUsuario() {
     store.dispatch('displayToast', toastMessage)
     router.push({ name: 'usuarios' })
   } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Ocorreu um erro ao salvar usuário',
+      life: 5000
+    })
     console.error('erro ao obter os arquivos:', error)
   }
 }
@@ -81,6 +90,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Toast />
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       <span v-if="route.name === 'usuario-editar'"> Editar usuário </span>
@@ -141,6 +151,7 @@ onMounted(() => {
             v-model="blnAcessoExterno"
             inputId="acesso"
             name="blnAcessoExterno"
+            :binary="true"
             value="blnAcessoExterno"
           />
           <label for="acesso" class="ml-2">Acesso Externo</label>

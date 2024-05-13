@@ -8,6 +8,9 @@ import ProgressSpinner from 'primevue/progressspinner'
 import InputText from 'primevue/inputtext'
 import { FilterMatchMode } from 'primevue/api'
 import Toast from 'primevue/toast'
+import OverlayPanel from 'primevue/overlaypanel'
+import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
 import { useToast } from 'primevue/usetoast'
 import { useStore } from 'vuex'
 import router from '@/router/index.js'
@@ -24,6 +27,9 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
+const op = ref(null)
+const txtChaveAcessoAPI = ref()
+
 async function fetchUsuario() {
   try {
     const response = await getListaUsuarios(false)
@@ -37,6 +43,17 @@ async function fetchUsuario() {
   }
 }
 
+function toggleOverlay(chaveAcesso) {
+  op.value.show(event)
+  txtChaveAcessoAPI.value = chaveAcesso
+}
+
+function copyKey() {
+  const inputElement = document.querySelector('.w-25rem input')
+  inputElement.select()
+  document.execCommand('copy')
+}
+
 function editUsuario(event) {
   router.push({
     name: 'usuario-editar',
@@ -45,7 +62,7 @@ function editUsuario(event) {
 }
 
 watch(toastMessage, (newToast) => {
-  toast.add({ severity: 'success', summary: 'Sucesso!', detail: newToast, life: 3000 })
+  toast.add({ severity: 'success', summary: 'Sucesso!', detail: newToast, life: 5000 })
 })
 
 watch(result, () => {
@@ -101,6 +118,32 @@ onMounted(() => {
       <Column field="txtNome" header="Nome"></Column>
       <Column field="txtCpfCnpj" header="CPF"></Column>
       <Column field="txtEmail" header="E-mail"></Column>
+      <Column field="txtChaveAcessoAPI" header="Chave Acesso Externo">
+        <template #body="slotProps">
+          <Button
+            v-if="slotProps.data.txtChaveAcessoAPI"
+            @click="toggleOverlay(slotProps.data.txtChaveAcessoAPI)"
+            icon="pi pi-key"
+            size="small"
+            severity="success"
+            outlined
+            rounded
+          />
+          <OverlayPanel ref="op">
+            <div class="flex flex-column gap-3 w-25rem">
+              <div>
+                <span class="font-medium text-900 block mb-2">Chave Acesso Externo</span>
+                <InputGroup>
+                  <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
+                  <InputGroupAddon class="cursor-pointer hover:bg-gray-200" @click="copyKey">
+                    <i class="pi pi-copy"></i>
+                  </InputGroupAddon>
+                </InputGroup>
+              </div>
+            </div>
+          </OverlayPanel>
+        </template>
+      </Column>
       <Column header="Ações" :exportable="false">
         <template #body="event">
           <Button
