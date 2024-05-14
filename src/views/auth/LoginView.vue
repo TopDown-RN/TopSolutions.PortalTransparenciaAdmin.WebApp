@@ -1,13 +1,16 @@
 <script setup>
 import { login } from '@/services/auth/autenticacao.js'
 import { addToken } from '@/services/auth/authToken'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RiLoginBoxLine } from '@remixicon/vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const tokenData = ref()
 const txtCpfCnpjEmail = ref('')
 const txtPass = ref('')
@@ -29,9 +32,26 @@ async function postAutenticar() {
     console.error('erro ao obter os arquivos:', e)
   }
 }
+
+function verificarSessao() {
+  if (localStorage.getItem('sessao-expirada')) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Sessão Expirada',
+      detail: 'Sua sessão foi expirada!',
+      life: 5000
+    })
+    localStorage.removeItem('sessao-expirada')
+  }
+}
+
+onMounted(() => {
+  verificarSessao()
+})
 </script>
 
 <template>
+  <Toast />
   <div class="bg-gray-200 w-full min-h-screen py-9 px-4">
     <div class="flex flex-col items-center justify-center">
       <img
