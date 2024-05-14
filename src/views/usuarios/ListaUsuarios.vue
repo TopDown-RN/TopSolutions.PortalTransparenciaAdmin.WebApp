@@ -14,6 +14,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon'
 import { useToast } from 'primevue/usetoast'
 import { useStore } from 'vuex'
 import router from '@/router/index.js'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const loading = ref(true)
 const result = ref()
@@ -74,6 +75,10 @@ onMounted(() => {
 
 <template>
   <Toast />
+  <HeadingComponent
+    title="Lista de Usuários"
+    subtitle="Lista dos usuários que tem acesso ao Painel Administrativo do Portal da Transparência."
+  />
   <div class="flex md:justify-end m-2">
     <Button
       type="button"

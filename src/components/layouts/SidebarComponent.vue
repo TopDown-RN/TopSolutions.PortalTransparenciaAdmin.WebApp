@@ -27,6 +27,12 @@ const menusPrincipal = ref([
     nome: 'Arquivos',
     icon: 'pi pi-folder-open',
     rota: '/arquivos'
+  },
+  {
+    id: 4,
+    nome: 'Arquivos (Novo)',
+    icon: 'pi pi-folder-open',
+    rota: '/arquivosview'
   }
 ])
 
