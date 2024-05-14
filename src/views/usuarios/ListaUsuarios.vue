@@ -51,7 +51,7 @@ function toggleOverlay(chaveAcesso) {
 function copyKey() {
   const inputElement = document.querySelector('.w-25rem input')
   inputElement.select()
-  document.execCommand('copy')
+  navigator.clipboard.writeText(inputElement.value)
 }
 
 function editUsuario(event) {
@@ -118,11 +118,12 @@ onMounted(() => {
       <Column field="txtNome" header="Nome"></Column>
       <Column field="txtCpfCnpj" header="CPF"></Column>
       <Column field="txtEmail" header="E-mail"></Column>
-      <Column field="txtChaveAcessoAPI" header="Chave Acesso Externo">
+      <Column field="txtChaveAcessoAPI" header="Chave de Acesso">
         <template #body="slotProps">
           <Button
             v-if="slotProps.data.txtChaveAcessoAPI"
             @click="toggleOverlay(slotProps.data.txtChaveAcessoAPI)"
+            v-tooltip.top="'Chave de Acesso Externo'"
             icon="pi pi-key"
             size="small"
             severity="success"
@@ -135,7 +136,11 @@ onMounted(() => {
                 <span class="font-medium text-900 block mb-2">Chave Acesso Externo</span>
                 <InputGroup>
                   <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
-                  <InputGroupAddon class="cursor-pointer hover:bg-gray-200" @click="copyKey">
+                  <InputGroupAddon
+                    class="cursor-pointer hover:bg-gray-200"
+                    @click="copyKey"
+                    v-tooltip.top="'Copiar'"
+                  >
                     <i class="pi pi-copy"></i>
                   </InputGroupAddon>
                 </InputGroup>
@@ -153,6 +158,7 @@ onMounted(() => {
             rounded
             class="mr-2"
             @click="editUsuario(event)"
+            v-tooltip.top="'Editar'"
           />
           <!--          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />-->
         </template>

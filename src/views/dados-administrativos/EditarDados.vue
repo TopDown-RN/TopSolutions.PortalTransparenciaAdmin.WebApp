@@ -127,51 +127,50 @@ async function atualizarDadosAdmin() {
     btnAtualizar.value = false
 
     erros.value = []
-    if(!orgao.value) {
+    if (!orgao.value) {
       erros.value.push('O campo Órgão é obrigatório')
     }
 
-    if(!cnpj.value) {
+    if (!cnpj.value) {
       erros.value.push('O campo CNPJ é obrigatório')
     }
 
-    if(!rua_avenida.value) {
+    if (!rua_avenida.value) {
       erros.value.push('O campo Rua/Avenida é obrigatório')
     }
 
-    if(!numero.value) {
+    if (!numero.value) {
       erros.value.push('O campo Número é obrigatório')
     }
 
-    if(!cidade.value) {
+    if (!cidade.value) {
       erros.value.push('O campo Cidade é obrigatório')
     }
 
-    if(!estado.value) {
+    if (!estado.value) {
       erros.value.push('O campo Estado é obrigatório')
     }
 
-    if(!cep.value) {
+    if (!cep.value) {
       erros.value.push('O campo CEP é obrigatório')
     }
 
-    if(!telefone.value) {
+    if (!telefone.value) {
       erros.value.push('O campo Telefone é obrigatório')
     }
 
-    if(!email.value) {
+    if (!email.value) {
       erros.value.push('O campo E-mail é obrigatório')
     }
 
-    if(!numero.value) {
+    if (!numero.value) {
       erros.value.push('O campo Número é obrigatório')
     }
 
-    if(erros.value.length > 0) {
+    if (erros.value.length > 0) {
       btnAtualizar.value = true
       return
     }
-
 
     const formData = new FormData()
 
@@ -230,7 +229,7 @@ onMounted(() => {
   </div>
   <div class="container max-w-screen-base mx-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+      <div class="bg-white rounded shadow-md p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Dados atualizados sucesso</Message
@@ -342,32 +341,52 @@ onMounted(() => {
           <div class="lg:col-span-2">
             <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
               <div>
-                <label for="inputImagemPerfil">Logo do Município</label>
-                <div
-                  class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative"
-                >
+                <div class="flex items-center relative">
                   <input
                     type="file"
                     id="inputImagemLogo"
                     accept="image/*"
                     @change="logoPrevio"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                    class="absolute top-0 left-0 opacity-0 h-full cursor-pointer"
                   />
-                  <img :src="srcImgLogo" alt="Base64 Image" width="100px" />
+                  <img
+                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    :src="srcImgLogo"
+                    alt="Base64 Image Logo"
+                  />
+                  <div>
+                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                      Logo do Município
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Clique para selecionar uma imagem
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div>
-                <label for="inputImagemCapa">Foto de Capa</label>
-                <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
+                <div class="flex items-center relative">
                   <input
                     type="file"
                     id="inputImagemCapa"
                     accept="image/*"
                     @change="capaPrevio"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                    class="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
                   />
-                  <img :src="srcImgCapa" alt="Base64 Image" width="100px" />
+                  <img
+                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    :src="srcImgCapa"
+                    alt="Base64 Image Capa"
+                  />
+                  <div>
+                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                      Foto de Capa
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Clique para selecionar uma imagem
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -484,7 +503,9 @@ onMounted(() => {
               </div>
               <div class="md:col-span-3">
                 <ul>
-                  <li v-for="erro in erros" :key="erro" class="text-red-600 list-disc"> {{ erro }}</li>
+                  <li v-for="erro in erros" :key="erro" class="text-red-600 list-disc">
+                    {{ erro }}
+                  </li>
                 </ul>
               </div>
               <div class="md:col-span-5 text-right">
