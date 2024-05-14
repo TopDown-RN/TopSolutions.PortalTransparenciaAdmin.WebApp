@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
-import usePagination from '@/utils/pagination'
 import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -9,7 +8,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-// import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
 import { FilterMatchMode } from 'primevue/api'
 
 const btnCadastraMenu = ref(true)

@@ -4,7 +4,9 @@ export function getDadosAdmin() {
   return api
     .get('dadosadministrativo/listardados')
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function postDadosAdmin(formData) {
@@ -32,7 +34,7 @@ export function postDadosAdmin(formData) {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.log('error', error)
+      console.log('error:', error)
       throw error
     })
 }

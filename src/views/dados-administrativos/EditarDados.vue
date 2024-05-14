@@ -2,21 +2,25 @@
 import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
 import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
-//import router from '@/router'
 import ProgressSpinner from 'primevue/progressspinner'
-import Message from 'primevue/message'
-//import { mask } from 'vue-the-mask'
 import { manterNumeros } from '@/utils/manterNumeros'
+import InputText from 'primevue/inputtext'
+import InputMask from 'primevue/inputmask'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+
+const loading = ref(true)
+const toast = useToast()
 
 const btnAtualizar = ref(true)
-const success = ref(false)
-const error = ref(false)
+const isValid = ref(true)
 
 const logo = ref('')
 const extensaoLogo = ref('')
-
+const srcImgLogo = ref('')
 const capa = ref('')
 const extensaoCapa = ref('')
+const srcImgCapa = ref('')
 
 const orgao = ref('')
 const cnpj = ref('')
@@ -31,26 +35,6 @@ const email = ref('')
 const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
-
-const srcImgLogo = ref('')
-const srcImgCapa = ref('')
-
-const erros = ref([])
-
-// -------------------- Função para controle de messages
-function mensagemSucesso() {
-  success.value = true
-  setTimeout(() => {
-    success.value = false
-  }, 2000)
-}
-
-function mensagemErro() {
-  error.value = true
-  setTimeout(() => {
-    error.value = false
-  }, 2000)
-}
 
 const estadosOptions = ref([
   { codigo: 'AC', nome: 'Acre' },
@@ -107,68 +91,18 @@ async function pegarDadosAdmin() {
 
     srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
     srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
+    loading.value = false
   } catch (error) {
     console.log(error)
+    loading.value = false
   }
-}
-
-function logoPrevio(event) {
-  const file = event.target.files[0]
-  srcImgLogo.value = URL.createObjectURL(file)
-}
-
-function capaPrevio(event) {
-  const file = event.target.files[0]
-  srcImgCapa.value = URL.createObjectURL(file)
 }
 
 async function atualizarDadosAdmin() {
   try {
     btnAtualizar.value = false
 
-    erros.value = []
-    if (!orgao.value) {
-      erros.value.push('O campo Órgão é obrigatório')
-    }
-
-    if (!cnpj.value) {
-      erros.value.push('O campo CNPJ é obrigatório')
-    }
-
-    if (!rua_avenida.value) {
-      erros.value.push('O campo Rua/Avenida é obrigatório')
-    }
-
-    if (!numero.value) {
-      erros.value.push('O campo Número é obrigatório')
-    }
-
-    if (!cidade.value) {
-      erros.value.push('O campo Cidade é obrigatório')
-    }
-
-    if (!estado.value) {
-      erros.value.push('O campo Estado é obrigatório')
-    }
-
-    if (!cep.value) {
-      erros.value.push('O campo CEP é obrigatório')
-    }
-
-    if (!telefone.value) {
-      erros.value.push('O campo Telefone é obrigatório')
-    }
-
-    if (!email.value) {
-      erros.value.push('O campo E-mail é obrigatório')
-    }
-
-    if (!numero.value) {
-      erros.value.push('O campo Número é obrigatório')
-    }
-
-    if (erros.value.length > 0) {
-      btnAtualizar.value = true
+    if (!validarCampos()) {
       return
     }
 
@@ -196,20 +130,61 @@ async function atualizarDadosAdmin() {
     formData.append('txtX', x.value)
     formData.append('imgCapa', inputImagemCapa.files[0])
 
-    const response = await postDadosAdmin(formData)
+    await postDadosAdmin(formData)
 
     btnAtualizar.value = true
-
-    mensagemSucesso()
+    showSuccess()
 
     setTimeout(() => {
       window.location.reload()
     }, 2000)
   } catch (error) {
     btnAtualizar.value = true
-    mensagemErro()
+    showError()
     console.log(error)
   }
+}
+
+function showSuccess() {
+  toast.add({
+    severity: 'success',
+    summary: 'Successo',
+    detail: 'Dados atualizados sucesso!',
+    life: 2000
+  })
+}
+
+function showError() {
+  toast.add({ severity: 'error', summary: 'Erro!', detail: 'Erro ao atualizar dados!', life: 3000 })
+}
+
+function logoPreview(event) {
+  const file = event.target.files[0]
+  srcImgLogo.value = URL.createObjectURL(file)
+}
+
+function capaPreview(event) {
+  const file = event.target.files[0]
+  srcImgCapa.value = URL.createObjectURL(file)
+}
+
+function validarCampos() {
+  if (
+    !orgao.value ||
+    !cnpj.value ||
+    !rua_avenida.value ||
+    !numero.value ||
+    !cidade.value ||
+    !estado.value ||
+    !cep.value ||
+    !telefone.value ||
+    !email.value
+  ) {
+    btnAtualizar.value = true
+    isValid.value = false
+  }
+
+  return isValid.value
 }
 
 onMounted(() => {
@@ -218,6 +193,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Toast />
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       Editar Dados Administrativos
@@ -227,57 +203,14 @@ onMounted(() => {
     </p>
     <div class="-mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
   </div>
-  <div class="container max-w-screen-base mx-auto">
+  <div v-if="loading" class="my-4 text-center">
+    <ProgressSpinner />
+  </div>
+  <div v-if="!loading" class="container max-w-screen-base mx-auto">
     <div>
       <div class="bg-white rounded shadow-md p-4 px-4 md:p-8 mb-6 mt-6 border">
-        <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Dados atualizados sucesso</Message
-          >
-          <Message severity="error" :sticky="true" :life="2000" v-if="error"
-            >Erro ao atualizar dados</Message
-          >
-        </div>
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
-            <!-- <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
-              <div>
-                <label for="inputImagemPerfil">Logo do Município</label>
-                <div
-                  class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative"
-                >
-                  <input
-                    type="file"
-                    id="inputImagemLogo"
-                    accept="image/*"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <img
-                    :src="'data:image/' + extensaoLogo + ';base64,' + logo"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label for="inputImagemCapa">Foto de Capa</label>
-                <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
-                  <input
-                    type="file"
-                    id="inputImagemCapa"
-                    accept="image/*"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <img
-                    :src="'data:image/' + extensaoCapa + ';base64,' + capa"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
-                </div>
-              </div>
-            </div> -->
-
             <p class="font-medium text-lg pt-10">Redes Sociais</p>
 
             <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
@@ -346,7 +279,7 @@ onMounted(() => {
                     type="file"
                     id="inputImagemLogo"
                     accept="image/*"
-                    @change="logoPrevio"
+                    @change="logoPreview"
                     class="absolute top-0 left-0 opacity-0 h-full cursor-pointer"
                   />
                   <img
@@ -371,7 +304,7 @@ onMounted(() => {
                     type="file"
                     id="inputImagemCapa"
                     accept="image/*"
-                    @change="capaPrevio"
+                    @change="capaPreview"
                     class="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
                   />
                   <img
@@ -394,59 +327,67 @@ onMounted(() => {
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>
-                <input
-                  type="text"
-                  name="orgao"
+                <InputText
                   id="orgao"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="Informe o órgão"
                   v-model="orgao"
+                  placeholder="Informe o órgão"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  :invalid="!orgao"
                 />
+                <small v-if="!orgao" class="text-red-600">O campo Órgão é obrigatório</small>
               </div>
               <div class="md:col-span-1">
                 <label for="numero">CNPJ</label>
-                <input
-                  type="text"
-                  name="numero"
+                <InputMask
                   id="numero"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cnpj"
                   placeholder="##.###.###/####-##"
-                  v-mask="['##.###.###/####-##']"
+                  mask="99.999.999/9999-99"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  :invalid="!cnpj"
                 />
+                <small v-if="!cnpj" class="text-red-600">O campo CNPJ é obrigatório</small>
               </div>
               <div class="md:col-span-4">
                 <label for="rua">Rua/Avenida</label>
-                <input
+                <InputText
                   type="text"
                   name="rua"
                   id="rua"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="rua_avenida"
                   placeholder="Informe a rua ou avenida"
+                  :invalid="!rua_avenida"
                 />
+                <small v-if="!rua_avenida" class="text-red-600"
+                  >O campo Rua/Avenida é obrigatório</small
+                >
               </div>
               <div class="md:col-span-1">
                 <label for="numero">Número</label>
-                <input
+                <InputText
                   type="text"
                   name="numero"
                   id="numero"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="numero"
                   placeholder="Informe o número"
+                  :invalid="!numero"
                 />
+                <small v-if="!numero" class="text-red-600">O campo Número é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="cidade">Cidade</label>
-                <input
+                <InputText
                   type="text"
                   name="cidade"
                   id="cidade"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cidade"
                   placeholder="Informe a cidade"
+                  :invalid="!cidade"
                 />
+                <small v-if="!cidade" class="text-red-600">O campo Cidade é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="estado">Estado</label>
@@ -465,22 +406,24 @@ onMounted(() => {
                     {{ estado.nome }}
                   </option>
                 </select>
+                <small v-if="!estado" class="text-red-600">O campo Estado é obrigatório</small>
               </div>
               <div class="md:col-span-1">
                 <label for="cep">CEP</label>
-                <input
-                  type="text"
+                <InputMask
                   name="cep"
                   id="cep"
                   class="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="#####-###"
+                  placeholder="99999-999"
                   v-model="cep"
-                  v-mask="['#####-###']"
+                  mask="99999-999"
+                  :invalid="!cep"
                 />
+                <small v-if="!cep" class="text-red-600">O campo CEP é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="telefone">Telefone</label>
-                <input
+                <InputText
                   type="text"
                   name="telefone"
                   id="telefone"
@@ -488,25 +431,22 @@ onMounted(() => {
                   v-model="telefone"
                   placeholder="(##) #####-####"
                   v-mask="['(##) ####-####', '(##) #####-####']"
+                  :invalid="!telefone"
                 />
+                <small v-if="!telefone" class="text-red-600">O campo Telefone é obrigatório</small>
               </div>
               <div class="md:col-span-3">
                 <label for="email">E-mail</label>
-                <input
+                <InputText
                   type="text"
                   name="email"
                   id="email"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="email"
                   placeholder="Informe o e-mail"
+                  :invalid="!email"
                 />
-              </div>
-              <div class="md:col-span-3">
-                <ul>
-                  <li v-for="erro in erros" :key="erro" class="text-red-600 list-disc">
-                    {{ erro }}
-                  </li>
-                </ul>
+                <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small>
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
