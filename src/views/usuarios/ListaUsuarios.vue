@@ -33,10 +33,7 @@ const txtChaveAcessoAPI = ref()
 async function fetchUsuario() {
   try {
     const response = await getListaUsuarios(false)
-    result.value = response.data
-    //console.log(result.value);
-    //localStorage.setItem('token', response.token)
-    //router.push({name: 'home'})
+    result.value = response.data.filter((item) => item.idUsuario > 4)
   } catch (error) {
     result.value = []
     console.error('erro ao obter os arquivos:', error)
