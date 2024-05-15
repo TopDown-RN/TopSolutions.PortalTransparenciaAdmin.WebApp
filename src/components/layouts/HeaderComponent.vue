@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import Avatar from 'primevue/avatar'
+import { useRouter } from 'vue-router'
 import Menu from 'primevue/menu'
 import { removeToken } from '@/services/auth/authToken'
 
+const router = useRouter()
 const props = defineProps(['toggleSidebar'])
 
 const items = ref([
@@ -16,7 +18,10 @@ const items = ref([
       },
       {
         label: 'Alterar Senha',
-        icon: 'pi pi-cog'
+        icon: 'pi pi-cog',
+        command: () => {
+          router.push('/usuario/alterarsenha')
+        }
       },
       {
         label: 'Sair',

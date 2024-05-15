@@ -1,6 +1,7 @@
 import api from './api'
 
-export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno) {
+export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno, _blnAlterarSenha) {
+  console.log('_blnAlterarSenha', _blnAlterarSenha)
   return api
     .post(
       'usuario/registro',
@@ -10,7 +11,8 @@ export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _bl
         txtNome: _nome,
         txtEmail: _email,
         txtSenha: _senha,
-        blnAcessoExterno: _blnAcessoExterno
+        blnAcessoExterno: _blnAcessoExterno,
+        blnAlterarSenha: _blnAlterarSenha
       },
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
@@ -45,5 +47,32 @@ export function getUsuario(_idUsuario) {
       throw error
     })
 }
+
+export function getPorToken(){
+  return api
+    .get(
+      'usuario/LerPorToken',
+      { params: { token: localStorage.getItem('token') } },
+      { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
+export function alterarSenha(senha, cpf){
+  console.log(senha, cpf)
+  return api
+    .patch(
+      `usuario/alterarsenha?novaSenha=${senha}&txtCpfCnpj=${cpf}`,
+      { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
 
 export default api

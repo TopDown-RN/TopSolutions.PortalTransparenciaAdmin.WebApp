@@ -16,6 +16,12 @@ const routes = [
     name: 'usuario-editar',
     meta: { requiresAuth: true },
     component: () => import('@/views/usuarios/DadosUsuario.vue')
+  },
+  {
+    path: '/usuario/alterarsenha',
+    name: 'alterar-senha',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/usuarios/AlterarSenha.vue')
   }
 ]
 

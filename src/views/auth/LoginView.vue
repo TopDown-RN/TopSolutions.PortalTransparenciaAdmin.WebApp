@@ -8,6 +8,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
+import { useRouter } from 'vue-router'
 
 const toast = useToast()
 const tokenData = ref()
@@ -15,14 +16,22 @@ const txtCpfCnpjEmail = ref('')
 const txtPass = ref('')
 const btnAcessar = ref(true)
 
+const router = useRouter()
+
 async function postAutenticar() {
   try {
     btnAcessar.value = false
     const response = await login(txtCpfCnpjEmail.value, txtPass.value)
     tokenData.value = response.data
     addToken(tokenData.value.token)
-    window.location.reload()
     btnAcessar.value = true
+    
+    if(response.data.blnAlterarSenha){
+      await router.push('/usuario/alterarsenha')
+    }
+
+    window.location.reload()
+
   } catch (e) {
     btnAcessar.value = true
     toast.add({

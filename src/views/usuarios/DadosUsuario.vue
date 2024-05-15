@@ -35,6 +35,7 @@ const txtCpfCnpj = ref('')
 const txtEmail = ref('')
 const txtPass = ref('')
 const blnAcessoExterno = ref(false)
+const blnAlterarSenha = ref(false)
 
 async function SaveUsuario() {
   try {
@@ -46,7 +47,8 @@ async function SaveUsuario() {
       txtCpfCnpj.value,
       txtEmail.value,
       txtPass.value,
-      blnAcessoExterno.value
+      blnAcessoExterno.value,
+      blnAlterarSenha.value
     )
     const toastMessage = 'Usuário cadastrado com sucesso!'
     store.dispatch('displayToast', toastMessage)
@@ -70,6 +72,7 @@ async function fetchUsuario(_idUsuario) {
     txtCpfCnpj.value = response.data.txtCpfCnpj
     txtEmail.value = response.data.txtEmail
     blnAcessoExterno.value = response.data.blnAcessoExterno
+    blnAlterarSenha.value = response.data.blnAlterarSenha
   } catch (error) {
     console.error('erro ao obter os arquivos:', error)
   }
@@ -157,6 +160,18 @@ onMounted(() => {
             value="blnAcessoExterno"
           />
           <label for="acesso" class="ml-2">Acesso Externo</label>
+        </div>
+      </div>
+      <div class="card flex flex-wrap justify-content-center gap-3">
+        <div class="flex align-items-center">
+          <Checkbox
+            v-model="blnAlterarSenha"
+            inputId="altersenha"
+            name="blnAlterarSenha"
+            :binary="true"
+            value="blnAlterarSenha"
+          />
+          <label for="acesso" class="ml-2">Alterar senha padrão?</label>
         </div>
       </div>
     </div>
