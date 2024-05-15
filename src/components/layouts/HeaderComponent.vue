@@ -15,6 +15,10 @@ const items = ref([
         icon: 'pi pi-cog'
       },
       {
+        label: 'Alterar Senha',
+        icon: 'pi pi-cog'
+      },
+      {
         label: 'Sair',
         icon: 'pi pi-sign-out',
         command: () => {
