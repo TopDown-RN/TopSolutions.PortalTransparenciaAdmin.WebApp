@@ -38,9 +38,12 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.setItem('sessao-expirada', 'Sessão expirada')
-      removeToken()
-      window.location.reload()
+      const token = getToken()
+      if (token) {
+        localStorage.setItem('sessao-expirada', 'Sessão expirada')
+        removeToken()
+        window.location.reload()
+      }
     }
     return Promise.reject(error)
   }

@@ -38,6 +38,8 @@ const blnAcessoExterno = ref(false)
 
 async function SaveUsuario() {
   try {
+    removeMask()
+
     await postSaveUsuario(
       idUsuario.value,
       txtNome.value,
@@ -63,17 +65,18 @@ async function SaveUsuario() {
 async function fetchUsuario(_idUsuario) {
   try {
     const response = await getUsuario(_idUsuario)
-    //result.value = response.data
     idUsuario.value = _idUsuario
     txtNome.value = response.data.txtNome
     txtCpfCnpj.value = response.data.txtCpfCnpj
     txtEmail.value = response.data.txtEmail
     blnAcessoExterno.value = response.data.blnAcessoExterno
-    //console.log(response.data);
-    //localStorage.setItem('token', response.token)
   } catch (error) {
     console.error('erro ao obter os arquivos:', error)
   }
+}
+
+function removeMask() {
+  txtCpfCnpj.value = txtCpfCnpj.value.replace(/\D/g, '')
 }
 
 watch(result, () => {
@@ -81,7 +84,6 @@ watch(result, () => {
 })
 
 onMounted(() => {
-  //fetchArp()
   extractParamFromPath()
   if (idUsuario.value !== 0) {
     fetchUsuario(idUsuario.value)
