@@ -10,3 +10,12 @@ export function getToken() {
   const token = localStorage.getItem('token')
   return token
 }
+
+export function setIdUsuario(idUsuario) {
+  localStorage.setItem('idUsuario', idUsuario)
+}
+
+export function getIdUsuario() {
+  const idUsuario = localStorage.getItem('idUsuario')
+  return idUsuario
+}

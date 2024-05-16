@@ -443,7 +443,6 @@ onMounted(() => {
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="email"
                   placeholder="Informe o e-mail"
-                  
                 />
                 <!-- <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small> -->
               </div>

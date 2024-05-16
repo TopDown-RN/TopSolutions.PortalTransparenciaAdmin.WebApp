@@ -8,10 +8,5 @@ export default createStore({
     setToastMessage(state, message) {
       state.toastMessage = message
     }
-  },
-  actions: {
-    displayToast({ commit }, message) {
-      commit('setToastMessage', message)
-    }
   }
 })
