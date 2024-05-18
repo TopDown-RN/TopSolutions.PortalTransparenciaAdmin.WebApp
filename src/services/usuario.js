@@ -1,6 +1,14 @@
 import api from './api'
 
-export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno, _blnAlterarSenha) {
+export function postSaveUsuario(
+  _idUsuario,
+  _nome,
+  _cpfcnpj,
+  _email,
+  _senha,
+  _blnAcessoExterno,
+  _blnAlterarSenha
+) {
   console.log('_blnAlterarSenha', _blnAlterarSenha)
   return api
     .post(
@@ -48,7 +56,7 @@ export function getUsuario(_idUsuario) {
     })
 }
 
-export function getPorToken(){
+export function getPorToken() {
   return api
     .get(
       'usuario/LerPorToken',
@@ -61,18 +69,16 @@ export function getPorToken(){
     })
 }
 
-export function alterarSenha(senha, cpf){
+export function alterarSenha(senha, cpf) {
   console.log(senha, cpf)
   return api
-    .patch(
-      `usuario/alterarsenha?novaSenha=${senha}&txtCpfCnpj=${cpf}`,
-      { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    )
+    .patch(`usuario/alterarsenha?novaSenha=${senha}&txtCpfCnpj=${cpf}`, {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    })
     .then((response) => response.data)
     .catch((error) => {
       throw error
     })
 }
-
 
 export default api
