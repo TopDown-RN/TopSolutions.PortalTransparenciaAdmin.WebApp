@@ -9,7 +9,6 @@ export function postSaveUsuario(
   _blnAcessoExterno,
   _blnAlterarSenha
 ) {
-  console.log('_blnAlterarSenha', _blnAlterarSenha)
   return api
     .post(
       'usuario/registro',

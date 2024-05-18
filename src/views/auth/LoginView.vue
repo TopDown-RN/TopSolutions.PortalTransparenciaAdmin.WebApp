@@ -23,9 +23,7 @@ async function postAutenticar() {
     const response = await login(txtCpfCnpjEmail.value, txtPass.value)
     addToken(response.data.token)
     setIdUsuario(response.data.idUsuario)
-    window.location.reload()
     btnAcessar.value = true
-
     if (response.data.blnAlterarSenha) {
       await router.push('/usuario/alterarsenha')
     }

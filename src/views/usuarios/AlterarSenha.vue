@@ -61,7 +61,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
+  <Toast position="top-center" />
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       <span> Alterar Senha </span>
