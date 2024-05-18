@@ -17,7 +17,7 @@ const items = ref([
     label: 'Usuário',
     items: [
       {
-        label: 'Ajustes',
+        label: 'Meus Dados',
         icon: 'pi pi-cog',
         command: () => {
           router.push(`/usuarios/editar/${idUsuarioLogado.value}`)
@@ -25,7 +25,7 @@ const items = ref([
       },
       {
         label: 'Alterar Senha',
-        icon: 'pi pi-cog'
+        icon: 'pi pi-key'
       },
       {
         label: 'Sair',
