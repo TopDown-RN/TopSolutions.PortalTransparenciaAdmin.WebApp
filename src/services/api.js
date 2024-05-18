@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken, removeToken } from '@/services/auth/authToken.js'
+import { getToken, removeToken } from '@/services/auth/authStorage.js'
 
 function getBaseUrl() {
   if (import.meta.env.DEV) {

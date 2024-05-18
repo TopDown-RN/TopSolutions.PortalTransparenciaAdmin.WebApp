@@ -1,6 +1,6 @@
 <script setup>
 import { login } from '@/services/auth/autenticacao.js'
-import { addToken } from '@/services/auth/authToken'
+import { addToken, setIdUsuario } from '@/services/auth/authStorage'
 import { onMounted, ref } from 'vue'
 import { RiLoginBoxLine } from '@remixicon/vue'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -10,7 +10,6 @@ import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
-const tokenData = ref()
 const txtCpfCnpjEmail = ref('')
 const txtPass = ref('')
 const btnAcessar = ref(true)
@@ -19,8 +18,8 @@ async function postAutenticar() {
   try {
     btnAcessar.value = false
     const response = await login(txtCpfCnpjEmail.value, txtPass.value)
-    tokenData.value = response.data
-    addToken(tokenData.value.token)
+    addToken(response.data.token)
+    setIdUsuario(response.data.idUsuario)
     window.location.reload()
     btnAcessar.value = true
   } catch (e) {

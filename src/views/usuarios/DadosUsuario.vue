@@ -49,7 +49,7 @@ async function SaveUsuario() {
       blnAcessoExterno.value
     )
     const toastMessage = 'Usuário cadastrado com sucesso!'
-    store.dispatch('displayToast', toastMessage)
+    store.commit('setToastMessage', toastMessage)
     router.push({ name: 'usuarios' })
   } catch (error) {
     toast.add({

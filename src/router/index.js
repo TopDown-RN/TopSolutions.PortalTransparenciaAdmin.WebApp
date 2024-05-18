@@ -5,7 +5,7 @@ import DadosAdminRoutes from '@/router/dadosadministrativos'
 import UsuariosRoutes from '@/router/usuarios'
 import ArquivosRoutes from '@/router/arquivos'
 import MenusRoutes from '@/router/menus'
-import { getToken } from '@/services/auth/authToken'
+import { getToken } from '@/services/auth/authStorage'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
