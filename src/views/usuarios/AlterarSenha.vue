@@ -25,7 +25,7 @@ function showSuccess() {
   toast.add({
     severity: 'success',
     summary: 'Successo',
-    detail: 'Dados atualizados sucesso!',
+    detail: 'Senha alterada com sucesso!',
     life: 2000
   })
 }

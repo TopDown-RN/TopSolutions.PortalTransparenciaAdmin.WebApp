@@ -54,7 +54,6 @@ async function SaveUsuario() {
       return
     }
 
-    console.log(txtPass.value)
     await postSaveUsuario(
       idUsuario.value,
       txtNome.value,
@@ -69,7 +68,7 @@ async function SaveUsuario() {
     router.push({ name: 'usuarios' })
   } catch (error) {
     showError('Ocorreu um erro ao salvar usuário')
-    console.error('Ocorreu um erro ao salvar usuário', error)
+    console.error('Ocorreu um erro ao salvar usuário: ', error)
   }
 }
 
