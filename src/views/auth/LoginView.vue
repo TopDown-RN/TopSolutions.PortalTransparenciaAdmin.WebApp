@@ -24,6 +24,15 @@ async function postAutenticar() {
     addToken(response.data.token)
     setIdUsuario(response.data.idUsuario)
     btnAcessar.value = true
+    console.log(response.data)
+
+    if (
+      response.data.txtCpfCnpj === '99999999999' ||
+      response.data.txtCpfCnpj === '999.999.999-99'
+    ) {
+      await router.push('/usuario/novousuario')
+    }
+
     if (response.data.blnAlterarSenha) {
       await router.push('/usuario/alterarsenha')
     }
@@ -53,8 +62,21 @@ function verificarSessao() {
   }
 }
 
+function verificarCadastro() {
+  if (localStorage.getItem('cadastro-sucesso')) {
+    toast.add({
+      severity: 'success',
+      summary: 'Successo',
+      detail: 'Usuário cadastrado com sucesso!',
+      life: 5000
+    })
+    localStorage.removeItem('cadastro-sucesso')
+  }
+}
+
 onMounted(() => {
   verificarSessao()
+  verificarCadastro()
 })
 </script>
 
