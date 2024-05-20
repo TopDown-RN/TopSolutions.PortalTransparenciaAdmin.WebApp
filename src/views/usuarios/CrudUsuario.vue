@@ -40,12 +40,18 @@ const blnAlterarSenha = ref(false)
 
 const alterarSenha = route.name === 'usuario-editar' ? ref(false) : ref(true)
 
+const isValid = ref(true)
+
 async function SaveUsuario() {
   try {
     removeMask()
 
     if (txtPass.value !== senhaRepetida.value) {
       showError('Senhas não conferem!')
+      return
+    }
+
+    if (!validarCampos()) {
       return
     }
 
@@ -90,6 +96,28 @@ function removeMask() {
   txtCpfCnpj.value = txtCpfCnpj.value.replace(/\D/g, '')
 }
 
+function validarCampos() {
+  isValid.value = true
+
+  if (route.name === 'usuario-editar' && !alterarSenha.value) {
+    if (!txtNome.value || !txtCpfCnpj.value || !txtEmail.value) {
+      isValid.value = false
+    }
+  } else {
+    if (
+      !txtNome.value ||
+      !txtCpfCnpj.value ||
+      !txtEmail.value ||
+      !txtPass.value ||
+      !senhaRepetida.value
+    ) {
+      isValid.value = false
+    }
+  }
+
+  return isValid.value
+}
+
 function showError(error) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: error, life: 5000 })
 }
@@ -122,7 +150,14 @@ onMounted(() => {
       <div class="sm:col-span-2">
         <label for="fullName">Nome completo</label>
         <div class="mt-1.5">
-          <InputText v-model="txtNome" name="txtNome" id="txtNome" class="w-full" />
+          <InputText
+            v-model="txtNome"
+            name="txtNome"
+            id="txtNome"
+            :invalid="!txtNome && !isValid"
+            class="w-full"
+          />
+          <small v-if="!txtNome && !isValid" class="text-red-600">O campo Nome é obrigatório</small>
         </div>
       </div>
       <div>
@@ -133,14 +168,27 @@ onMounted(() => {
             v-mask="['###.###.###-##', '##.###.###/####-##']"
             name="txtCpfCnpj"
             id="txtCpfCnpj"
+            :invalid="!txtCpfCnpj && !isValid"
             class="w-full"
           />
+          <small v-if="!txtCpfCnpj && !isValid" class="text-red-600"
+            >O campo CPF/CNPJ é obrigatório</small
+          >
         </div>
       </div>
       <div>
         <label for="email">E-mail</label>
         <div class="mt-1.5">
-          <InputText v-model="txtEmail" name="txtEmail" id="txtEmail" class="w-full" />
+          <InputText
+            v-model="txtEmail"
+            name="txtEmail"
+            id="txtEmail"
+            :invalid="!txtEmail && !isValid"
+            class="w-full"
+          />
+          <small v-if="!txtEmail && !isValid" class="text-red-600"
+            >O campo Email é obrigatório</small
+          >
         </div>
       </div>
       <div>
@@ -152,12 +200,12 @@ onMounted(() => {
             v-model.trim="txtPass"
             name="txtPass"
             id="txtPass"
-            :invalid="alterarSenha && !txtPass"
+            :invalid="alterarSenha && !txtPass && !isValid"
             :disabled="!alterarSenha"
             :placeholder="!alterarSenha ? 'Desabilitado' : 'Digite a senha'"
             class="w-full"
           />
-          <small v-if="alterarSenha && !txtPass" class="text-red-600"
+          <small v-if="alterarSenha && !txtPass && !isValid" class="text-red-600"
             >O campo Senha é obrigatório</small
           >
         </div>
@@ -171,12 +219,12 @@ onMounted(() => {
             name="confirmPassword"
             id="confirmPassword"
             v-model.trim="senhaRepetida"
-            :invalid="alterarSenha && !senhaRepetida"
+            :invalid="alterarSenha && !senhaRepetida && !isValid"
             :disabled="!alterarSenha"
             :placeholder="!alterarSenha ? 'Desabilitado' : 'Digite a senha'"
             class="w-full"
           />
-          <small v-if="alterarSenha && !senhaRepetida" class="text-red-600"
+          <small v-if="alterarSenha && !senhaRepetida && !isValid" class="text-red-600"
             >O campo Senha é obrigatório</small
           >
         </div>
