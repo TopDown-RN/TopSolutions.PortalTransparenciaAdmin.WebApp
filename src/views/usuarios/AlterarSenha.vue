@@ -1,15 +1,17 @@
 <script setup>
 import { getPorToken, alterarSenha } from '@/services/usuario'
-//import { login } from '@/services/auth/autenticacao.js'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast'
-import { useToast } from 'primevue/usetoast'
+
+const router = useRouter()
+const toast = useToast()
 
 const senhaRepetida = ref('')
 const senhaNova = ref('')
-const toast = useToast()
 const usuario = ref()
 
 async function usuarioPorToken() {
@@ -47,12 +49,21 @@ async function salvar() {
     }
 
     const response = await alterarSenha(senhaNova.value, usuario.value.txtCpfCnpj)
-    console.log(response.data)
+    usuario.value.blnAlterarSenha = false
     showSuccess()
   } catch (e) {
     showError('Erro ao alterar senha!')
   }
 }
+
+router.beforeEach((to, from, next) => {
+  if (usuario.value.blnAlterarSenha) {
+    next(false)
+    router.push(from.path)
+  } else {
+    next()
+  }
+})
 
 onMounted(async () => {
   await usuarioPorToken()
