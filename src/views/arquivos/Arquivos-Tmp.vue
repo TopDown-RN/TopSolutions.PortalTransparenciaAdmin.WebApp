@@ -228,7 +228,6 @@ function LinparForm() {
   txtDescricao.value = ''
 }
 
-
 function formatDate(dateTimeString) {
   const date = new Date(dateTimeString)
 

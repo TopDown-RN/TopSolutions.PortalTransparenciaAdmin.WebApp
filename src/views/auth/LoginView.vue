@@ -24,7 +24,6 @@ async function postAutenticar() {
     addToken(response.data.token)
     setIdUsuario(response.data.idUsuario)
     btnAcessar.value = true
-    console.log(response.data)
 
     if (
       response.data.txtCpfCnpj === '99999999999' ||
