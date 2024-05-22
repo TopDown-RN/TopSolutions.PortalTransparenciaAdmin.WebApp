@@ -176,9 +176,9 @@ function validarCampos() {
     !numero.value ||
     !cidade.value ||
     !estado.value ||
-    !cep.value ||
-    !telefone.value ||
-    !email.value
+    !cep.value
+    //!telefone.value ||
+    //!email.value
   ) {
     btnAtualizar.value = true
     isValid.value = false
@@ -431,9 +431,8 @@ onMounted(() => {
                   v-model="telefone"
                   placeholder="(##) #####-####"
                   v-mask="['(##) ####-####', '(##) #####-####']"
-                  :invalid="!telefone"
                 />
-                <small v-if="!telefone" class="text-red-600">O campo Telefone é obrigatório</small>
+                <!-- <small v-if="!telefone" class="text-red-600">O campo Telefone é obrigatório</small> -->
               </div>
               <div class="md:col-span-3">
                 <label for="email">E-mail</label>
@@ -444,9 +443,8 @@ onMounted(() => {
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="email"
                   placeholder="Informe o e-mail"
-                  :invalid="!email"
                 />
-                <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small>
+                <!-- <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small> -->
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">

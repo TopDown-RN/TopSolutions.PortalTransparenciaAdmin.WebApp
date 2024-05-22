@@ -7,7 +7,9 @@ export function login(_usuario, _senha) {
       txtSenha: _senha
     })
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function verifyToken(_token) {

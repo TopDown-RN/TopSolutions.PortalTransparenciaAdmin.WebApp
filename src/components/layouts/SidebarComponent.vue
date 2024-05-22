@@ -49,6 +49,12 @@ const menusConfig = ref([
     icon: 'pi pi-wrench',
     rota: '/dados-administrativos'
   },
+  // {
+  //   id: 3,
+  //   nome: 'Suporte',
+  //   icon: 'pi pi-headphones',
+  //   url: `https://dataapi${window.location.hostname}/swagger/index.html`
+  // },
   {
     id: 3,
     nome: 'Dados API',
