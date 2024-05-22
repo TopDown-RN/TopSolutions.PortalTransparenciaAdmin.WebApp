@@ -7,15 +7,27 @@ const routes = [
   },
   {
     path: '/usuarios/novo',
-    name: 'novo-usuario',
+    name: 'usuario-novo',
     meta: { requiresAuth: true },
-    component: () => import('@/views/usuarios/DadosUsuario.vue')
+    component: () => import('@/views/usuarios/CrudUsuario.vue')
   },
   {
     path: '/usuarios/editar/:id',
     name: 'usuario-editar',
     meta: { requiresAuth: true },
-    component: () => import('@/views/usuarios/DadosUsuario.vue')
+    component: () => import('@/views/usuarios/CrudUsuario.vue')
+  },
+  {
+    path: '/usuario/alterarsenha',
+    name: 'alterar-senha',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/usuarios/AlterarSenha.vue')
+  },
+  {
+    path: '/usuario/novousuario',
+    name: 'novo-usuario',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/usuarios/NovoUsuario.vue')
   }
 ]
 

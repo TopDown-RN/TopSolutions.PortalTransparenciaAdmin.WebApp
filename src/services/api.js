@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from '@/services/auth/authToken.js'
+import { getToken, removeToken } from '@/services/auth/authStorage.js'
 
 function getBaseUrl() {
   if (import.meta.env.DEV) {
@@ -28,6 +28,23 @@ api.interceptors.request.use(
     return config
   },
   (error) => {
+    return Promise.reject(error)
+  }
+)
+
+api.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const token = getToken()
+      if (token) {
+        localStorage.setItem('sessao-expirada', 'Sessão expirada')
+        removeToken()
+        window.location.reload()
+      }
+    }
     return Promise.reject(error)
   }
 )
