@@ -2,19 +2,25 @@
 import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
 import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
-//import router from '@/router'
 import ProgressSpinner from 'primevue/progressspinner'
-import Message from 'primevue/message'
+import { manterNumeros } from '@/utils/manterNumeros'
+import InputText from 'primevue/inputtext'
+import InputMask from 'primevue/inputmask'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+
+const loading = ref(true)
+const toast = useToast()
 
 const btnAtualizar = ref(true)
-const success = ref(false)
-const error = ref(false)
+const isValid = ref(true)
 
 const logo = ref('')
 const extensaoLogo = ref('')
-
+const srcImgLogo = ref('')
 const capa = ref('')
 const extensaoCapa = ref('')
+const srcImgCapa = ref('')
 
 const orgao = ref('')
 const cnpj = ref('')
@@ -29,21 +35,6 @@ const email = ref('')
 const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
-
-// -------------------- Função para controle de messages
-function mensagemSucesso() {
-  success.value = true
-  setTimeout(() => {
-    success.value = false
-  }, 2000)
-}
-
-function mensagemErro() {
-  error.value = true
-  setTimeout(() => {
-    error.value = false
-  }, 2000)
-}
 
 const estadosOptions = ref([
   { codigo: 'AC', nome: 'Acre' },
@@ -97,18 +88,32 @@ async function pegarDadosAdmin() {
     facebook.value = response.data.txtFacebook
     instagram.value = response.data.txtInstagram
     x.value = response.data.txtX
+
+    srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
+    srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
+    loading.value = false
   } catch (error) {
     console.log(error)
+    loading.value = false
   }
 }
 
 async function atualizarDadosAdmin() {
   try {
     btnAtualizar.value = false
+
+    if (!validarCampos()) {
+      return
+    }
+
     const formData = new FormData()
 
     const inputImagemLogo = document.getElementById('inputImagemLogo')
     const inputImagemCapa = document.getElementById('inputImagemCapa')
+
+    cep.value = manterNumeros(cep.value)
+    telefone.value = manterNumeros(telefone.value)
+    cnpj.value = manterNumeros(cnpj.value)
 
     formData.append('txtCliente', orgao.value)
     formData.append('CpfCnpj', cnpj.value)
@@ -125,29 +130,70 @@ async function atualizarDadosAdmin() {
     formData.append('txtX', x.value)
     formData.append('imgCapa', inputImagemCapa.files[0])
 
-    const response = await postDadosAdmin(formData)
-
-    console.log(response)
+    await postDadosAdmin(formData)
 
     btnAtualizar.value = true
-    mensagemSucesso()
+    showSuccess()
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 2000)
   } catch (error) {
     btnAtualizar.value = true
-    mensagemErro()
+    showError()
     console.log(error)
   }
+}
+
+function showSuccess() {
+  toast.add({
+    severity: 'success',
+    summary: 'Successo',
+    detail: 'Dados atualizados sucesso!',
+    life: 2000
+  })
+}
+
+function showError() {
+  toast.add({ severity: 'error', summary: 'Erro!', detail: 'Erro ao atualizar dados!', life: 3000 })
+}
+
+function logoPreview(event) {
+  const file = event.target.files[0]
+  srcImgLogo.value = URL.createObjectURL(file)
+}
+
+function capaPreview(event) {
+  const file = event.target.files[0]
+  srcImgCapa.value = URL.createObjectURL(file)
+}
+
+function validarCampos() {
+  if (
+    !orgao.value ||
+    !cnpj.value ||
+    !rua_avenida.value ||
+    !numero.value ||
+    !cidade.value ||
+    !estado.value ||
+    !cep.value
+    //!telefone.value ||
+    //!email.value
+  ) {
+    btnAtualizar.value = true
+    isValid.value = false
+  }
+
+  return isValid.value
 }
 
 onMounted(() => {
   pegarDadosAdmin()
 })
-
-// watch(orgao, (newValue, oldValue) => {
-//   console.log('Orgão foi modificado de', oldValue, 'para', newValue)
-// })
 </script>
 
 <template>
+  <Toast />
   <div class="mx-auto max-w-3xl text-center">
     <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       Editar Dados Administrativos
@@ -157,57 +203,14 @@ onMounted(() => {
     </p>
     <div class="-mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
   </div>
-  <div class="container max-w-screen-base mx-auto">
+  <div v-if="loading" class="my-4 text-center">
+    <ProgressSpinner />
+  </div>
+  <div v-if="!loading" class="container max-w-screen-base mx-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
-        <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Dados atualizados sucesso</Message
-          >
-          <Message severity="error" :sticky="true" :life="2000" v-if="error"
-            >Erro ao atualizar dados</Message
-          >
-        </div>
+      <div class="bg-white rounded shadow-md p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 content-center">
-            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
-              <div>
-                <label for="inputImagemPerfil">Logo do Município</label>
-                <div
-                  class="flex justify-center items-center w-24 h-24 overflow-hidden rounded-full relative"
-                >
-                  <input
-                    type="file"
-                    id="inputImagemLogo"
-                    accept="image/*"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <img
-                    :src="'data:image/' + extensaoLogo + ';base64,' + logo"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label for="inputImagemCapa">Foto de Capa</label>
-                <div class="flex justify-center items-center w-24 h-24 overflow-hidden relative">
-                  <input
-                    type="file"
-                    id="inputImagemCapa"
-                    accept="image/*"
-                    class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <img
-                    :src="'data:image/' + extensaoCapa + ';base64,' + capa"
-                    alt="Base64 Image"
-                    width="100px"
-                  />
-                </div>
-              </div>
-            </div>
-
             <p class="font-medium text-lg pt-10">Redes Sociais</p>
 
             <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
@@ -224,7 +227,7 @@ onMounted(() => {
                   x-model="input3"
                   v-model="facebook"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="Prefeitura de Currais Novos"
+                  placeholder="facebook.com/nome"
                 />
               </div>
             </div>
@@ -243,7 +246,7 @@ onMounted(() => {
                   x-model="input1"
                   v-model="instagram"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="@prefeituradecurraisnovos"
+                  placeholder="@instagram"
                 />
               </div>
             </div>
@@ -262,68 +265,129 @@ onMounted(() => {
                   x-model="input2"
                   v-model="x"
                   class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
-                  placeholder="@prefeituracn"
+                  placeholder="@twitter"
                 />
               </div>
             </div>
           </div>
 
           <div class="lg:col-span-2">
+            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
+              <div>
+                <div class="flex items-center relative">
+                  <input
+                    type="file"
+                    id="inputImagemLogo"
+                    accept="image/*"
+                    @change="logoPreview"
+                    class="absolute top-0 left-0 opacity-0 h-full cursor-pointer"
+                  />
+                  <img
+                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    :src="srcImgLogo"
+                    alt="Base64 Image Logo"
+                  />
+                  <div>
+                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                      Logo do Município
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Clique para selecionar uma imagem
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center relative">
+                  <input
+                    type="file"
+                    id="inputImagemCapa"
+                    accept="image/*"
+                    @change="capaPreview"
+                    class="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
+                  />
+                  <img
+                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    :src="srcImgCapa"
+                    alt="Base64 Image Capa"
+                  />
+                  <div>
+                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                      Foto de Capa
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Clique para selecionar uma imagem
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>
-                <input
-                  type="text"
-                  name="orgao"
+                <InputText
                   id="orgao"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="Prefeitura de Currais Novos"
                   v-model="orgao"
+                  placeholder="Informe o órgão"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  :invalid="!orgao"
                 />
+                <small v-if="!orgao" class="text-red-600">O campo Órgão é obrigatório</small>
               </div>
               <div class="md:col-span-1">
                 <label for="numero">CNPJ</label>
-                <input
-                  type="text"
-                  name="numero"
+                <InputMask
                   id="numero"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cnpj"
-                  placeholder=""
+                  placeholder="##.###.###/####-##"
+                  mask="99.999.999/9999-99"
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  :invalid="!cnpj"
                 />
+                <small v-if="!cnpj" class="text-red-600">O campo CNPJ é obrigatório</small>
               </div>
               <div class="md:col-span-4">
                 <label for="rua">Rua/Avenida</label>
-                <input
+                <InputText
                   type="text"
                   name="rua"
                   id="rua"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="rua_avenida"
-                  placeholder="Praça Desembargador Tomaz Salustino"
+                  placeholder="Informe a rua ou avenida"
+                  :invalid="!rua_avenida"
                 />
+                <small v-if="!rua_avenida" class="text-red-600"
+                  >O campo Rua/Avenida é obrigatório</small
+                >
               </div>
               <div class="md:col-span-1">
                 <label for="numero">Número</label>
-                <input
+                <InputText
                   type="text"
                   name="numero"
                   id="numero"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="numero"
-                  placeholder="90"
+                  placeholder="Informe o número"
+                  :invalid="!numero"
                 />
+                <small v-if="!numero" class="text-red-600">O campo Número é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="cidade">Cidade</label>
-                <input
+                <InputText
                   type="text"
                   name="cidade"
                   id="cidade"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="cidade"
-                  placeholder="Currais Novos"
+                  placeholder="Informe a cidade"
+                  :invalid="!cidade"
                 />
+                <small v-if="!cidade" class="text-red-600">O campo Cidade é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="estado">Estado</label>
@@ -342,83 +406,45 @@ onMounted(() => {
                     {{ estado.nome }}
                   </option>
                 </select>
-
-                <!-- <div class="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                  <input
-                    name="estado"
-                    id="estado"
-                    placeholder="RN"
-                    class="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                    v-model="estado"
-                  />
-                  <button
-                    tabindex="-1"
-                    class="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-red-600"
-                  >
-                    <svg
-                      class="w-4 h-4 mx-2 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                  <button
-                    tabindex="-1"
-                    for="show_more"
-                    class="cursor-pointer outline-none focus:outline-none border-l border-gray-200 transition-all text-gray-300 hover:text-blue-600"
-                  >
-                    <svg
-                      class="w-4 h-4 mx-2 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <polyline points="18 15 12 9 6 15"></polyline>
-                    </svg>
-                  </button>
-                </div>-->
+                <small v-if="!estado" class="text-red-600">O campo Estado é obrigatório</small>
               </div>
               <div class="md:col-span-1">
                 <label for="cep">CEP</label>
-                <input
-                  type="text"
+                <InputMask
                   name="cep"
                   id="cep"
                   class="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="59380-000"
+                  placeholder="99999-999"
                   v-model="cep"
+                  mask="99999-999"
+                  :invalid="!cep"
                 />
+                <small v-if="!cep" class="text-red-600">O campo CEP é obrigatório</small>
               </div>
               <div class="md:col-span-2">
                 <label for="telefone">Telefone</label>
-                <input
+                <InputText
                   type="text"
                   name="telefone"
                   id="telefone"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="telefone"
-                  placeholder="(84) 3405-2714"
+                  placeholder="(##) #####-####"
+                  v-mask="['(##) ####-####', '(##) #####-####']"
                 />
+                <!-- <small v-if="!telefone" class="text-red-600">O campo Telefone é obrigatório</small> -->
               </div>
               <div class="md:col-span-3">
                 <label for="email">E-mail</label>
-                <input
+                <InputText
                   type="text"
                   name="email"
                   id="email"
                   class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                   v-model="email"
-                  placeholder="curraisnovos@email.com"
+                  placeholder="Informe o e-mail"
                 />
+                <!-- <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small> -->
               </div>
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
@@ -431,8 +457,8 @@ onMounted(() => {
                   <button
                     @click="btnAtualizar ? atualizarDadosAdmin() : null"
                     :class="{
-                      'bg-blue-500 hover:bg-blue-700': btnAtualizar,
-                      'bg-blue-700 cursor-not-allowed': !btnAtualizar
+                      'bg-primary-500 hover:bg-primary-700': btnAtualizar,
+                      'bg-primary-700 cursor-not-allowed': !btnAtualizar
                     }"
                     :disabled="!btnAtualizar"
                     class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"

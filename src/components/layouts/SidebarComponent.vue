@@ -6,6 +6,7 @@ import { getDadosAdmin } from '@/services/dadosAdmin'
 const props = defineProps(['dataShowSidebar'])
 const logo = ref('')
 const extensaoLogo = ref('')
+const txtCliente = ref('')
 
 const menuActive = ref()
 const menusPrincipal = ref([
@@ -18,13 +19,13 @@ const menusPrincipal = ref([
   {
     id: 2,
     nome: 'Menus',
-    icon: 'pi pi-database',
+    icon: 'pi pi-list',
     rota: '/menus'
   },
   {
     id: 3,
     nome: 'Arquivos',
-    icon: 'pi pi-file',
+    icon: 'pi pi-folder-open',
     rota: '/arquivos'
   }
 ])
@@ -32,31 +33,43 @@ const menusPrincipal = ref([
 const menusConfig = ref([
   {
     id: 1,
-    nome: 'Dados Administrativos',
+    nome: 'Usuários',
     icon: 'pi pi-user',
-    rota: '/dados-administrativos'
+    rota: '/usuarios'
   },
   {
     id: 2,
-    nome: 'Usuários',
-    icon: 'pi pi-users',
-    rota: '/usuarios'
+    nome: 'Dados Administrativos',
+    icon: 'pi pi-wrench',
+    rota: '/dados-administrativos'
+  },
+  // {
+  //   id: 3,
+  //   nome: 'Suporte',
+  //   icon: 'pi pi-headphones',
+  //   url: `https://dataapi${window.location.hostname}/swagger/index.html`
+  // },
+  {
+    id: 3,
+    nome: 'Dados API',
+    icon: 'pi pi-code',
+    url: `https://dataapi${window.location.hostname}/swagger/index.html`
   }
 ])
 
-async function getLogo() {
+async function getDados() {
   try {
     const response = await getDadosAdmin()
-    console.log(response.data)
     logo.value = response.data.imgLogo
     extensaoLogo.value = response.data.txtLogoExtensao
+    txtCliente.value = response.data.txtCliente
   } catch (e) {
     console.error('Não foi possível obter dados da api: ', e)
   }
 }
 
 onMounted(() => {
-  getLogo()
+  getDados()
 })
 </script>
 
@@ -77,7 +90,7 @@ onMounted(() => {
             alt="Base64 Image"
             width="100px"
           />
-          <h5 class="text-lg font-medium leading-tight mb-2">Prefeitura de Currais Novos</h5>
+          <h5 class="text-lg font-medium leading-tight mb-2">{{ txtCliente }}</h5>
           <span class="text-xs text-gray-300"> Painel Administrativo </span>
         </div>
       </div>
@@ -110,6 +123,7 @@ onMounted(() => {
           </li>
           <li v-for="menu in menusConfig" :key="menu.id">
             <RouterLink
+              v-if="menu.rota"
               :to="menu.rota"
               class="font-sans font-bold center transition-all hover:bg-white/10 text-sm py-2 rounded-lg text-white w-full flex items-center gap-2 px-2 capitalize"
               type="button"
@@ -123,6 +137,17 @@ onMounted(() => {
               <i :class="menu.icon"></i>
               <span>{{ menu.nome }}</span>
             </RouterLink>
+            <a
+              v-else
+              :href="menu.url"
+              target="_blank"
+              class="font-sans font-bold center transition-all hover:bg-white/10 text-sm py-2 rounded-lg text-white w-full flex items-center gap-2 px-2 capitalize"
+              v-tooltip.top="menu.nome"
+              @click="menuActive = menu.nome"
+            >
+              <i :class="menu.icon"></i>
+              <span>{{ menu.nome }}</span>
+            </a>
           </li>
         </ul>
       </nav>
@@ -131,15 +156,6 @@ onMounted(() => {
       <span class="text-sm text-gray-300">Para suporte: (84) 3207-1622</span>
     </div>
   </div>
-  <!--    <div class="flex-1">-->
-  <!--      <div class="bg-white shadow px-4 py-4">-->
-  <!--        <button class="md:hidden" @click="showSidebar = !showSidebar">-->
-  <!--          <i class="pi pi-bars"></i>-->
-  <!--        </button>-->
-  <!--      </div>-->
-  <!--      <div class="p-8 text-gray-800">Content</div>-->
-  <!--    </div>-->
-  <!--  </div>-->
 </template>
 
 <style scoped></style>
