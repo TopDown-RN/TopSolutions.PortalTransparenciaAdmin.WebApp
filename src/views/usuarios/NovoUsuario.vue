@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
@@ -8,6 +9,7 @@ import { useToast } from 'primevue/usetoast'
 import { postSaveUsuario } from '@/services/usuario'
 import { removeToken } from '@/services/auth/authStorage'
 
+const router = useRouter()
 const toast = useToast()
 
 const idUsuario = ref(0)
@@ -70,6 +72,11 @@ function validarCampos() {
 
   return isValid.value
 }
+
+router.beforeEach((to, from, next) => {
+  next(false)
+  router.push(from.path)
+})
 </script>
 
 <template>
