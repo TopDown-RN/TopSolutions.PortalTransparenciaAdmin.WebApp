@@ -1,6 +1,7 @@
 <script setup>
-import { getPorToken, alterarSenha } from '@/services/usuario'
 import { onMounted, ref } from 'vue'
+import { getPorToken, alterarSenha } from '@/services/usuario'
+import { removeToken } from '@/services/auth/authStorage'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import Password from 'primevue/password'
@@ -43,7 +44,7 @@ async function salvar() {
       return
     }
 
-    if (senhaNova.value.length < 0 || senhaRepetida.value.length < 0) {
+    if (senhaNova.value.length <= 0 || senhaRepetida.value.length <= 0) {
       showError('Informe a senha!')
       return
     }
@@ -51,6 +52,10 @@ async function salvar() {
     const response = await alterarSenha(senhaNova.value, usuario.value.txtCpfCnpj)
     usuario.value.blnAlterarSenha = false
     showSuccess()
+    removeToken()
+    setTimeout(() => {
+      window.location.reload()
+    }, 2000)
   } catch (e) {
     showError('Erro ao alterar senha!')
   }
@@ -84,7 +89,7 @@ onMounted(async () => {
       <span v-else>Escolha uma senha apropriada</span>
     </p>
   </div>
-  <form class="mx-auto max-w-2xl sm:mt-5">
+  <form action="" class="mx-auto max-w-2xl sm:mt-5">
     <div class="grid grid-cols-1 gap-x-5 gap-y-5 sm:grid-cols-1">
       <!-- <div>
         <label for="password">Senha atual</label>
