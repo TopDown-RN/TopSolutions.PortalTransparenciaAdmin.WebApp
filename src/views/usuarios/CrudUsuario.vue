@@ -137,7 +137,7 @@ onMounted(() => {
 <template>
   <Toast position="top-center" />
   <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       <span v-if="route.name === 'usuario-editar'"> Editar usuário </span>
       <span v-else> Cadastrar usuário </span>
     </h2>
