@@ -1,5 +1,5 @@
 <script setup>
-import { getToken } from '@/services/auth/authToken'
+import { getToken } from '@/services/auth/authStorage'
 import LayoutView from '@/views/LayoutView.vue'
 import LoginView from './views/auth/LoginView.vue'
 </script>

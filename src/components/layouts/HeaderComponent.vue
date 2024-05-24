@@ -1,18 +1,34 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { getIdUsuario, removeToken } from '@/services/auth/authStorage'
+import { getUsuario } from '@/services/usuario'
 import Avatar from 'primevue/avatar'
 import Menu from 'primevue/menu'
-import { removeToken } from '@/services/auth/authToken'
 
 const props = defineProps(['toggleSidebar'])
+const router = useRouter()
+
+const usuarioLogado = ref('')
+const idUsuarioLogado = ref()
 
 const items = ref([
   {
     label: 'Usuário',
     items: [
       {
-        label: 'Ajustes',
-        icon: 'pi pi-cog'
+        label: 'Meus Dados',
+        icon: 'pi pi-cog',
+        command: () => {
+          router.push(`/usuarios/editar/${idUsuarioLogado.value}`)
+        }
+      },
+      {
+        label: 'Alterar Senha',
+        icon: 'pi pi-key',
+        command: () => {
+          router.push('/usuario/alterarsenha')
+        }
       },
       {
         label: 'Sair',
@@ -27,6 +43,16 @@ const items = ref([
 
 const menu = ref()
 
+async function fetchUsuarioLogado() {
+  try {
+    idUsuarioLogado.value = getIdUsuario()
+    const response = await getUsuario(idUsuarioLogado.value)
+    usuarioLogado.value = response.data
+  } catch (e) {
+    console.error('erro ao buscar dados do usuario logado: ', e)
+  }
+}
+
 function toggle(event) {
   menu.value.toggle(event)
 }
@@ -35,6 +61,10 @@ function logout() {
   removeToken()
   window.location.reload()
 }
+
+onMounted(() => {
+  fetchUsuarioLogado()
+})
 </script>
 
 <template>
@@ -47,7 +77,7 @@ function logout() {
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">Top Solutions</h1>
       </div>
       <div class="flex space-x-3 items-center justify-center px-3">
-        <div class="text-md">Administrador</div>
+        <div class="text-md">{{ usuarioLogado.txtNome }}</div>
         <Avatar
           icon="pi pi-user"
           class="mr-2 bg-primary-800 text-white cursor-pointer"

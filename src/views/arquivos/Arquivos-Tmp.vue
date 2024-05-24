@@ -224,6 +224,10 @@ function deletarArquivoDaLista(arquivo) {
   files.value = files.value.filter((item) => item.name !== arquivo)
 }
 
+function LinparForm() {
+  txtDescricao.value = ''
+}
+
 function formatDate(dateTimeString) {
   const date = new Date(dateTimeString)
 
@@ -298,6 +302,7 @@ async function postSaveArquivos() {
     formData.append('anoPub', ano.value)
     formData.append('idMenu', id_Menu.value)
     await postArquivos(formData)
+    LinparForm()
     btnCadastraArquivo.value = true
     mensagemSucesso()
     await getArquivosList()
