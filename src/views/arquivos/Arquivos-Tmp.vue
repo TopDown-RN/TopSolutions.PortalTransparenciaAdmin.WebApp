@@ -13,14 +13,7 @@ import {
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
-import {
-  RiEdit2Line,
-  RiDeleteBin2Fill,
-  RiArrowLeftFill,
-  RiArrowRightFill,
-  RiPencilLine,
-  RiDeleteBinLine
-} from '@remixicon/vue'
+import { RiArrowLeftFill, RiArrowRightFill, RiPencilLine, RiDeleteBinLine } from '@remixicon/vue'
 import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
 import Message from 'primevue/message'
@@ -603,15 +596,17 @@ onMounted(() => {
                                 (txtTituloCat = cat.txtTitulo)
                             "
                             class="text-primary-700 pr-2"
+                            v-tooltip.top="'Editar'"
                           >
-                            <RiEdit2Line />
+                            <RiPencilLine />
                           </button>
                           <button
                             @click="excluirCategoria(cat.idCategoriaPubArquivo)"
-                            class="text-primary-700 pr-2"
+                            class="text-red-500 pr-2"
                             title="Excluir"
+                            v-tooltip.top="'Excluir'"
                           >
-                            <RiDeleteBin2Fill />
+                            <RiDeleteBinLine />
                           </button>
                         </td>
                       </tr>
