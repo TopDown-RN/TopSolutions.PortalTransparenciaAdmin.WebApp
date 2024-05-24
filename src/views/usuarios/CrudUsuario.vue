@@ -1,13 +1,13 @@
 <script setup>
-import { postSaveUsuario, getUsuario } from '@/services/usuario'
 import { onMounted, ref, watch } from 'vue'
-import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
+import { postSaveUsuario, getUsuario } from '@/services/usuario'
+import { useToastStore } from '@/stores/toastStore'
+import router from '@/router'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
-import { useStore } from 'vuex'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 
@@ -16,7 +16,7 @@ const idUsuario = ref(0)
 const route = useRoute()
 const router1 = useRouter()
 
-const store = useStore()
+const toastStore = useToastStore()
 const toast = useToast()
 
 function extractParamFromPath() {
@@ -69,8 +69,8 @@ async function SaveUsuario() {
       blnAcessoExterno.value,
       blnAlterarSenha.value
     )
-    const toastMessage = 'Usuário cadastrado com sucesso!'
-    store.commit('setToastMessage', toastMessage)
+
+    toastStore.setMessage('Usuário cadastrado com sucesso!')
     router.push({ name: 'usuarios' })
   } catch (error) {
     showError('Ocorreu um erro ao salvar usuário')
