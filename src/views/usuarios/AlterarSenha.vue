@@ -79,7 +79,7 @@ onMounted(async () => {
 <template>
   <Toast position="top-center" />
   <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
       <span> Alterar Senha </span>
     </h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
