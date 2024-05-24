@@ -13,7 +13,7 @@ import {
   LerArquivoPorIdApi
 } from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
-import { RiEdit2Line, RiDeleteBin2Fill, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
+import { RiArrowLeftFill, RiArrowRightFill, RiPencilLine, RiDeleteBinLine } from '@remixicon/vue'
 import Dialog from 'primevue/dialog'
 import usePagination from '@/utils/pagination'
 import Message from 'primevue/message'
@@ -187,15 +187,15 @@ async function excluir(arquivo) {
 
   confirm.require({
     group: 'templating',
-    header: 'Confirmation',
-    message: 'Please confirm to proceed moving forward.',
-    icon: 'pi pi-exclamation-circle',
-    acceptIcon: 'pi pi-check',
-    rejectIcon: 'pi pi-times',
-    rejectClass: 'p-button-outlined p-button-sm',
-    acceptClass: 'p-button-sm',
-    rejectLabel: 'Cancel',
-    acceptLabel: 'Save',
+    header: 'Confirmação',
+    message: 'Você tem certeza que deseja excluir?',
+    icon: 'pi pi-exclamation-circle text-amber-500',
+    acceptIcon: 'pi pi-check mr-2',
+    rejectIcon: 'pi pi-times mr-2',
+    rejectClass: 'bg-red-500 hover:bg-red-700 border-none',
+    acceptClass: 'border-none',
+    rejectLabel: 'Cancelar',
+    acceptLabel: 'Confirmar',
     accept: async () => {
       // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
       await deleteArquivo(arquivo.idArquivo)
@@ -418,15 +418,15 @@ onMounted(() => {
     </template>
   </ConfirmDialog>
   <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência.
     </p>
-    <div class="-mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
+    <div class="mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
   </div>
-  <div class="container max-w-screen-base mx-auto">
+  <div class="container max-w-screen-base overflow-x-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Arquivo salvo com sucesso</Message
@@ -501,7 +501,7 @@ onMounted(() => {
 
               <div class="flex flex-col items-start justify-end">
                 <button
-                  class="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700"
+                  class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white py-2 px-4 rounded h-10"
                   @click="mostrarDialogo"
                 >
                   Mais categorias
@@ -549,13 +549,13 @@ onMounted(() => {
                     />
                     <div class="flex items-center justify-end">
                       <button
-                        class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32"
+                        class="bg-primary-500 hover:bg-primary-700 mb-4 text-white font-bold py-2 px-4 rounded w-32"
                         @click="postCategoriaSave"
                       >
                         Cadastrar
                       </button>
                       <button
-                        class="bg-blue-500 hover:bg-blue-700 mb-4 text-white font-bold py-2 px-4 rounded w-32 ml-1"
+                        class="mb-4 border border-primary-500 hover:bg-primary-400 text-primary-500 hover:text-white font-bold py-2 px-4 rounded w-32 ml-1"
                         @click="
                           (idCategoriaPubArquivoCat = 0),
                             (txtTituloCat = ''),
@@ -596,15 +596,17 @@ onMounted(() => {
                                 (txtTituloCat = cat.txtTitulo)
                             "
                             class="text-primary-700 pr-2"
+                            v-tooltip.top="'Editar'"
                           >
-                            <RiEdit2Line />
+                            <RiPencilLine />
                           </button>
                           <button
                             @click="excluirCategoria(cat.idCategoriaPubArquivo)"
-                            class="text-primary-700 pr-2"
+                            class="text-red-500 pr-2"
                             title="Excluir"
+                            v-tooltip.top="'Excluir'"
                           >
-                            <RiDeleteBin2Fill />
+                            <RiDeleteBinLine />
                           </button>
                         </td>
                       </tr>
@@ -635,7 +637,7 @@ onMounted(() => {
                 <div>
                   <label
                     for="inputarquivos"
-                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 flex items-center justify-center"
+                    class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white py-2 px-4 rounded h-9 flex items-center justify-center cursor-pointer"
                   >
                     <i class="pi pi-upload mr-2"></i>
                     Selecionar arquivos
@@ -652,7 +654,14 @@ onMounted(() => {
                 <div class="ml-10">
                   <ul class="flex flex-col items-start justify-center">
                     <li v-for="file in files" :key="file.name" class="list-disc">
-                      {{ file.name }} <button @click="deletarArquivoDaLista(file.name)">X</button>
+                      {{ file.name }}
+                      <button
+                        class="text-red-500"
+                        @click="deletarArquivoDaLista(file.name)"
+                        v-tooltip="'Remover'"
+                      >
+                        <i class="pi pi-times-circle" style="font-size: 1.2rem"></i>
+                      </button>
                     </li>
                   </ul>
                 </div>
@@ -662,8 +671,8 @@ onMounted(() => {
                   <button
                     @click="btnCadastraArquivo ? postSaveArquivos() : null"
                     :class="{
-                      'bg-blue-500 hover:bg-blue-700': btnCadastraArquivo,
-                      'bg-blue-700 cursor-not-allowed': !btnCadastraArquivo
+                      'bg-primary-500 hover:bg-primary-700': btnCadastraArquivo,
+                      'bg-primary-700 cursor-not-allowed': !btnCadastraArquivo
                     }"
                     :disabled="!btnCadastraArquivo"
                     class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
@@ -686,7 +695,7 @@ onMounted(() => {
                         (files = []),
                         getArquivosList()
                     "
-                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    class="ml-2 border border-primary-500 hover:bg-primary-400 text-primary-500 hover:text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
                   >
                     Limpar
                   </button>
@@ -736,12 +745,22 @@ onMounted(() => {
               </td>
               <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>
               <td class="py-3 px-4 flex">
-                <button @click="editar(arq)" class="text-primary-700 pr-2" title="Editar">
-                  <RiEdit2Line />
+                <button
+                  @click="editar(arq)"
+                  class="text-primary-500 pr-2"
+                  title="Editar"
+                  v-tooltip.top="'Editar'"
+                >
+                  <RiPencilLine />
                 </button>
 
-                <button @click="excluir(arq)" class="text-primary-700 pr-2" title="Excluir">
-                  <RiDeleteBin2Fill />
+                <button
+                  @click="excluir(arq)"
+                  class="text-red-500 pr-2"
+                  title="Excluir"
+                  v-tooltip.top="'Excluir'"
+                >
+                  <RiDeleteBinLine />
                 </button>
               </td>
             </tr>

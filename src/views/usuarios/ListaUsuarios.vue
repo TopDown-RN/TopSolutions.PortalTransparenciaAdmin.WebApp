@@ -1,25 +1,24 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { getListaUsuarios } from '@/services/usuario'
+import { useToastStore } from '@/stores/toastStore'
+import router from '@/router/index.js'
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ProgressSpinner from 'primevue/progressspinner'
 import InputText from 'primevue/inputtext'
-import { FilterMatchMode } from 'primevue/api'
 import Toast from 'primevue/toast'
 import OverlayPanel from 'primevue/overlaypanel'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
+import { FilterMatchMode } from 'primevue/api'
 import { useToast } from 'primevue/usetoast'
-import { useStore } from 'vuex'
-import router from '@/router/index.js'
-import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const loading = ref(true)
 const result = ref()
 
-const store = useStore()
+const toastStore = useToastStore()
 const toast = useToast()
 
 const toastMessage = ref('')
@@ -69,7 +68,7 @@ watch(result, () => {
 
 onMounted(() => {
   fetchUsuario()
-  toastMessage.value = store.state.toastMessage
+  toastMessage.value = toastStore.showToast
 })
 </script>
 
