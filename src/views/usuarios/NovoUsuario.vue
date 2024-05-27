@@ -8,6 +8,7 @@ import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { postSaveUsuario } from '@/services/usuario'
 import { removeToken } from '@/services/auth/authStorage'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const router = useRouter()
 const toast = useToast()
@@ -81,14 +82,10 @@ router.beforeEach((to, from, next) => {
 
 <template>
   <Toast position="top-center" />
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      <span>Cadastre seu usuario</span>
-    </h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Você precisa criar seu usuario para os próximos logins
-    </p>
-  </div>
+  <HeadingComponent
+    title="Cadastre seu usuário"
+    aviso="Você precisa criar seu usuario para os próximos logins"
+  />
   <form class="mx-auto max-w-6xl sm:mt-10">
     <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="sm:col-span-2">
