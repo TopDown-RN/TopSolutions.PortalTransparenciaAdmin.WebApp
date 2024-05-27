@@ -7,7 +7,7 @@ import Editor from 'primevue/editor'
 
 const telefone = ref('')
 const email = ref('')
-const message = ref('')
+const conteudo = ref('')
 
 const loading = ref(false)
 
@@ -60,8 +60,8 @@ function load() {
         </div>
 
         <div class="w-full mt-4">
-          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Messagem</label>
-          <Editor v-model="message" editorStyle="height: 320px" />
+          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Conteúdo na página</label>
+          <Editor v-model="conteudo" editorStyle="height: 320px" />
         </div>
 
         <div class="my-4 flex justify-end">
