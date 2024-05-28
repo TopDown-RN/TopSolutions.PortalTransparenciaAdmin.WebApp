@@ -1,30 +1,69 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getDadosOuvidoria, postDadosOuvidoria } from '@/services/ouvidoria'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
-import Editor from 'primevue/editor'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const telefone = ref('')
 const email = ref('')
 const conteudo = ref('')
 
+const toast = useToast()
 const loading = ref(false)
 
-function salvar() {
-  load()
+async function fetchDadosOuvidoria() {
+  const response = await getDadosOuvidoria()
+  telefone.value = response.data.txtNumTelefone
+  email.value = response.data.txtEmail
+  conteudo.value = response.data.conteudo
 }
 
-function load() {
-  loading.value = true
-  setTimeout(() => {
+async function salvarDados() {
+  try {
+    console.log(conteudo.value)
+    loading.value = true
+    const formData = new FormData()
+    formData.append('txtNumTelefone', telefone.value)
+    formData.append('txtEmail', email.value)
+    formData.append('conteudo', conteudo.value)
+
+    await postDadosOuvidoria(formData)
+    showSuccess()
     loading.value = false
-  }, 2000)
+  } catch (err) {
+    loading.value = false
+    showError()
+    console.log(err)
+  }
 }
+
+function showSuccess() {
+  toast.add({
+    severity: 'success',
+    summary: 'Successo',
+    detail: 'Dados atualizados sucesso!',
+    life: 2000
+  })
+}
+
+function showError() {
+  toast.add({ severity: 'error', summary: 'Erro!', detail: 'Erro ao atualizar dados!', life: 3000 })
+}
+
+onMounted(() => {
+  fetchDadosOuvidoria()
+})
 </script>
 
 <template>
   <section class="mx-auto max-w-3xl text-center">
+    <Toast position="top-center" />
+
     <HeadingComponent
       title="Ouvidoria"
       subtitle="Gerencie aqui os dados para a ouvidoria."
@@ -32,7 +71,7 @@ function load() {
     />
 
     <div class="w-full p-8 pt-8">
-      <form @submit.prevent="salvar">
+      <form @submit.prevent="salvarDados">
         <div class="-mx-2 md:items-center md:flex">
           <div class="flex-1 px-2">
             <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Telefone</label>
@@ -60,8 +99,10 @@ function load() {
         </div>
 
         <div class="w-full mt-4">
-          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Conteúdo na página</label>
-          <Editor v-model="conteudo" editorStyle="height: 320px" />
+          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+            >Conteúdo na página</label
+          >
+          <QuillEditor v-model:content="conteudo" contentType="html" toolbar="full" theme="snow" />
         </div>
 
         <div class="my-4 flex justify-end">

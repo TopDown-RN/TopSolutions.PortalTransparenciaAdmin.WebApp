@@ -194,7 +194,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Toast />
+  <Toast position="top-center" />
   <HeadingComponent
     title="Dados Administrativos"
     subtitle="Os dados alterados aqui impactam diretamente no Portal da Transparência."
