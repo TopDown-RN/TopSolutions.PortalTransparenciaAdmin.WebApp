@@ -60,7 +60,7 @@ onMounted(() => {
           {{ formatData(slotProps.data.dtImportacao) }}
         </template>
       </Column>
-      <Column field="txtNomeUsuario" header="Atualizado por"></Column>
+      <Column field="txtNomeUsuario" header="Atualizado por:"></Column>
     </DataTable>
   </div>
 </template>
