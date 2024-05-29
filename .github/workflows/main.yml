@@ -1,4 +1,4 @@
-name: Main - TopSolutions Portal Transparencia Admin - Web
+name: HOMOLOGACAO - TopSolutions Portal Transparencia Admin - Web
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
         run: echo ${{secrets.DOCKERHUB_PWD}} | docker login -u ${{secrets.DOCKERHUB_USER}} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag gitmaster/transparencia-adminweb:latest
+        run: docker build . --file Dockerfile --tag gitmaster/transparencia-homoadminweb:latest
 
       - name: Push to Docker Hub
-        run: docker push gitmaster/transparencia-adminweb:latest
+        run: docker push gitmaster/transparencia-homoadminweb:latest
