@@ -55,12 +55,12 @@ onMounted(() => {
       stripedRows
     >
       <Column field="txtDestinoImportacao" header="Consulta" />
-      <Column field="dtImportacao" header="Última atualização em:">
+      <Column field="dtImportacao" header="Última atualização em">
         <template #body="slotProps">
           {{ formatData(slotProps.data.dtImportacao) }}
         </template>
       </Column>
-      <Column field="txtNomeUsuario" header="Atualizado por:"></Column>
+      <Column field="txtNomeUsuario" header="Atualizado por"></Column>
     </DataTable>
   </div>
 </template>
