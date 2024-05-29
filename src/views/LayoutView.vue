@@ -16,7 +16,7 @@ function toggleSidebar() {
     <SidebarComponent :dataShowSidebar="showSidebar" />
     <div class="flex-1">
       <HeaderComponent :toggleSidebar="toggleSidebar" />
-      <div class="p-8 text-gray-800">
+      <div class="p-2">
         <BreadcrumbsComponent />
         <div class="my-8">
           <RouterView />

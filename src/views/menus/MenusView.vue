@@ -182,13 +182,13 @@ onMounted(() => {
 
 <template>
   <div id="gridMenu" class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
     <p class="mt-2 text-lg leading-8 text-gray-600">
       Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.
     </p>
-    <div class="-mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
+    <div class="mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
   </div>
-  <div class="container max-w-screen-base mx-auto">
+  <div class="container max-w-screen-base overflow-x-auto">
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">
         <div>
