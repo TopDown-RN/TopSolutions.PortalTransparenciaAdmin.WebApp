@@ -21,6 +21,7 @@ import ProgressSpinner from 'primevue/progressspinner'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 import { truncateNoMeio } from '@/utils/truncateString'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const confirm = useConfirm()
 
@@ -417,13 +418,11 @@ onMounted(() => {
       </div>
     </template>
   </ConfirmDialog>
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Arquivos</h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência.
-    </p>
-    <div class="mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
-  </div>
+  <HeadingComponent
+    title="Arquivos"
+    subtitle="Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência."
+    description="Mantenha-os sempre atualizados."
+  />
   <div class="container max-w-screen-base overflow-x-auto">
     <div>
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">

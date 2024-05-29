@@ -7,6 +7,7 @@ import { useToast } from 'primevue/usetoast'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const router = useRouter()
 const toast = useToast()
@@ -78,17 +79,15 @@ onMounted(async () => {
 
 <template>
   <Toast position="top-center" />
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      <span> Alterar Senha </span>
-    </h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      <span v-if="usuario && usuario.blnAlterarSenha" class="text-yellow-600 bg-yellow-200 p-1"
-        >Usuário com primeiro acesso podem criar uma nova senha</span
-      >
-      <span v-else>Escolha uma senha apropriada</span>
-    </p>
-  </div>
+  <HeadingComponent
+    title="Alterar senha"
+    subtitle="Escolha uma senha apropriada"
+    :aviso="
+      usuario && usuario.blnAlterarSenha
+        ? 'Usuário com primeiro acesso devem criar uma nova senha'
+        : ''
+    "
+  />
   <form action="" class="mx-auto max-w-2xl sm:mt-5">
     <div class="grid grid-cols-1 gap-x-5 gap-y-5 sm:grid-cols-1">
       <!-- <div>
