@@ -57,6 +57,19 @@ watch(blnArquivo, (newVal) => {
   }
 })
 
+// Watcher para desativar uma opção quando a outra é ativada
+watch(blnArquivo, (newVal) => {
+  if (newVal) {
+    blnPopUp.value = false; // Desativa Pop-Up se Arquivo é ativado
+  }
+});
+
+watch(blnPopUp, (newVal) => {
+  if (newVal) {
+    blnArquivo.value = false; // Desativa Arquivo se Pop-Up é ativado
+  }
+});
+
 // ---------------------  Funções gerais
 // const menusSorted = computed(() => {
 //   return menus.value.slice().sort((a, b) => {
