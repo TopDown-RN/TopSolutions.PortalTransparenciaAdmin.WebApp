@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
 import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
@@ -14,7 +14,7 @@ import HeadingComponent from '@/components/HeadingComponent.vue'
 const btnCadastraMenu = ref(true)
 const erros = ref([])
 
-// Campos de cadastrp de arquivo
+// Campos de cadastro de arquivo
 const idArquivo = ref(0)
 const txtDescricao = ref('')
 const txtDescricaoGeral = ref('')
@@ -47,6 +47,28 @@ const locais_load = [
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
+
+// Watcher para atualizar a URL do menu quando a opção "Arquivo" é marcada
+watch(blnArquivo, (newVal) => {
+  if (newVal && !txtUrl.value.startsWith('/arquivos/')) {
+    txtUrl.value = `/arquivos/${txtUrl.value}`
+  } else if (!newVal && txtUrl.value.startsWith('/arquivos/')) {
+    txtUrl.value = txtUrl.value.replace('/arquivos/', '')
+  }
+})
+
+// Watcher para desativar uma opção quando a outra é ativada
+watch(blnArquivo, (newVal) => {
+  if (newVal) {
+    blnPopUp.value = false; // Desativa Pop-Up se Arquivo é ativado
+  }
+});
+
+watch(blnPopUp, (newVal) => {
+  if (newVal) {
+    blnArquivo.value = false; // Desativa Arquivo se Pop-Up é ativado
+  }
+});
 
 // ---------------------  Funções gerais
 // const menusSorted = computed(() => {
