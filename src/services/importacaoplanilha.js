@@ -4,7 +4,7 @@ export const getDownloadPlanilha = (codPlanilha) => {
     return api
       .get('/importacaoplanilha/downloadasync', {
         params: { codPlanilha: codPlanilha },
-        //responseType: 'blob'
+        responseType: 'blob'
       })
       .then((response) => response)
       .catch((error) => {
