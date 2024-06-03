@@ -13,7 +13,7 @@ const toast = useToast()
 const loading = ref(false)
 const loadingSpinner = ref(true)
 
-const server = ref('')
+const host = ref('')
 const port = ref('')
 const username = ref('')
 const pass = ref('')
@@ -22,7 +22,7 @@ async function fetchCredenciais() {
   try {
     const response = await getDadosAdmin()
     console.log(response.data)
-    server.value = response.data.smtpServer
+    host.value = response.data.smtpHost
     port.value = response.data.smtpPort
     username.value = response.data.smtpCredentialUser
     pass.value = response.data.smtpCredentialPass
@@ -39,7 +39,7 @@ async function salvarCredenciais() {
 
     const formData = new FormData()
 
-    formData.append('smtpServer', server.value)
+    formData.append('smtpHost', host.value)
     formData.append('smtpPort', port.value)
     formData.append('smtpCredentialUser', username.value)
     formData.append('smtpCredentialPass', pass.value)
@@ -90,12 +90,12 @@ onMounted(() => {
       <form @submit.prevent="salvarCredenciais">
         <div class="-mx-2 md:items-center md:flex">
           <div class="flex-1 px-2">
-            <label for="server" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+            <label for="host" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
               >Endereço do servidor SMTP</label
             >
             <InputText
-              v-model="server"
-              id="server"
+              v-model="host"
+              id="host"
               type="text"
               placeholder="smtp.exemplo.com"
               class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
