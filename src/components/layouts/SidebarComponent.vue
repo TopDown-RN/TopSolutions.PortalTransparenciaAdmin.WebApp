@@ -33,6 +33,12 @@ const menusPrincipal = ref([
     nome: 'Ouvidoria',
     icon: 'pi pi-headphones',
     rota: '/ouvidoria'
+  },
+  {
+    id: 5,
+    nome: 'Importar Dados',
+    icon: 'pi pi-upload',
+    rota: '/importacaodadosplanilha'
   }
 ])
 
