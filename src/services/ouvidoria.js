@@ -21,3 +21,16 @@ export function postDadosOuvidoria(formData) {
       throw err
     })
 }
+
+export function postCredenciaisOuvidoria(formData) {
+  return api
+    .post('dadosouvidoria/gravarcredenciais', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      throw err
+    })
+}
