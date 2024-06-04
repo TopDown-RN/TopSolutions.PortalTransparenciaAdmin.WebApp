@@ -12,19 +12,16 @@ import api from './api'
 //       })
 //   }
 
-
-
 export function postPlanilha(formData) {
-    return api
-      .post('importacaoplanilha/importar', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        console.log('error:', error)
-        throw error
-      })
+  return api
+    .post('importacaoplanilha/importar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log('error:', error)
+      throw error
+    })
 }
-  
