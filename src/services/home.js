@@ -7,7 +7,6 @@ export function getRegistroImportacao() {
     .catch((error) => console.error(error))
 }
 
-
 export function getRegistroImportacaoManuais() {
   return api
     .get('registroimportacao/listarmanuais')
@@ -15,7 +14,7 @@ export function getRegistroImportacaoManuais() {
     .catch((error) => console.error(error))
 }
 
-export function deletarRegistroImportcaoManuais(idRegistro){
+export function deletarRegistroImportcaoManuais(idRegistro) {
   return api
     .post(`registroimportacao/deletarRegistroManuais?idRegistro=${idRegistro}`)
     .then((response) => response.data)
@@ -23,8 +22,6 @@ export function deletarRegistroImportcaoManuais(idRegistro){
       throw error
     })
 }
-
-
 
 // .get('/importacaoplanilha/downloadasync', {
 //   params: { codPlanilha: codPlanilha },
