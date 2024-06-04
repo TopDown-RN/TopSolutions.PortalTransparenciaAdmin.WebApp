@@ -1,16 +1,16 @@
 import api from './api'
 
-export const getDownloadPlanilha = (codPlanilha) => {
-    return api
-      .get('/importacaoplanilha/downloadasync', {
-        params: { codPlanilha: codPlanilha },
-        responseType: 'blob'
-      })
-      .then((response) => response)
-      .catch((error) => {
-        throw error
-      })
-  }
+// export const getDownloadPlanilha = (codPlanilha) => {
+//     return api
+//       .get('/importacaoplanilha/downloadasync', {
+//         params: { codPlanilha: codPlanilha },
+//         responseType: 'blob'
+//       })
+//       .then((response) => response)
+//       .catch((error) => {
+//         throw error
+//       })
+//   }
 
 
 
