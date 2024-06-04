@@ -12,7 +12,7 @@ import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
 import ConfirmDialog from 'primevue/confirmdialog'
-import InputGroup from 'primevue/inputgroup'
+import AcordoModelo from '@/assets/planilhasModelo/AcordoModelo.xlsx'
 
 const confirm = useConfirm()
 
@@ -137,32 +137,53 @@ async function registrosImportacaoManuais() {
     }
 }
 
-async function downloadPlanilha() {
-  try {
+// async function downloadPlanilha() {
+//   try {
 
-    if(!cod.value) return console.error('ID do registro de importação não informado');
+//     if(!cod.value) return console.error('ID do registro de importação não informado');
 
-    const response = await getDownloadPlanilha(cod.value);
-    console.log('Resposta da API:', response);
+//     const response = await getDownloadPlanilha(cod.value);
+//     console.log('Resposta da API:', response);
 
-    const blob = new Blob([response.data], { type: response.data.type });
-    const url = URL.createObjectURL(blob);
+//     const blob = new Blob([response.data], { type: response.data.type });
+//     const url = URL.createObjectURL(blob);
+
+//     const link = document.createElement('a');
+//     link.href = url;
+    
+//     const nomeArquivo = options.value.filter(item => item.cod === cod.value)[0].nomearquivo;
+//     link.download = nomeArquivo;
+
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+
+//     URL.revokeObjectURL(url);
+
+//   } catch (error) {
+//     console.error('Erro ao baixar o arquivo:', error);
+//   }
+// }
+
+async function downloadPlanilha(){
+    let fileURL;
+    let fileName;
+
+    switch(cod.value){
+        case 1:
+            fileURL = AcordoModelo
+            fileName = 'AcordoModelo.xlsx'
+            break
+        default:
+            return
+    }
 
     const link = document.createElement('a');
-    link.href = url;
-    
-    const nomeArquivo = options.value.filter(item => item.cod === cod.value)[0].nomearquivo;
-    link.download = nomeArquivo;
-
+    link.href = fileURL;
+    link.setAttribute('download', fileName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-
-  } catch (error) {
-    console.error('Erro ao baixar o arquivo:', error);
-  }
 }
 
 watch(file, (newfile, oldfile) => {
@@ -209,7 +230,7 @@ onMounted(async () => {
                     <div class="grid gap text-sm grid-cols-1">
                         <div class="lg:col-span-3">
                             <div class="md:col-span-2">
-                                <label>Importação</label>
+                                <label>Selecione o modelo</label>
                                 <select v-model="cod" :disabled="desativar" class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent">
                                     <option value="0" disabled selected>Selecione</option>
                                     <option v-for="option in options" :key="option.cod" :value="option.cod">{{ option.nome }}</option>
