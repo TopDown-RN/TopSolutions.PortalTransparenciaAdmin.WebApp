@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { getDownloadPlanilha, postPlanilha } from '@/services/importacaoplanilha'
+import { postPlanilha } from '@/services/importacaoplanilha'
 import { getRegistroImportacaoManuais, deletarRegistroImportcaoManuais } from '@/services/home'
 import { RiDeleteBinLine } from '@remixicon/vue'
 import Column from 'primevue/column'
