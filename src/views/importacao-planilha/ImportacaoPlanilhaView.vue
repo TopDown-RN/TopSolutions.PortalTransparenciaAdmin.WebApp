@@ -199,7 +199,7 @@ onMounted(async () => {
 <template>
   <ConfirmDialog group="templating">
     <template #message="slotProps">
-      <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
+      <div class="flex-column align-items-center border-bottom-1 surface-border flex w-full gap-3">
         <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
         <p>{{ slotProps.message.message }}</p>
       </div>
@@ -216,17 +216,17 @@ onMounted(async () => {
       </p>
     </div>
 
-    <div class="container max-w-screen-base mx-auto">
+    <div class="max-w-screen-base container mx-auto">
       <div>
-        <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
-          <div class="grid gap text-sm grid-cols-1">
+        <div class="mb-6 mt-6 rounded bg-white p-4 px-4 shadow-lg md:p-8">
+          <div class="gap grid grid-cols-1 text-sm">
             <div class="lg:col-span-3">
               <div class="md:col-span-2">
                 <label>Selecione o modelo</label>
                 <select
                   v-model="cod"
                   :disabled="desativar"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                 >
                   <option value="0" disabled selected>Selecione</option>
                   <option v-for="option in options" :key="option.cod" :value="option.cod">
@@ -240,10 +240,10 @@ onMounted(async () => {
                                 Baixar modelo
                             </button>
                         </div> -->
-            <div class="md:col-span-4 mt-3 flex items-center">
+            <div class="mt-3 flex items-center md:col-span-4">
               <button
                 @click="downloadPlanilha"
-                class="mr-4 border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded cursor-pointer"
+                class="mr-4 cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
               >
                 <i class="pi pi-download"></i>
                 Baixar modelo
@@ -252,7 +252,7 @@ onMounted(async () => {
                 <div>
                   <label
                     for="inputarquivos"
-                    class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded cursor-pointer"
+                    class="cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
                   >
                     <i class="pi pi-file-import"></i>
                     Selecionar Planilha
@@ -272,16 +272,16 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
-            <div class="md:col-span-5 text-right">
+            <div class="text-right md:col-span-5">
               <div class="inline-flex items-end">
                 <button
                   @click="btnImpotar ? importarPlanilha() : null"
                   :class="{
                     'bg-primary-500 hover:bg-primary-700': btnImpotar,
-                    'bg-primary-700 cursor-not-allowed': !btnImpotar
+                    'cursor-not-allowed bg-primary-700': !btnImpotar
                   }"
                   :disabled="!btnImpotar"
-                  class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                  class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
                 >
                   <span v-if="btnImpotar">Importar</span>
                   <span v-else>
@@ -297,7 +297,7 @@ onMounted(async () => {
 
             <div>
               <ul>
-                <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
+                <li class="list-disc text-red-600" v-for="erro in erros" :key="erro">{{ erro }}</li>
               </ul>
             </div>
           </div>
@@ -319,7 +319,7 @@ onMounted(async () => {
               <div class="flex justify-end">
                 <span class="relative">
                   <i
-                    class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+                    class="pi pi-search absolute left-3 top-2/4 -mt-2 text-surface-400 dark:text-surface-600"
                   />
                   <InputText
                     size="small"

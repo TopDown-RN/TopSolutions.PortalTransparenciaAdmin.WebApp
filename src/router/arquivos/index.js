@@ -7,7 +7,7 @@ const routes = [
   },
   {
     path: '/arquivosview',
-    name: 'arquivosview',
+    name: 'Arquivos (Novo)',
     meta: { requiresAuth: true },
     component: () => import('@/views/arquivos/ArquivosView.vue')
   }

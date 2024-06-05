@@ -1,25 +1,30 @@
 <script setup>
-import HeadingComponent from '@/components/HeadingComponent.vue'
 import { onMounted, ref, watch } from 'vue'
 import { LerArquivoPorIdApi, deleteArquivo, getArquivos } from '@/services/arquivos'
-import Column from 'primevue/column'
+import { truncateNoMeio } from '@/utils/truncateString'
+import HeadingComponent from '@/components/HeadingComponent.vue'
+import CadastrarArquivo from '@/views/arquivos/CadastrarArquivo.vue'
 import DataTable from 'primevue/datatable'
-import { FilterMatchMode } from 'primevue/api'
+import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
-import { useConfirm } from 'primevue/useconfirm'
-import { useToast } from 'primevue/usetoast'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog'
-import Toolbar from 'primevue/toolbar'
-import { truncateNoMeio } from '@/utils/truncateString'
+import { FilterMatchMode } from 'primevue/api'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 
 const confirm = useConfirm()
 const toast = useToast()
 
 const arquivos = ref([])
 const selectedArquivo = ref()
+const editingRows = ref([])
+
+const showCadastroArq = ref(false)
 
 const loading = ref(true)
 
@@ -39,16 +44,19 @@ async function fetchArquivos() {
 }
 
 function excluirArq(arquivo) {
-  console.log(arquivo.data.idArquivo)
+  console.log(arquivo.data)
   confirm.require({
-    message: 'Você tem certeza que deseja fazer isso?',
-    header: 'Excluir Arquivo',
-    icon: 'pi pi-exclamation-triangle mr-3',
+    group: 'templating',
+    header: 'Confirme',
+    message: 'Tem certeza de que deseja excluir o arquivo',
+    file: `${arquivo.data.nomeArquivo}`,
+    icon: 'pi pi-exclamation-circle text-amber-500',
+    acceptIcon: 'pi pi-check mr-2',
+    rejectIcon: 'pi pi-times mr-2',
+    rejectClass: 'bg-red-400 hover:bg-red-600 border-none',
+    acceptClass: 'border-none focus:ring-0',
     rejectLabel: 'Cancelar',
-    acceptLabel: 'Excluir',
-    rejectClass:
-      'bg-slate-50 hover:bg-slate-200 text-slate-900 focus:ring-0 border-slate-300 hover:border-slate-300',
-    acceptClass: 'bg-red-500 hover:bg-red-700 focus:ring-0 border-none',
+    acceptLabel: 'Confirmar',
     accept: async () => {
       await deleteArquivo(arquivo.data.idArquivo)
       await fetchArquivos()
@@ -76,6 +84,11 @@ async function downloadArq(idArquivo, nomeArquivo) {
     showError('Ocorreu um erro ao fazer download do arquivo')
     console.error(`Ocorreu um erro ao fazer download do arquivo: ${error}`)
   }
+}
+
+function onRowEditSave(event) {
+  let { newData, index } = event
+  arquivos.value[index] = newData
 }
 
 function formatDate(date) {
@@ -108,16 +121,32 @@ onMounted(() => {
     />
 
     <Toast position="top-center" />
-    <ConfirmDialog></ConfirmDialog>
+
+    <ConfirmDialog group="templating">
+      <template #message="slotProps">
+        <div
+          class="flex-column align-items-center border-bottom-1 surface-border flex w-full gap-3"
+        >
+          <i :class="slotProps.message.icon" class="text-3xl text-primary-500"></i>
+          <p class="text-base">
+            {{ slotProps.message.message }}
+            <span class="font-semibold">{{ slotProps.message.file }}</span
+            >?
+          </p>
+        </div>
+      </template>
+    </ConfirmDialog>
 
     <div class="my-4 text-center" v-if="loading">
       <ProgressSpinner />
     </div>
 
-    <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
-      <div></div>
+    <div v-if="showCadastroArq">
+      <CadastrarArquivo />
+    </div>
 
-      <Toolbar>
+    <div v-if="!loading" class="relative mt-8 overflow-x-auto rounded-lg border">
+      <!-- <Toolbar>
         <template #start>
           <Button
             label="Excluir"
@@ -127,11 +156,15 @@ onMounted(() => {
             :disabled="!selectedArquivo || !selectedArquivo.length"
           />
         </template>
-      </Toolbar>
+      </Toolbar> -->
       <DataTable
         v-model:selection="selectedArquivo"
         v-model:filters="filters"
+        v-model:editingRows="editingRows"
+        editMode="row"
+        @row-edit-save="onRowEditSave"
         :value="arquivos"
+        class="text-sm"
         size="small"
         dataKey="idArquivo"
         stripedRows
@@ -142,21 +175,26 @@ onMounted(() => {
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} resultados"
       >
         <template #header>
-          <div class="flex justify-end">
-            <span class="relative">
-              <i
-                class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
-              />
+          <div class="flex justify-between">
+            <Button
+              @click="showCadastroArq = true"
+              size="small"
+              label="Adicionar arquivo"
+              icon="pi pi-plus"
+            />
+
+            <IconField iconPosition="left">
+              <InputIcon class="pi pi-search" />
               <InputText
                 size="small"
                 v-model="filters['global'].value"
                 placeholder="Pesquisar..."
-                class="pl-10 font-normal"
+                class="font-normal"
               />
-            </span>
+            </IconField>
           </div>
         </template>
-        <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+        <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
         <Column header="Ano" field="anoPub"></Column>
         <Column header="Categoria" field="descCategoria"></Column>
         <Column header="Menu" field="descMenu"></Column>
@@ -170,33 +208,34 @@ onMounted(() => {
               {{ truncateNoMeio(slotProps.data.nomeArquivo, 50) }}
             </button>
           </template>
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" />
+          </template>
         </Column>
         <Column header="Publicado em" field="dtInclusao">
           <template #body="slotProps">
             {{ formatDate(slotProps.data.dtInclusao) }}
           </template>
         </Column>
-        <Column header="Ações">
+        <Column
+          :rowEditor="true"
+          style="width: 10%; min-width: 8rem"
+          bodyStyle="text-align:right"
+        ></Column>
+        <Column header="Ações" bodyStyle="text-align: left">
           <template #body="event">
             <Button
-              icon="pi pi-pencil"
-              size="small"
-              outlined
-              rounded
-              class="mr-2"
-              @click="editArquivo(event)"
-              v-tooltip.top="'Editar'"
-            />
-
-            <Button
               icon="pi pi-trash"
+              class="max-h-8 max-w-8"
               size="small"
               outlined
               rounded
               severity="danger"
+              v-tooltip.top="'Excluir'"
               @click="excluirArq(event)"
-            /> </template
-        ></Column>
+            />
+          </template>
+        </Column>
       </DataTable>
     </div>
   </section>

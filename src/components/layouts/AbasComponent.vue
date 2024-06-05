@@ -33,7 +33,7 @@ function showCloseIcon(aba) {
           </a>
           <i
             v-if="showCloseIcon(item)"
-            class="pi pi-times-circle absolute top-0 right-0 text-gray-500 hover:text-black cursor-pointer"
+            class="pi pi-times-circle absolute right-0 top-0 cursor-pointer text-gray-500 hover:text-black"
             @click="removeTab(item)"
           ></i>
         </div>
