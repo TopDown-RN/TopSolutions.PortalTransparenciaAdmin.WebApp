@@ -72,7 +72,7 @@ async function SaveUsuario() {
     )
 
     toastStore.setMessage('Usuário cadastrado com sucesso!')
-    router.push({ name: 'usuarios' })
+    router.push({ path: '/usuarios' })
   } catch (error) {
     showError('Ocorreu um erro ao salvar usuário')
     console.error('Ocorreu um erro ao salvar usuário: ', error)
