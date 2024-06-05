@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/menus',
-    name: 'menus',
+    name: 'Menus',
     meta: { requiresAuth: true },
     component: () => import('@/views/menus/MenusView.vue')
   }

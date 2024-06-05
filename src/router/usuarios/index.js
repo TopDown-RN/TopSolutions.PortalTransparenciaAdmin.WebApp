@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/usuarios',
-    name: 'usuarios',
+    name: 'Usuários',
     meta: { requiresAuth: true },
     component: () => import('@/views/usuarios/ListaUsuarios.vue')
   },
