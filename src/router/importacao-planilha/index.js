@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/importacaodadosplanilha',
-    name: 'importacao de dados planilha',
+    name: 'Importar Dados',
     meta: { requiresAuth: true },
     component: () => import('@/views/importacao-planilha/ImportacaoPlanilhaView.vue')
   }
