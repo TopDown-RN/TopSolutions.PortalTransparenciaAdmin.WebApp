@@ -19,10 +19,15 @@ function showCloseIcon(aba) {
 
 <template>
   <div class="card">
-    <TabMenu :model="props.abas" :activeIndex="props.activeIndex" @tab-change="handleTabChange">
+    <TabMenu
+      :key="props.activeIndex"
+      :model="props.abas"
+      :activeIndex="props.activeIndex"
+      @tab-change="handleTabChange"
+    >
       <template #item="{ item, props }">
         <div class="relative inline-block">
-          <a v-ripple v-bind="props.action">
+          <a v-bind="props.action">
             <i :class="item.icon + ' pr-2'"></i>
             <span class="font-bold">{{ item.label }}</span>
           </a>

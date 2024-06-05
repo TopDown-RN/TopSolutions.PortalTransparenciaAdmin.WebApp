@@ -29,17 +29,26 @@ function addAba(route) {
 }
 
 function handleUpdateActiveIndex(index) {
-  activeIndex.value = index
-  router.push(abas.value[index].to)
+  if (index >= 0 && index < abas.value.length) {
+    activeIndex.value = index
+    router.push(abas.value[index].to)
+  }
 }
 
 function removeTab(aba) {
   const index = abas.value.indexOf(aba)
   if (index > -1) {
     abas.value.splice(index, 1)
-    if (index === activeIndex.value) {
+    if (abas.value.length > 0) {
+      if (index === activeIndex.value) {
+        activeIndex.value = index === abas.value.length ? index - 1 : index
+      } else if (index < activeIndex.value) {
+        activeIndex.value -= 1
+      }
+      router.push(abas.value[activeIndex.value].to)
+    } else {
       activeIndex.value = 0
-      router.push(abas.value[0].to)
+      router.push('/')
     }
   }
 }
