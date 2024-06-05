@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { postPlanilha } from '@/services/importacaoplanilha'
 import { getRegistroImportacaoManuais, deletarRegistroImportcaoManuais } from '@/services/home'
+import { getMenusTemplates, getTemplateMenu } from '@/services/menu'
 import { RiDeleteBinLine } from '@remixicon/vue'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
@@ -15,8 +16,7 @@ import ConfirmDialog from 'primevue/confirmdialog'
 import AcordoModelo from '@/assets/planilhasModelo/AcordoModelo.xlsx'
 
 const confirm = useConfirm()
-
-const cod = ref(0)
+const idMenu = ref(0)
 const file = ref(null)
 const registrosImportacao = ref([])
 const loading = ref(true)
@@ -24,6 +24,10 @@ const btnImpotar = ref(true)
 const toast = useToast()
 const fileInput = ref(null)
 const desativar = ref(false)
+
+//const invalido = ref(false)
+
+const menus = ref([])
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -37,7 +41,9 @@ function mensagemErro(msg) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: msg, life: 3000 })
 }
 
-const options = ref([{ cod: 1, nome: 'Acordo', nomearquivo: 'AcordoModelo.xlsx' }])
+function mensagemAlerta(msg) {
+  toast.add({ severity: 'warn', summary: 'Erro!', detail: msg, life: 3000 })
+}
 
 async function importarPlanilha() {
   try {
@@ -45,7 +51,7 @@ async function importarPlanilha() {
     const formData = new FormData()
     formData.append('idUsuario', 11)
     formData.append('Planilha', file.value)
-    formData.append('codDestino', cod.value)
+    //formData.append('codDestino', cod.value)
     await postPlanilha(formData)
     mensagemSucesso('Dados Importados!')
     limparCampos()
@@ -89,6 +95,7 @@ async function deletarDadosRegistro(idRegistroImportacao) {
         loading.value = false
         mensagemSucesso('Registro excluído com sucesso!')
       } catch (e) {
+        console.log(e)
         mensagemErro(e.response.data)
         loading.value = false
       }
@@ -112,7 +119,7 @@ function formatarData(data) {
 }
 
 function limparCampos() {
-  cod.value = 0
+  idMenu.value = 0
   clearFile()
 }
 
@@ -127,72 +134,43 @@ async function registrosImportacaoManuais() {
   }
 }
 
-// async function downloadPlanilha() {
-//   try {
-
-//     if(!cod.value) return console.error('ID do registro de importação não informado');
-
-//     const response = await getDownloadPlanilha(cod.value);
-//     console.log('Resposta da API:', response);
-
-//     const blob = new Blob([response.data], { type: response.data.type });
-//     const url = URL.createObjectURL(blob);
-
-//     const link = document.createElement('a');
-//     link.href = url;
-
-//     const nomeArquivo = options.value.filter(item => item.cod === cod.value)[0].nomearquivo;
-//     link.download = nomeArquivo;
-
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-
-//     URL.revokeObjectURL(url);
-
-//   } catch (error) {
-//     console.error('Erro ao baixar o arquivo:', error);
-//   }
-// }
-
 async function downloadPlanilha() {
-  let fileURL
-  let fileName
+  try {
 
-  switch (cod.value) {
-    case 1:
-      fileURL = AcordoModelo
-      fileName = 'AcordoModelo.xlsx'
-      break
-    default:
+    if (idMenu.value === 0) {
+      mensagemAlerta('Selecione um modelo')
       return
-  }
+    }
 
-  const link = document.createElement('a')
-  link.href = fileURL
-  link.setAttribute('download', fileName)
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+    const modelo = menus.value.find((menu) => menu.idMenu === idMenu.value)
+    const dados = await getTemplateMenu(idMenu.value)
+    const blob = new Blob([dados.data], { type: dados.data.type })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = modelo.txtNomeTemplate
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (erro) {
+    mensagemErro(erro.response.data)
+  }
 }
 
-watch(file, (newfile, oldfile) => {
-  if (newfile) {
-    if (newfile.name.toLowerCase().includes('acordo')) {
-      cod.value = 1
-      desativar.value = true
-    } else {
-      cod.value = 0
-      desativar.value = false
+async function listarMenusTemplates(){
+    try {
+        const response = await getMenusTemplates()
+        menus.value = response.data
+
+    } catch (e) {
+        mensagemErro(e.response.data)
     }
-  } else {
-    cod.value = 0
-    desativar.value = false
-  }
-})
+}
 
 onMounted(async () => {
   await registrosImportacaoManuais()
+  await listarMenusTemplates()
 })
 </script>
 
@@ -205,7 +183,7 @@ onMounted(async () => {
       </div>
     </template>
   </ConfirmDialog>
-  <Toast position="top-center" />
+  
   <div>
     <div class="mx-auto max-w-3xl text-center">
       <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -224,22 +202,17 @@ onMounted(async () => {
               <div class="md:col-span-2">
                 <label>Selecione o modelo</label>
                 <select
-                  v-model="cod"
+                  v-model="idMenu"
                   :disabled="desativar"
                   class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
                 >
                   <option value="0" disabled selected>Selecione</option>
-                  <option v-for="option in options" :key="option.cod" :value="option.cod">
-                    {{ option.nome }}
+                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
+                    {{ menu.txtDescricao }}
                   </option>
                 </select>
               </div>
             </div>
-            <!-- <div class="lg:col-span-2 flex items-end justify-center">
-                            <button @click="downloadPlanilha" class="ml-2 border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded cursor-pointer">
-                                Baixar modelo
-                            </button>
-                        </div> -->
             <div class="md:col-span-4 mt-3 flex items-center">
               <button
                 @click="downloadPlanilha"
@@ -293,12 +266,6 @@ onMounted(async () => {
                   </span>
                 </button>
               </div>
-            </div>
-
-            <div>
-              <ul>
-                <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
-              </ul>
             </div>
           </div>
         </div>
