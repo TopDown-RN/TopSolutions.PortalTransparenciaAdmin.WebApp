@@ -12,7 +12,7 @@ const menuActive = ref()
 const menusPrincipal = ref([
   {
     id: 1,
-    nome: 'Dashboard',
+    nome: 'Início',
     icon: 'pi pi-home',
     rota: '/'
   },
@@ -30,9 +30,15 @@ const menusPrincipal = ref([
   },
   {
     id: 4,
-    nome: 'Arquivos (Novo)',
-    icon: 'pi pi-folder-open',
-    rota: '/arquivosview'
+    nome: 'Ouvidoria',
+    icon: 'pi pi-headphones',
+    rota: '/ouvidoria'
+  },
+  {
+    id: 5,
+    nome: 'Importar Dados',
+    icon: 'pi pi-upload',
+    rota: '/importacaodadosplanilha'
   }
 ])
 
@@ -49,14 +55,14 @@ const menusConfig = ref([
     icon: 'pi pi-wrench',
     rota: '/dados-administrativos'
   },
-  // {
-  //   id: 3,
-  //   nome: 'Suporte',
-  //   icon: 'pi pi-headphones',
-  //   url: `https://dataapi${window.location.hostname}/swagger/index.html`
-  // },
   {
     id: 3,
+    nome: 'Credenciais',
+    icon: 'pi pi-cog',
+    rota: '/credenciais'
+  },
+  {
+    id: 4,
     nome: 'Dados API',
     icon: 'pi pi-code',
     url: `https://dataapi${window.location.hostname}/swagger/index.html`
@@ -87,7 +93,7 @@ onMounted(() => {
     <a class="flex items-center justify-center space-x-2 px-4">
       <span class="text-lg font-medium">Portal da Transparência</span>
     </a>
-    <div class="text-left px-2 whitespace-nowrap">
+    <div class="text-center px-4 break-normal">
       <div class="flex justify-center p-5">
         <div class="flex flex-col justify-center items-center">
           <img
@@ -96,11 +102,11 @@ onMounted(() => {
             alt="Base64 Image"
             width="100px"
           />
-          <h5 class="text-lg font-medium leading-tight mb-2">{{ txtCliente }}</h5>
+          <h5 class="text-md font-medium leading-tight mb-2">{{ txtCliente }}</h5>
           <span class="text-xs text-gray-300"> Painel Administrativo </span>
         </div>
       </div>
-      <nav class="m-4">
+      <nav class="m-4 text-left">
         <ul class="mb-4 flex flex-col gap-1 pb-4">
           <li v-for="menu in menusPrincipal" :key="menu.id">
             <RouterLink

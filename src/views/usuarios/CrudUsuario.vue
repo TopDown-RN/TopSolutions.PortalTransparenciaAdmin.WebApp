@@ -10,6 +10,7 @@ import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const idUsuario = ref(0)
 
@@ -136,15 +137,12 @@ onMounted(() => {
 
 <template>
   <Toast position="top-center" />
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      <span v-if="route.name === 'usuario-editar'"> Editar usuário </span>
-      <span v-else> Cadastrar usuário </span>
-    </h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Novos usuários podem acessar e fazer edições através do Painel Administrativo.
-    </p>
-  </div>
+
+  <HeadingComponent
+    :title="route.name === 'usuario-editar' ? 'Editar usuário' : 'Cadastrar usuário'"
+    subtitle="Novos usuários podem acessar e fazer edições através do Painel Administrativo."
+  />
+
   <form class="mx-auto max-w-6xl sm:mt-10">
     <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="sm:col-span-2">

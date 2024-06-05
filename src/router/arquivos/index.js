@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/arquivos',
-    name: 'arquivos',
+    name: 'Arquivos',
     meta: { requiresAuth: true },
     component: () => import('@/views/arquivos/Arquivos-Tmp.vue')
   },

@@ -68,7 +68,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="bg-white shadow px-4 py-4">
+  <header class="bg-white shadow py-1">
     <div class="flex justify-between items-center p-4">
       <div class="cursor-pointer md:hidden" @click="props.toggleSidebar">
         <i class="pi pi-bars"></i>

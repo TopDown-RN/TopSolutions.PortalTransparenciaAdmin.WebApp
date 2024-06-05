@@ -9,6 +9,7 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { FilterMatchMode } from 'primevue/api'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -181,12 +182,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="gridMenu" class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.
-    </p>
-    <div class="mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
+  <div id="gridMenu">
+    <HeadingComponent
+      title="Menus"
+      subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
+      description="Mantenha-os sempre atualizados."
+    />
   </div>
   <div class="container max-w-screen-base overflow-x-auto">
     <div>
