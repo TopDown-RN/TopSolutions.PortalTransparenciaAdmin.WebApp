@@ -76,7 +76,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Toast />
+  <Toast position="top-center"/>
   <HeadingComponent
     title="Usuários"
     subtitle="Lista dos usuários cadastrados no sistema"
