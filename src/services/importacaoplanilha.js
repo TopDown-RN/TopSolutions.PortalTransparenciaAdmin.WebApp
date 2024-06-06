@@ -25,3 +25,17 @@ export function postPlanilha(formData) {
       throw error
     })
 }
+
+export function visualizaDados(formData){
+  return api
+    .post('importacaoplanilha/visualizarDados', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log('error:', error)
+      throw error
+    })
+}
