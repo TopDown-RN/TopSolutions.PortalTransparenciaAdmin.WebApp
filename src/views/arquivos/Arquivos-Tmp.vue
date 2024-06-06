@@ -78,7 +78,7 @@ const txtDescricaoCat = ref('')
 const success = ref(false)
 const error = ref(false)
 
-// -------------------- Função para controle de messages
+// -------------------- Função para controle de mensagens
 function mensagemSucesso() {
   success.value = true
   setTimeout(() => {
@@ -210,19 +210,22 @@ async function excluir(arquivo) {
 }
 
 const setarArquivos = (event) => {
-  const novosArquivos = Array.from(event.target.files)
+  const novosArquivos = Array.from(event.target.files);
 
   // Verificar se cada arquivo já existe na lista antes de adicioná-lo
-  novosArquivos.forEach((arquivo) => {
-    const arquivoExiste = files.value.some((item) => item.name === arquivo.name)
+  novosArquivos.forEach((novoArquivo) => {
+    const arquivoExiste = files.value.some((item) => item.name === novoArquivo.name && item.lastModified === novoArquivo.lastModified && item.size === novoArquivo.size);
     if (!arquivoExiste) {
-      files.value.push(arquivo)
+      files.value.push(novoArquivo);
     }
-  })
+  });
+
+  // Limpar valor do input de arquivo para permitir a seleção do mesmo arquivo novamente
+  event.target.value = '';
 }
 
-function deletarArquivoDaLista(arquivo) {
-  files.value = files.value.filter((item) => item.name !== arquivo)
+function deletarArquivoDaLista(nomeDoArquivo) {
+  files.value = files.value.filter((item) => item.name !== nomeDoArquivo);
 }
 
 function LimparForm() {
