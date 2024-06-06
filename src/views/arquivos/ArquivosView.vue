@@ -142,6 +142,7 @@ function filtrarArquivos({ menu, ano, categoria }) {
 }
 
 EventBus.on('filterChange', filtrarArquivos)
+EventBus.on('arquivosChanged', fetchArquivos)
 
 watch(arquivos, () => {
   loading.value = false
