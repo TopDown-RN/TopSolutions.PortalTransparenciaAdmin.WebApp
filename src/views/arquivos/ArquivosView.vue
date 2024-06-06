@@ -1,12 +1,15 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
-import { LerArquivoPorIdApi, deleteArquivo, getArquivos } from '@/services/arquivos'
+import { onMounted, ref, watch, computed } from 'vue'
+import { LerArquivoPorIdApi, deleteArquivo, getArquivos, getCategorias } from '@/services/arquivos'
+import { getMenusArquivo } from '@/services/menu'
 import { truncateNoMeio } from '@/utils/truncateString'
+import EventBus from '@/utils/eventBus'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import CadastrarArquivo from '@/views/arquivos/CadastrarArquivo.vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
+import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
 import IconField from 'primevue/iconfield'
@@ -21,6 +24,7 @@ const confirm = useConfirm()
 const toast = useToast()
 
 const arquivos = ref([])
+const filterArquivos = ref([])
 const selectedArquivo = ref()
 const editingRows = ref([])
 
@@ -32,10 +36,22 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
+const menus = ref([])
+const categorias = ref([])
+const anos = computed(() => {
+  const currentYear = new Date().getFullYear()
+  const anos = []
+  for (let i = 0; i < 20; i++) {
+    anos.push(currentYear - i)
+  }
+  return anos
+})
+
 async function fetchArquivos() {
   try {
     const response = await getArquivos()
     arquivos.value = response.data
+    filterArquivos.value = arquivos.value
   } catch (e) {
     loading.value = false
     arquivos.value = []
@@ -86,6 +102,18 @@ async function downloadArq(idArquivo, nomeArquivo) {
   }
 }
 
+async function fetchCategorias() {
+  const response = await getCategorias()
+  categorias.value = response.data
+}
+
+async function fetchMenus() {
+  const response = await getMenusArquivo()
+  menus.value = response.data.slice().sort((a, b) => {
+    return a.txtDescricao.localeCompare(b.txtDescricao)
+  })
+}
+
 function onRowEditSave(event) {
   let { newData, index } = event
   arquivos.value[index] = newData
@@ -103,12 +131,26 @@ function showError(message) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 3000 })
 }
 
+function filtrarArquivos({ menu, ano, categoria }) {
+  arquivos.value = filterArquivos.value.filter((arquivo) => {
+    return (
+      (!menu || arquivo.descMenu === menu.txtDescricao) &&
+      (!ano || arquivo.anoPub === ano) &&
+      (!categoria || arquivo.descCategoria === categoria.txtTitulo)
+    )
+  })
+}
+
+EventBus.on('filterChange', filtrarArquivos)
+
 watch(arquivos, () => {
   loading.value = false
 })
 
 onMounted(() => {
   fetchArquivos()
+  fetchCategorias()
+  fetchMenus()
 })
 </script>
 
@@ -142,7 +184,7 @@ onMounted(() => {
     </div>
 
     <div v-if="showCadastroArq">
-      <CadastrarArquivo />
+      <CadastrarArquivo :categorias="categorias" :menus="menus" :anos="anos" />
     </div>
 
     <div v-if="!loading" class="relative mt-8 overflow-x-auto rounded-lg border">
@@ -194,10 +236,39 @@ onMounted(() => {
             </IconField>
           </div>
         </template>
+
         <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
-        <Column header="Ano" field="anoPub"></Column>
-        <Column header="Categoria" field="descCategoria"></Column>
-        <Column header="Menu" field="descMenu"></Column>
+
+        <Column header="Ano" field="anoPub">
+          <template #editor="{ data, field }">
+            <Dropdown v-model="data[field]" :options="anos" panelClass="text-sm" />
+          </template>
+        </Column>
+
+        <Column header="Categoria" field="descCategoria">
+          <template #editor="{ data, field }">
+            <Dropdown
+              v-model="data[field]"
+              :options="categorias"
+              optionValue="txtTitulo"
+              optionLabel="txtTitulo"
+              panelClass="text-sm"
+            />
+          </template>
+        </Column>
+
+        <Column header="Menu" field="descMenu">
+          <template #editor="{ data, field }">
+            <Dropdown
+              v-model="data[field]"
+              :options="menus"
+              optionValue="txtDescricao"
+              optionLabel="txtDescricao"
+              panelClass="text-sm"
+            />
+          </template>
+        </Column>
+
         <Column header="Arquivo" field="nomeArquivo">
           <template #body="slotProps">
             <button
@@ -209,19 +280,22 @@ onMounted(() => {
             </button>
           </template>
           <template #editor="{ data, field }">
-            <InputText v-model="data[field]" />
+            <InputText v-model="data[field]" class="w-full" />
           </template>
         </Column>
+
         <Column header="Publicado em" field="dtInclusao">
           <template #body="slotProps">
             {{ formatDate(slotProps.data.dtInclusao) }}
           </template>
         </Column>
+
         <Column
           :rowEditor="true"
           style="width: 10%; min-width: 8rem"
           bodyStyle="text-align:right"
         ></Column>
+
         <Column header="Ações" bodyStyle="text-align: left">
           <template #body="event">
             <Button
