@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { postArquivos } from '@/services/arquivos'
 import EventBus from '@/utils/eventBus'
+import CadastrarCategoria from '@/views/arquivos/CadastrarCategoria.vue'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
@@ -18,7 +19,9 @@ const id_Menu = ref('')
 const ano = ref('')
 const idCategoriaArquivos = ref('')
 const files = ref([])
+
 const fileInput = ref(null)
+const showCadastroCat = ref(false)
 
 const isValid = ref(true)
 const loading = ref(false)
@@ -93,6 +96,12 @@ function showSuccess(message) {
   toast.add({ severity: 'success', summary: 'Successo', detail: message, life: 3000 })
 }
 
+function showDialog() {
+  showCadastroCat.value = !showCadastroCat.value
+}
+
+EventBus.on('toggleDialog', showDialog)
+
 watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => {
   EventBus.emit('filterChange', { menu: newMenu, ano: newAno, categoria: newCategoria })
 })
@@ -163,8 +172,9 @@ watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => 
           >
         </div>
         <div class="flex flex-col items-start justify-end">
-          <Button label="Mais categorias" outlined class="h-10 w-1/2" />
+          <Button @click="showDialog" label="Mais categorias" outlined class="h-10 w-1/2" />
         </div>
+        <CadastrarCategoria v-if="showCadastroCat" :visible="true" :categorias="categorias" />
       </div>
       <div class="grid grid-cols-2 gap-x-2">
         <div>
