@@ -62,21 +62,20 @@ async function fetchArquivos() {
 function excluirArq(arquivo) {
   console.log(arquivo.data)
   confirm.require({
-    group: 'templating',
-    header: 'Confirme',
-    message: 'Tem certeza de que deseja excluir o arquivo',
-    file: `${arquivo.data.nomeArquivo}`,
-    icon: 'pi pi-exclamation-circle text-amber-500',
-    acceptIcon: 'pi pi-check mr-2',
-    rejectIcon: 'pi pi-times mr-2',
-    rejectClass: 'bg-red-400 hover:bg-red-600 border-none',
-    acceptClass: 'border-none focus:ring-0',
-    rejectLabel: 'Cancelar',
-    acceptLabel: 'Confirmar',
+    group: 'headless',
+    header: 'Tem certeza de que deseja excluir?',
+    target: `${arquivo.data.nomeArquivo}`,
+    message: 'Por favor, confirme para prosseguir.',
     accept: async () => {
-      await deleteArquivo(arquivo.data.idArquivo)
-      await fetchArquivos()
-      showSuccess('Arquivo excluído com sucesso')
+      const response = await deleteArquivo(arquivo.data.idArquivo)
+      const status = response.metadata.statusCode
+
+      if (status === 200) {
+        showSuccess(response.data)
+        await fetchArquivos()
+      } else {
+        showError(response.data)
+      }
     }
   })
 }
@@ -115,6 +114,7 @@ async function fetchMenus() {
 }
 
 function onRowEditSave(event) {
+  console.log(event)
   let { newData, index } = event
   arquivos.value[index] = newData
 }
@@ -124,11 +124,11 @@ function formatDate(date) {
 }
 
 function showSuccess(message) {
-  toast.add({ severity: 'success', summary: 'Confirmado', detail: message, life: 3000 })
+  toast.add({ severity: 'success', summary: 'Confirmado', detail: message, life: 5000 })
 }
 
 function showError(message) {
-  toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 3000 })
+  toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 5000 })
 }
 
 function filtrarArquivos({ menu, ano, categoria }) {
@@ -165,17 +165,27 @@ onMounted(() => {
 
     <Toast position="top-center" />
 
-    <ConfirmDialog group="templating">
-      <template #message="slotProps">
-        <div
-          class="flex-column align-items-center border-bottom-1 surface-border flex w-full gap-3"
-        >
-          <i :class="slotProps.message.icon" class="text-3xl text-primary-500"></i>
-          <p class="text-base">
-            {{ slotProps.message.message }}
-            <span class="font-semibold">{{ slotProps.message.file }}</span
-            >?
-          </p>
+    <ConfirmDialog ref="arq" group="headless">
+      <template #container="{ message, acceptCallback, rejectCallback }">
+        <div class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900">
+          <div
+            class="bg-primarytext-white -mt-8 inline-flex h-[6rem] w-[6rem] items-center justify-center rounded-full dark:text-surface-950"
+          >
+            <i class="pi pi-question text-4xl"></i>
+          </div>
+          <span class="mb-2 block text-xl font-bold">{{ message.header }}</span>
+          <p class="text-sm font-semibold">{{ message.target }}</p>
+          <p class="m-4">{{ message.message }}</p>
+          <div class="mt-4 flex items-center gap-2">
+            <Button label="Confirmar" @click="acceptCallback" size="small" class="text-sm"></Button>
+            <Button
+              label="Cancelar"
+              outlined
+              @click="rejectCallback"
+              size="small"
+              class="text-sm"
+            ></Button>
+          </div>
         </div>
       </template>
     </ConfirmDialog>
@@ -295,7 +305,7 @@ onMounted(() => {
           :rowEditor="true"
           style="width: 10%; min-width: 8rem"
           bodyStyle="text-align:right"
-        ></Column>
+        />
 
         <Column header="Ações" bodyStyle="text-align: left">
           <template #body="event">

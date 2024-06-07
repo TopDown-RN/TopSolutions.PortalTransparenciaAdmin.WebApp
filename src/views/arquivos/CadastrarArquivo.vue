@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { postArquivos } from '@/services/arquivos'
+import { getIdUsuario } from '@/services/auth/authStorage'
 import EventBus from '@/utils/eventBus'
-import CadastrarCategoria from '@/views/arquivos/CadastrarCategoria.vue'
+import CrudCategoria from '@/views/arquivos/CrudCategoria.vue'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
@@ -38,7 +39,7 @@ async function postSaveArquivos() {
     formData.append('idCategoria', idCategoriaArquivos.value.idCategoriaPubArquivo)
     formData.append('Ano', ano.value)
     formData.append('anoPub', ano.value)
-    formData.append('idUsuario', 3)
+    formData.append('idUsuario', getIdUsuario())
 
     files.value.forEach((file) => {
       formData.append('Arquivo', file)
@@ -93,7 +94,7 @@ function showError(message) {
 }
 
 function showSuccess(message) {
-  toast.add({ severity: 'success', summary: 'Successo', detail: message, life: 3000 })
+  toast.add({ severity: 'success', summary: 'Successo', detail: message, life: 5000 })
 }
 
 function showDialog() {
@@ -174,7 +175,7 @@ watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => 
         <div class="flex flex-col items-start justify-end">
           <Button @click="showDialog" label="Mais categorias" outlined class="h-10 w-1/2" />
         </div>
-        <CadastrarCategoria v-if="showCadastroCat" :visible="true" :categorias="categorias" />
+        <CrudCategoria v-if="showCadastroCat" :visible="true" />
       </div>
       <div class="grid grid-cols-2 gap-x-2">
         <div>
