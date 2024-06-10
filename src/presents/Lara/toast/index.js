@@ -18,8 +18,8 @@ export default {
       {
         'bg-blue-100/70 dark:bg-blue-500/20': props.message.severity == 'info',
         'bg-green-100/70 dark:bg-green-500/20': props.message.severity == 'success',
-        'bg-orange-100/70 dark:bg-orange-500/20': props.message.severity == 'warn',
-        'bg-red-100/70 dark:bg-red-500/20': props.message.severity == 'error'
+        'bg-orange-100 dark:bg-orange-500/20': props.message.severity == 'warn',
+        'bg-red-100 dark:bg-red-500/20': props.message.severity == 'error'
       },
       {
         'border-blue-500 dark:border-blue-400': props.message.severity == 'info',
