@@ -132,9 +132,9 @@ onMounted(() => {
       <TabView>
         <TabPanel header="Fale-Conosco">
           <form @submit.prevent="salvarCredenciais">
-            <div class="-mx-2 md:items-center md:flex">
+            <div class="-mx-2 md:flex md:items-center">
               <div class="flex-1 px-2">
-                <label for="host" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                <label for="host" class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Endereço do servidor SMTP</label
                 >
                 <InputText
@@ -142,38 +142,38 @@ onMounted(() => {
                   id="host"
                   type="text"
                   placeholder="smtp.exemplo.com"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
 
-              <div class="flex-1 px-2 mt-4 md:mt-0">
-                <label for="port" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+              <div class="mt-4 flex-1 px-2 md:mt-0">
+                <label for="port" class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Porta SMTP</label
                 >
                 <InputText
                   v-model="port"
                   id="port"
                   type="text"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
             </div>
 
-            <div class="my-2 -mx-2 md:items-center md:flex">
+            <div class="-mx-2 my-2 md:flex md:items-center">
               <div class="flex-1 px-2">
-                <label for="username" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                <label for="username" class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Username</label
                 >
                 <InputText
                   v-model="username"
                   id="username"
                   type="text"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
 
-              <div class="flex-1 px-2 mt-4 md:mt-0">
-                <label for="pass" class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+              <div class="mt-4 flex-1 px-2 md:mt-0">
+                <label for="pass" class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Senha</label
                 >
                 <Password v-model="pass" id="pass" class="w-full" toggleMask :feedback="false" />
@@ -193,11 +193,11 @@ onMounted(() => {
 
         <TabPanel header="Ouvidoria">
           <form @submit.prevent="salvarCredenciaisOuvidoria">
-            <div class="-mx-2 md:items-center md:flex">
+            <div class="-mx-2 md:flex md:items-center">
               <div class="flex-1 px-2">
                 <label
                   for="hostOuvidoria"
-                  class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                  class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Endereço do servidor SMTP</label
                 >
                 <InputText
@@ -205,44 +205,44 @@ onMounted(() => {
                   id="hostOuvidoria"
                   type="text"
                   placeholder="smtp.exemplo.com"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
 
-              <div class="flex-1 px-2 mt-4 md:mt-0">
+              <div class="mt-4 flex-1 px-2 md:mt-0">
                 <label
                   for="portOuvidoria"
-                  class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                  class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Porta SMTP</label
                 >
                 <InputText
                   v-model="portOuvidoria"
                   id="portOuvidoria"
                   type="text"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
             </div>
 
-            <div class="my-2 -mx-2 md:items-center md:flex">
+            <div class="-mx-2 my-2 md:flex md:items-center">
               <div class="flex-1 px-2">
                 <label
                   for="usernameOuvidoria"
-                  class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                  class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Username</label
                 >
                 <InputText
                   v-model="usernameOuvidoria"
                   id="usernameOuvidoria"
                   type="text"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
                 />
               </div>
 
-              <div class="flex-1 px-2 mt-4 md:mt-0">
+              <div class="mt-4 flex-1 px-2 md:mt-0">
                 <label
                   for="passOuvidoria"
-                  class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+                  class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
                   >Senha</label
                 >
                 <Password
