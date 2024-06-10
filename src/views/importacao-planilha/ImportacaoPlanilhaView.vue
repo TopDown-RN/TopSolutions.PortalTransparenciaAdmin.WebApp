@@ -12,9 +12,8 @@ import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
 import ConfirmDialog from 'primevue/confirmdialog'
-import Dialog from 'primevue/dialog';
+import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
-
 
 const confirm = useConfirm()
 const idMenu = ref(0)
@@ -27,7 +26,7 @@ const toast = useToast()
 const fileInput = ref(null)
 const desativar = ref(false)
 
-const visible = ref(false);
+const visible = ref(false)
 
 const menus = ref([])
 const templateData = ref([])
@@ -50,7 +49,7 @@ async function visualizarDados() {
     visible.value = true
   } catch (e) {
     alertCustom(e.response.data, 'error', 'Erro!')
-    clearFile();
+    clearFile()
   }
 }
 
@@ -60,7 +59,7 @@ async function importarPlanilha() {
     const formData = new FormData()
     formData.append('_template', file.value)
     await postPlanilha(formData)
-    alertCustom('Dados Importados!', 'success' , 'Sucesso!')
+    alertCustom('Dados Importados!', 'success', 'Sucesso!')
     limparCampos()
     btnImpotar.value = true
     file.value = null
@@ -100,19 +99,16 @@ async function deletarDadosRegistro(idRegistroImportacao) {
         await deletarRegistroImportcaoManuais(idRegistroImportacao)
         await registrosImportacaoManuais()
         loading.value = false
-        alertCustom('Registro excluído com sucesso!', 'success' , 'Sucesso!')
+        alertCustom('Registro excluído com sucesso!', 'success', 'Sucesso!')
       } catch (e) {
         console.log(e)
         alertCustom(e.response.data, 'error', 'Erro!')
         loading.value = false
       }
     },
-    reject: () => {
-    
-    }
+    reject: () => {}
   })
 }
-
 
 async function confirmeImportacao() {
   confirm.require({
@@ -127,19 +123,16 @@ async function confirmeImportacao() {
     rejectLabel: 'Cancelar',
     acceptLabel: 'Confirmar',
     accept: async () => {
-        importarPlanilha()
+      importarPlanilha()
     },
-    reject: () => {
-    
-    }
+    reject: () => {}
   })
 }
 
 const handleFileChange = async (event) => {
-      file.value = event.target.files[0];
-      await visualizarDados()
-};
-
+  file.value = event.target.files[0]
+  await visualizarDados()
+}
 
 function formatarData(data) {
   const dataObj = new Date(data)
@@ -171,7 +164,6 @@ async function registrosImportacaoManuais() {
 
 async function downloadPlanilha() {
   try {
-
     if (idMenu.value == 0) {
       alertCustom('Selecione um modelo para baixar', 'warn', 'Atenção')
       return
@@ -193,64 +185,69 @@ async function downloadPlanilha() {
   }
 }
 
-async function listarMenusTemplates(){
-    try {
-        const response = await getMenusTemplates()
-        menus.value = response.data
-
-    } catch (e) {
-        alertCustom(e.response.data, 'error', 'Erro!')
-    }
+async function listarMenusTemplates() {
+  try {
+    const response = await getMenusTemplates()
+    menus.value = response.data
+  } catch (e) {
+    alertCustom(e.response.data, 'error', 'Erro!')
+  }
 }
 
 onMounted(async () => {
   await registrosImportacaoManuais()
   await listarMenusTemplates()
 })
-
 </script>
 
 <template>
-   <Toast position="top-center" />
+  <Toast position="top-center" />
   <ConfirmDialog group="templating">
     <template #message="slotProps">
-      <div class="flex flex-col items-center w-full gap-3">
+      <div class="flex w-full flex-col items-center gap-3">
         <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
         <p>{{ slotProps.message.message }}</p>
       </div>
     </template>
   </ConfirmDialog>
-  <Dialog v-model:visible="visible" maximizable modal header="Dados a serem importados" :style="{ width: '100rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+  <Dialog
+    v-model:visible="visible"
+    maximizable
+    modal
+    header="Dados a serem importados"
+    :style="{ width: '100rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  >
     <div v-if="loadingDialog" class="my-4 text-center">
       <ProgressSpinner />
     </div>
     <div v-else>
-        <DataTable
-            :value="templateData"
-            v-model:filters="filters"
-            size="small"
-            :paginator="true"
-            :rows="10"
-            :rowsPerPageOptions="[5, 10, 20, 50]"
-            stripedRows
-            >
-            <template #header>
-                  <div class="flex justify-end">
-                    <span class="relative">
-                      <i
-                        class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
-                      />
-                      <InputText
-                        size="small"
-                        v-model="filters['global'].value"
-                        placeholder="Pesquisar..."
-                        class="pl-10 font-normal"
-                      />
-                    </span>
-                  </div>
-                </template>
-            <Column v-for="field in fields" :key="field" :field="field" :header="field"></Column>
-            </DataTable>
+      <DataTable
+        :value="templateData"
+        v-model:filters="filters"
+        size="small"
+        :paginator="true"
+        :rows="10"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        stripedRows
+      >
+        <template #header>
+          <div class="flex justify-end">
+            <span class="relative">
+              <i
+                class="pi pi-search absolute left-3 top-2/4 -mt-2 text-surface-400 dark:text-surface-600"
+              />
+              <InputText
+                size="small"
+                v-model="filters['global'].value"
+                placeholder="Pesquisar..."
+                class="pl-10 font-normal"
+              />
+            </span>
+          </div>
+        </template>
+        <Column v-for="field in fields" :key="field" :field="field" :header="field"></Column>
+      </DataTable>
     </div>
   </Dialog>
   <div>
@@ -263,17 +260,17 @@ onMounted(async () => {
       </p>
     </div>
 
-    <div class="container max-w-screen-base mx-auto">
+    <div class="max-w-screen-base container mx-auto">
       <div>
-        <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
-          <div class="grid gap text-sm grid-cols-1">
+        <div class="mb-6 mt-6 rounded bg-white p-4 px-4 shadow-lg md:p-8">
+          <div class="gap grid grid-cols-1 text-sm">
             <div class="lg:col-span-3">
               <div class="md:col-span-2">
                 <label>Selecione um modelo de importação</label>
                 <select
                   v-model="idMenu"
                   :disabled="desativar"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                 >
                   <option value="0" disabled selected>Selecione</option>
                   <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
@@ -282,10 +279,10 @@ onMounted(async () => {
                 </select>
               </div>
             </div>
-            <div class="md:col-span-4 mt-3 flex items-center">
+            <div class="mt-3 flex items-center md:col-span-4">
               <button
                 @click="downloadPlanilha"
-                class="mr-4 border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded cursor-pointer"
+                class="mr-4 cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
               >
                 <i class="pi pi-download"></i>
                 Baixar modelo
@@ -294,7 +291,7 @@ onMounted(async () => {
                 <div>
                   <label
                     for="inputarquivos"
-                    class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white font-bold py-2 px-4 rounded cursor-pointer"
+                    class="cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
                   >
                     <i class="pi pi-file-import"></i>
                     Selecionar Planilha
@@ -306,11 +303,14 @@ onMounted(async () => {
                     ref="fileInput"
                     @change="handleFileChange"
                   />
-                
-                  <i v-if="templateData && templateData.length > 0" class="pi pi-eye ml-2 text-xl cursor-pointer hover:text-primary-500" @click="visible = !visible"></i>
-                
+
+                  <i
+                    v-if="templateData && templateData.length > 0"
+                    class="pi pi-eye ml-2 cursor-pointer text-xl hover:text-primary-500"
+                    @click="visible = !visible"
+                  ></i>
                 </div>
-                
+
                 <div v-if="file" class="ml-10">
                   <ul class="flex flex-col items-start justify-center">
                     <li class="list-disc">{{ file.name }} <button @click="clearFile">X</button></li>
@@ -318,16 +318,16 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
-            <div class="md:col-span-5 text-right">
+            <div class="text-right md:col-span-5">
               <div class="inline-flex items-end">
                 <button
                   @click="btnImpotar ? confirmeImportacao() : null"
                   :class="{
                     'bg-primary-500 hover:bg-primary-700': btnImpotar,
-                    'bg-primary-700 cursor-not-allowed': !btnImpotar
+                    'cursor-not-allowed bg-primary-700': !btnImpotar
                   }"
                   :disabled="!btnImpotar"
-                  class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                  class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
                 >
                   <span v-if="btnImpotar">Importar</span>
                   <span v-else>
@@ -359,7 +359,7 @@ onMounted(async () => {
               <div class="flex justify-end">
                 <span class="relative">
                   <i
-                    class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+                    class="pi pi-search absolute left-3 top-2/4 -mt-2 text-surface-400 dark:text-surface-600"
                   />
                   <InputText
                     size="small"

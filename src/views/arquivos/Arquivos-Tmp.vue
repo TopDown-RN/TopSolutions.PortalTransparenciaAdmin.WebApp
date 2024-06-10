@@ -210,22 +210,27 @@ async function excluir(arquivo) {
 }
 
 const setarArquivos = (event) => {
-  const novosArquivos = Array.from(event.target.files);
+  const novosArquivos = Array.from(event.target.files)
 
   // Verificar se cada arquivo já existe na lista antes de adicioná-lo
   novosArquivos.forEach((novoArquivo) => {
-    const arquivoExiste = files.value.some((item) => item.name === novoArquivo.name && item.lastModified === novoArquivo.lastModified && item.size === novoArquivo.size);
+    const arquivoExiste = files.value.some(
+      (item) =>
+        item.name === novoArquivo.name &&
+        item.lastModified === novoArquivo.lastModified &&
+        item.size === novoArquivo.size
+    )
     if (!arquivoExiste) {
-      files.value.push(novoArquivo);
+      files.value.push(novoArquivo)
     }
-  });
+  })
 
   // Limpar valor do input de arquivo para permitir a seleção do mesmo arquivo novamente
-  event.target.value = '';
+  event.target.value = ''
 }
 
 function deletarArquivoDaLista(nomeDoArquivo) {
-  files.value = files.value.filter((item) => item.name !== nomeDoArquivo);
+  files.value = files.value.filter((item) => item.name !== nomeDoArquivo)
 }
 
 function LimparForm() {
@@ -415,7 +420,7 @@ onMounted(() => {
 <template>
   <ConfirmDialog group="templating">
     <template #message="slotProps">
-      <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
+      <div class="flex-column align-items-center border-bottom-1 surface-border flex w-full gap-3">
         <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
         <p>{{ slotProps.message.message }}</p>
       </div>
@@ -426,9 +431,9 @@ onMounted(() => {
     subtitle="Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência."
     description="Mantenha-os sempre atualizados."
   />
-  <div class="container max-w-screen-base overflow-x-auto">
+  <div class="max-w-screen-base container overflow-x-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6 border">
+      <div class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Arquivo salvo com sucesso</Message
@@ -437,15 +442,15 @@ onMounted(() => {
             >Erro ao salvar arquivo</Message
           >
         </div>
-        <div class="grid gap text-sm grid-cols-1">
+        <div class="gap grid grid-cols-1 text-sm">
           <div class="lg:col-span-2">
-            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5 content-end">
+            <div class="grid grid-cols-1 content-end gap-4 gap-y-2 text-sm md:grid-cols-5">
               <div class="md:col-span-5">
                 <label for="descricao">Descrição</label>
                 <input
                   type="text"
                   id="descricao"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                   placeholder="Informe uma descrição para o arquivo"
                   v-model.trim="txtDescricao"
                 />
@@ -458,7 +463,7 @@ onMounted(() => {
                 <div>
                   <select
                     name="ddMenu"
-                    class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 bg-transparent"
+                    class="mt-1 h-10 rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                     v-model="id_Menu"
                     @change="ativarDialog"
                   >
@@ -473,7 +478,7 @@ onMounted(() => {
                 <label>Ano</label>
                 <select
                   v-model="ano"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                 >
                   <option value="" disabled selected>Selecione</option>
                   <!-- <option value="1900">Listagem Geral de Arquivos</option> -->
@@ -487,7 +492,7 @@ onMounted(() => {
                 <label>Categoria</label>
                 <select
                   v-model="idCategoriaArquivos"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                 >
                   <option value="" disabled selected>Selecione</option>
                   <option
@@ -503,7 +508,7 @@ onMounted(() => {
 
               <div class="flex flex-col items-start justify-end">
                 <button
-                  class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white py-2 px-4 rounded h-10"
+                  class="h-10 rounded border border-primary-500 px-4 py-2 text-primary-500 hover:bg-primary-700 hover:text-white"
                   @click="mostrarDialogo"
                 >
                   Mais categorias
@@ -541,23 +546,23 @@ onMounted(() => {
                       v-model.trim="txtTituloCat"
                       type="text"
                       placeholder="título"
-                      class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent"
+                      class="my-2 mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-black outline-none"
                     />
                     <input
                       v-model.trim="txtDescricaoCat"
                       type="text"
                       placeholder="descricao"
-                      class="h-10 my-2 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-black w-full bg-transparent"
+                      class="my-2 mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-black outline-none"
                     />
                     <div class="flex items-center justify-end">
                       <button
-                        class="bg-primary-500 hover:bg-primary-700 mb-4 text-white font-bold py-2 px-4 rounded w-32"
+                        class="mb-4 w-32 rounded bg-primary-500 px-4 py-2 font-bold text-white hover:bg-primary-700"
                         @click="postCategoriaSave"
                       >
                         Cadastrar
                       </button>
                       <button
-                        class="mb-4 border border-primary-500 hover:bg-primary-400 text-primary-500 hover:text-white font-bold py-2 px-4 rounded w-32 ml-1"
+                        class="mb-4 ml-1 w-32 rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-400 hover:text-white"
                         @click="
                           (idCategoriaPubArquivoCat = 0),
                             (txtTituloCat = ''),
@@ -568,43 +573,43 @@ onMounted(() => {
                       </button>
                     </div>
                   </div>
-                  <div v-if="erros.length" class="pl-4 pb-4">
+                  <div v-if="erros.length" class="pb-4 pl-4">
                     <ul>
-                      <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">
+                      <li class="list-disc text-red-600" v-for="erro in erros" :key="erro">
                         {{ erro }}
                       </li>
                     </ul>
                   </div>
 
-                  <table class="min-w-full bg-white shadow-lg rounded-xl">
+                  <table class="min-w-full rounded-xl bg-white shadow-lg">
                     <thead>
                       <tr class="bg-blue-gray-100 text-gray-700">
-                        <th class="py-3 px-4 text-left">Categoria</th>
-                        <th class="py-3 px-4 text-left">Ações</th>
+                        <th class="px-4 py-3 text-left">Categoria</th>
+                        <th class="px-4 py-3 text-left">Ações</th>
                       </tr>
                     </thead>
                     <tbody class="text-black">
                       <tr
-                        class="border-b border-blue-gray-200"
+                        class="border-blue-gray-200 border-b"
                         v-for="cat in paginatedItemsCat"
                         :key="cat.idCategoriaPubArquivo"
                       >
-                        <td class="py-3 px-4">{{ cat.txtTitulo }}</td>
-                        <td class="py-3 px-4 flex">
+                        <td class="px-4 py-3">{{ cat.txtTitulo }}</td>
+                        <td class="flex px-4 py-3">
                           <button
                             @click="
                               (idCategoriaPubArquivoCat = cat.idCategoriaPubArquivo),
                                 (txtDescricaoCat = cat.txtDescricao),
                                 (txtTituloCat = cat.txtTitulo)
                             "
-                            class="text-primary-700 pr-2"
+                            class="pr-2 text-primary-700"
                             v-tooltip.top="'Editar'"
                           >
                             <RiPencilLine />
                           </button>
                           <button
                             @click="excluirCategoria(cat.idCategoriaPubArquivo)"
-                            class="text-red-500 pr-2"
+                            class="pr-2 text-red-500"
                             title="Excluir"
                             v-tooltip.top="'Excluir'"
                           >
@@ -617,7 +622,7 @@ onMounted(() => {
                   <div class="flex items-center justify-center p-2">
                     <button
                       @click="previousPageCat"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+                      class="rounded bg-blue-500 font-bold text-white hover:bg-blue-700"
                       :disabled="currentPageCat === 1"
                     >
                       <RiArrowLeftFill></RiArrowLeftFill>
@@ -627,7 +632,7 @@ onMounted(() => {
                     >
                     <button
                       @click="nextPageCat"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+                      class="rounded bg-blue-500 font-bold text-white hover:bg-blue-700"
                       :disabled="currentPageCat === totalPagesCat"
                     >
                       <RiArrowRightFill></RiArrowRightFill>
@@ -635,11 +640,11 @@ onMounted(() => {
                   </div>
                 </Dialog>
               </div>
-              <div class="md:col-span-5 mt-3 flex">
+              <div class="mt-3 flex md:col-span-5">
                 <div>
                   <label
                     for="inputarquivos"
-                    class="border border-primary-500 hover:bg-primary-700 text-primary-500 hover:text-white py-2 px-4 rounded h-9 flex items-center justify-center cursor-pointer"
+                    class="flex h-9 cursor-pointer items-center justify-center rounded border border-primary-500 px-4 py-2 text-primary-500 hover:bg-primary-700 hover:text-white"
                   >
                     <i class="pi pi-upload mr-2"></i>
                     Selecionar arquivos
@@ -668,16 +673,16 @@ onMounted(() => {
                   </ul>
                 </div>
               </div>
-              <div class="md:col-span-5 text-right">
+              <div class="text-right md:col-span-5">
                 <div class="inline-flex items-end">
                   <button
                     @click="btnCadastraArquivo ? postSaveArquivos() : null"
                     :class="{
                       'bg-primary-500 hover:bg-primary-700': btnCadastraArquivo,
-                      'bg-primary-700 cursor-not-allowed': !btnCadastraArquivo
+                      'cursor-not-allowed bg-primary-700': !btnCadastraArquivo
                     }"
                     :disabled="!btnCadastraArquivo"
-                    class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
                   >
                     <span v-if="btnCadastraArquivo">Publicar</span>
                     <span v-else>
@@ -697,7 +702,7 @@ onMounted(() => {
                         (files = []),
                         getArquivosList()
                     "
-                    class="ml-2 border border-primary-500 hover:bg-primary-400 text-primary-500 hover:text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    class="ml-2 flex h-9 w-24 items-center justify-center rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-400 hover:text-white"
                   >
                     Limpar
                   </button>
@@ -706,7 +711,7 @@ onMounted(() => {
             </div>
             <div>
               <ul>
-                <li class="text-red-600 list-disc" v-for="erro in erros" :key="erro">{{ erro }}</li>
+                <li class="list-disc text-red-600" v-for="erro in erros" :key="erro">{{ erro }}</li>
               </ul>
             </div>
           </div>
@@ -716,27 +721,27 @@ onMounted(() => {
         <ProgressSpinner />
       </div>
       <div v-if="!loading">
-        <table class="min-w-full bg-white shadow-md rounded-xl">
+        <table class="min-w-full rounded-xl bg-white shadow-md">
           <thead>
             <tr class="bg-blue-gray-100 text-gray-700">
-              <th class="py-3 px-4 text-left">Ano</th>
-              <th class="py-3 px-4 text-left">Categoria</th>
-              <th class="py-3 px-4 text-left">Menu</th>
-              <th class="py-3 px-4 text-left">Arquivo</th>
-              <th class="py-3 px-4 text-left">Publicado em</th>
-              <th class="py-3 px-4 text-left">Ações</th>
+              <th class="px-4 py-3 text-left">Ano</th>
+              <th class="px-4 py-3 text-left">Categoria</th>
+              <th class="px-4 py-3 text-left">Menu</th>
+              <th class="px-4 py-3 text-left">Arquivo</th>
+              <th class="px-4 py-3 text-left">Publicado em</th>
+              <th class="px-4 py-3 text-left">Ações</th>
             </tr>
           </thead>
           <tbody class="text-blue-gray-900">
             <tr
               v-for="arq in paginatedItems"
               :key="arq.idArquivo"
-              class="border-b border-blue-gray-200"
+              class="border-blue-gray-200 border-b"
             >
-              <td class="py-3 px-4">{{ arq.anoPub }}</td>
-              <td class="py-3 px-4">{{ arq.descCategoria }}</td>
-              <td class="py-3 px-4">{{ arq.descMenu }}</td>
-              <td class="py-3 px-4">
+              <td class="px-4 py-3">{{ arq.anoPub }}</td>
+              <td class="px-4 py-3">{{ arq.descCategoria }}</td>
+              <td class="px-4 py-3">{{ arq.descMenu }}</td>
+              <td class="px-4 py-3">
                 <button
                   @click="downloadItem(arq.idArquivo, arq.nomeArquivo)"
                   class="text-primary-700"
@@ -745,11 +750,11 @@ onMounted(() => {
                   {{ truncateNoMeio(arq.nomeArquivo, 50) }}
                 </button>
               </td>
-              <td class="py-3 px-4">{{ formatDate(arq.dtInclusao) }}</td>
-              <td class="py-3 px-4 flex">
+              <td class="px-4 py-3">{{ formatDate(arq.dtInclusao) }}</td>
+              <td class="flex px-4 py-3">
                 <button
                   @click="editar(arq)"
-                  class="text-primary-500 pr-2"
+                  class="pr-2 text-primary-500"
                   title="Editar"
                   v-tooltip.top="'Editar'"
                 >
@@ -758,7 +763,7 @@ onMounted(() => {
 
                 <button
                   @click="excluir(arq)"
-                  class="text-red-500 pr-2"
+                  class="pr-2 text-red-500"
                   title="Excluir"
                   v-tooltip.top="'Excluir'"
                 >
@@ -772,7 +777,7 @@ onMounted(() => {
         <div class="flex items-center justify-center p-2">
           <button
             @click="previousPage"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            class="rounded bg-blue-500 font-bold text-white hover:bg-blue-700"
             :disabled="currentPage === 1"
           >
             <RiArrowLeftFill></RiArrowLeftFill>
@@ -780,7 +785,7 @@ onMounted(() => {
           <span class="px-5 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
           <button
             @click="nextPage"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            class="rounded bg-blue-500 font-bold text-white hover:bg-blue-700"
             :disabled="currentPage === totalPages"
           >
             <RiArrowRightFill></RiArrowRightFill>

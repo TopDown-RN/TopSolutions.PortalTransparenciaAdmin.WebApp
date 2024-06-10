@@ -86,7 +86,7 @@ onMounted(() => {
     <ProgressSpinner />
   </div>
 
-  <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
+  <div v-if="!loading" class="relative overflow-x-auto rounded-lg border">
     <DataTable
       :value="result"
       v-model:filters="filters"
@@ -131,9 +131,9 @@ onMounted(() => {
             rounded
           />
           <OverlayPanel ref="op">
-            <div class="flex flex-column gap-3 w-25rem">
+            <div class="flex-column w-25rem flex gap-3">
               <div>
-                <span class="font-medium text-900 block mb-2">Chave Acesso Externo</span>
+                <span class="text-900 mb-2 block font-medium">Chave Acesso Externo</span>
                 <InputGroup>
                   <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
                   <InputGroupAddon

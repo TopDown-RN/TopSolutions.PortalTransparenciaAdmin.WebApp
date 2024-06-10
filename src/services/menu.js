@@ -21,7 +21,7 @@ export function getMenusArquivo() {
     .catch((error) => console.error(error))
 }
 
-export function getMenusTemplates(){
+export function getMenusTemplates() {
   return api
     .get('menu/ListarMenusComTemplateAsync')
     .then((response) => response.data)
@@ -31,8 +31,7 @@ export function getMenusTemplates(){
     })
 }
 
-
-export function getTemplateMenu(_idMenu){
+export function getTemplateMenu(_idMenu) {
   return api
     .get('menu/LerTemplatePorId', {
       params: { _idMenu: _idMenu },
