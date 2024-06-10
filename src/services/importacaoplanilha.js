@@ -26,7 +26,7 @@ export function postPlanilha(formData) {
     })
 }
 
-export function visualizaDados(formData){
+export function visualizaDados(formData) {
   return api
     .post('importacaoplanilha/visualizarDados', formData, {
       headers: {
