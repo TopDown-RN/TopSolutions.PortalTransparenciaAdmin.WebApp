@@ -210,22 +210,27 @@ async function excluir(arquivo) {
 }
 
 const setarArquivos = (event) => {
-  const novosArquivos = Array.from(event.target.files);
+  const novosArquivos = Array.from(event.target.files)
 
   // Verificar se cada arquivo já existe na lista antes de adicioná-lo
   novosArquivos.forEach((novoArquivo) => {
-    const arquivoExiste = files.value.some((item) => item.name === novoArquivo.name && item.lastModified === novoArquivo.lastModified && item.size === novoArquivo.size);
+    const arquivoExiste = files.value.some(
+      (item) =>
+        item.name === novoArquivo.name &&
+        item.lastModified === novoArquivo.lastModified &&
+        item.size === novoArquivo.size
+    )
     if (!arquivoExiste) {
-      files.value.push(novoArquivo);
+      files.value.push(novoArquivo)
     }
-  });
+  })
 
   // Limpar valor do input de arquivo para permitir a seleção do mesmo arquivo novamente
-  event.target.value = '';
+  event.target.value = ''
 }
 
 function deletarArquivoDaLista(nomeDoArquivo) {
-  files.value = files.value.filter((item) => item.name !== nomeDoArquivo);
+  files.value = files.value.filter((item) => item.name !== nomeDoArquivo)
 }
 
 function LimparForm() {
