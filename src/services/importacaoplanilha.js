@@ -39,3 +39,16 @@ export function visualizaDados(formData){
       throw error
     })
 }
+
+
+export function visualizarDadosImportados(_idRegistroImportacao){
+  return api
+    .get('importacaoplanilha/visualizardadosimportados', {
+      params: { idRegistoImportacao: _idRegistroImportacao }
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log('error:', error)
+      throw error
+    })
+}

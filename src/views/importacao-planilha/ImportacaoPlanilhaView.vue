@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { postPlanilha, visualizaDados } from '@/services/importacaoplanilha'
+import { postPlanilha, visualizaDados, visualizarDadosImportados } from '@/services/importacaoplanilha'
 import { getRegistroImportacaoManuais, deletarRegistroImportcaoManuais } from '@/services/home'
 import { getMenusTemplates, getTemplateMenu } from '@/services/menu'
 import { RiDeleteBinLine } from '@remixicon/vue'
@@ -22,16 +22,21 @@ const file = ref(null)
 const registrosImportacao = ref([])
 const loading = ref(true)
 const loadingDialog = ref(false)
+const loadingDialog2 = ref(false)
 const btnImpotar = ref(true)
 const toast = useToast()
 const fileInput = ref(null)
 const desativar = ref(false)
 
 const visible = ref(false);
+const visible2 = ref(false);
 
 const menus = ref([])
 const templateData = ref([])
 const fields = ref([])
+const fields2 = ref([])
+
+const registrosImportados = ref([])
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -203,6 +208,23 @@ async function listarMenusTemplates(){
     }
 }
 
+async function lerDadosImportados(_idRegistroImport){
+  try{
+    loadingDialog2.value = true
+    visible2.value = true
+    const response = await visualizarDadosImportados(_idRegistroImport)
+    registrosImportados.value = response
+    fields2.value = Object.keys(registrosImportados.value[0])
+    console.log('response', response)
+    console.log(registrosImportados.value)
+    loadingDialog2.value = false
+  } catch (e) {
+    alertCustom(e.response.data, 'error', 'Erro!')
+    visible2.value = false
+    loadingDialog.value = false
+  }
+}
+
 onMounted(async () => {
   await registrosImportacaoManuais()
   await listarMenusTemplates()
@@ -253,6 +275,42 @@ onMounted(async () => {
             </DataTable>
     </div>
   </Dialog>
+
+  <Dialog v-model:visible="visible2" maximizable modal header="Dados Importados" :style="{ width: '80rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+    <div v-if="loadingDialog2" class="my-4 text-center">
+      <ProgressSpinner />
+    </div>
+    <div v-else>
+        <DataTable
+            :value="registrosImportados"
+            v-model:filters="filters"
+            size="small"
+            :paginator="true"
+            :rows="10"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            stripedRows
+            >
+            <template #header>
+                  <div class="flex justify-end">
+                    <span class="relative">
+                      <i
+                        class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+                      />
+                      <InputText
+                        size="small"
+                        v-model="filters['global'].value"
+                        placeholder="Pesquisar..."
+                        class="pl-10 font-normal"
+                      />
+                    </span>
+                  </div>
+                </template>
+                <Column v-for="field in fields2" :key="field" :field="field" :header="field"></Column>
+                <!-- <Column v-for="(value, key) in registrosImportados[0]" :key="key" :field="key" :header="key" /> -->
+            </DataTable>
+    </div>
+  </Dialog>
+
   <div>
     <div class="mx-auto max-w-3xl text-center">
       <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -386,6 +444,7 @@ onMounted(async () => {
                 >
                   <RiDeleteBinLine />
                 </button>
+                <i class="pi pi-eye ml-2 text-xl cursor-pointer hover:text-primary-500" @click="lerDadosImportados(rowData.data.idRegistroImportacao)"></i>
               </template>
             </Column>
           </DataTable>
