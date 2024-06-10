@@ -12,9 +12,8 @@ import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
 import ConfirmDialog from 'primevue/confirmdialog'
-import Dialog from 'primevue/dialog';
+import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
-
 
 const confirm = useConfirm()
 const idMenu = ref(0)
@@ -27,7 +26,7 @@ const toast = useToast()
 const fileInput = ref(null)
 const desativar = ref(false)
 
-const visible = ref(false);
+const visible = ref(false)
 
 const menus = ref([])
 const templateData = ref([])
@@ -50,7 +49,7 @@ async function visualizarDados() {
     visible.value = true
   } catch (e) {
     alertCustom(e.response.data, 'error', 'Erro!')
-    clearFile();
+    clearFile()
   }
 }
 
@@ -60,7 +59,7 @@ async function importarPlanilha() {
     const formData = new FormData()
     formData.append('_template', file.value)
     await postPlanilha(formData)
-    alertCustom('Dados Importados!', 'success' , 'Sucesso!')
+    alertCustom('Dados Importados!', 'success', 'Sucesso!')
     limparCampos()
     btnImpotar.value = true
     file.value = null
@@ -100,19 +99,16 @@ async function deletarDadosRegistro(idRegistroImportacao) {
         await deletarRegistroImportcaoManuais(idRegistroImportacao)
         await registrosImportacaoManuais()
         loading.value = false
-        alertCustom('Registro excluído com sucesso!', 'success' , 'Sucesso!')
+        alertCustom('Registro excluído com sucesso!', 'success', 'Sucesso!')
       } catch (e) {
         console.log(e)
         alertCustom(e.response.data, 'error', 'Erro!')
         loading.value = false
       }
     },
-    reject: () => {
-    
-    }
+    reject: () => {}
   })
 }
-
 
 async function confirmeImportacao() {
   confirm.require({
@@ -127,19 +123,16 @@ async function confirmeImportacao() {
     rejectLabel: 'Cancelar',
     acceptLabel: 'Confirmar',
     accept: async () => {
-        importarPlanilha()
+      importarPlanilha()
     },
-    reject: () => {
-    
-    }
+    reject: () => {}
   })
 }
 
 const handleFileChange = async (event) => {
-      file.value = event.target.files[0];
-      await visualizarDados()
-};
-
+  file.value = event.target.files[0]
+  await visualizarDados()
+}
 
 function formatarData(data) {
   const dataObj = new Date(data)
@@ -171,7 +164,6 @@ async function registrosImportacaoManuais() {
 
 async function downloadPlanilha() {
   try {
-
     if (idMenu.value == 0) {
       alertCustom('Selecione um modelo para baixar', 'warn', 'Atenção')
       return
@@ -193,25 +185,23 @@ async function downloadPlanilha() {
   }
 }
 
-async function listarMenusTemplates(){
-    try {
-        const response = await getMenusTemplates()
-        menus.value = response.data
-
-    } catch (e) {
-        alertCustom(e.response.data, 'error', 'Erro!')
-    }
+async function listarMenusTemplates() {
+  try {
+    const response = await getMenusTemplates()
+    menus.value = response.data
+  } catch (e) {
+    alertCustom(e.response.data, 'error', 'Erro!')
+  }
 }
 
 onMounted(async () => {
   await registrosImportacaoManuais()
   await listarMenusTemplates()
 })
-
 </script>
 
 <template>
-   <Toast position="top-center" />
+  <Toast position="top-center" />
   <ConfirmDialog group="templating">
     <template #message="slotProps">
       <div class="flex flex-col items-center w-full gap-3">
@@ -220,37 +210,44 @@ onMounted(async () => {
       </div>
     </template>
   </ConfirmDialog>
-  <Dialog v-model:visible="visible" maximizable modal header="Dados a serem importados" :style="{ width: '100rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+  <Dialog
+    v-model:visible="visible"
+    maximizable
+    modal
+    header="Dados a serem importados"
+    :style="{ width: '100rem' }"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  >
     <div v-if="loadingDialog" class="my-4 text-center">
       <ProgressSpinner />
     </div>
     <div v-else>
-        <DataTable
-            :value="templateData"
-            v-model:filters="filters"
-            size="small"
-            :paginator="true"
-            :rows="10"
-            :rowsPerPageOptions="[5, 10, 20, 50]"
-            stripedRows
-            >
-            <template #header>
-                  <div class="flex justify-end">
-                    <span class="relative">
-                      <i
-                        class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
-                      />
-                      <InputText
-                        size="small"
-                        v-model="filters['global'].value"
-                        placeholder="Pesquisar..."
-                        class="pl-10 font-normal"
-                      />
-                    </span>
-                  </div>
-                </template>
-            <Column v-for="field in fields" :key="field" :field="field" :header="field"></Column>
-            </DataTable>
+      <DataTable
+        :value="templateData"
+        v-model:filters="filters"
+        size="small"
+        :paginator="true"
+        :rows="10"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        stripedRows
+      >
+        <template #header>
+          <div class="flex justify-end">
+            <span class="relative">
+              <i
+                class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
+              />
+              <InputText
+                size="small"
+                v-model="filters['global'].value"
+                placeholder="Pesquisar..."
+                class="pl-10 font-normal"
+              />
+            </span>
+          </div>
+        </template>
+        <Column v-for="field in fields" :key="field" :field="field" :header="field"></Column>
+      </DataTable>
     </div>
   </Dialog>
   <div>
@@ -306,11 +303,14 @@ onMounted(async () => {
                     ref="fileInput"
                     @change="handleFileChange"
                   />
-                
-                  <i v-if="templateData && templateData.length > 0" class="pi pi-eye ml-2 text-xl cursor-pointer hover:text-primary-500" @click="visible = !visible"></i>
-                
+
+                  <i
+                    v-if="templateData && templateData.length > 0"
+                    class="pi pi-eye ml-2 text-xl cursor-pointer hover:text-primary-500"
+                    @click="visible = !visible"
+                  ></i>
                 </div>
-                
+
                 <div v-if="file" class="ml-10">
                   <ul class="flex flex-col items-start justify-center">
                     <li class="list-disc">{{ file.name }} <button @click="clearFile">X</button></li>
