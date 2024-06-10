@@ -72,34 +72,34 @@ onMounted(() => {
 
     <div class="w-full p-8 pt-8">
       <form @submit.prevent="salvarDados">
-        <div class="-mx-2 md:items-center md:flex">
+        <div class="-mx-2 md:flex md:items-center">
           <div class="flex-1 px-2">
-            <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200">Telefone</label>
+            <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Telefone</label>
             <InputText
               v-model="telefone"
               id="telefone"
               type="text"
               placeholder="(##) #####-####"
               v-mask="['(##) ####-####', '(##) #####-####']"
-              class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
             />
           </div>
 
-          <div class="flex-1 px-2 mt-4 md:mt-0">
-            <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+          <div class="mt-4 flex-1 px-2 md:mt-0">
+            <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
               >Endereço de Email</label
             >
             <InputText
               v-model="email"
               type="email"
               placeholder="ouvidor@examplo.com"
-              class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
             />
           </div>
         </div>
 
-        <div class="w-full mt-4">
-          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+        <div class="mt-4 w-full">
+          <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
             >Conteúdo na página</label
           >
           <QuillEditor v-model:content="conteudo" contentType="html" toolbar="full" theme="snow" />

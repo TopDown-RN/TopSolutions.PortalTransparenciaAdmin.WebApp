@@ -40,8 +40,7 @@ export function visualizaDados(formData) {
     })
 }
 
-
-export function visualizarDadosImportados(_idRegistroImportacao){
+export function visualizarDadosImportados(_idRegistroImportacao) {
   return api
     .get('importacaoplanilha/visualizardadosimportados', {
       params: { idRegistoImportacao: _idRegistroImportacao }
