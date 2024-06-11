@@ -14,7 +14,9 @@ import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Toolbar from 'primevue/toolbar'
 import Toast from 'primevue/toast'
+import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
@@ -29,6 +31,11 @@ const selectedArquivo = ref()
 const editingRows = ref([])
 
 const showCadastroArq = ref(false)
+const arquivoDialog = ref(false)
+const id_Menu = ref('')
+const ano = ref('')
+const idCategoriaArquivos = ref('')
+const isValid = ref(true)
 
 const loading = ref(true)
 
@@ -59,27 +66,6 @@ async function fetchArquivos() {
   }
 }
 
-function excluirArq(arquivo) {
-  console.log(arquivo.data)
-  confirm.require({
-    group: 'headless',
-    header: 'Tem certeza de que deseja excluir?',
-    target: `${arquivo.data.nomeArquivo}`,
-    message: 'Por favor, confirme para prosseguir.',
-    accept: async () => {
-      const response = await deleteArquivo(arquivo.data.idArquivo)
-      const status = response.metadata.statusCode
-
-      if (status === 200) {
-        showSuccess(response.data)
-        await fetchArquivos()
-      } else {
-        showError(response.data)
-      }
-    }
-  })
-}
-
 async function downloadArq(idArquivo, nomeArquivo) {
   try {
     const dados = await LerArquivoPorIdApi(idArquivo)
@@ -101,6 +87,64 @@ async function downloadArq(idArquivo, nomeArquivo) {
   }
 }
 
+function filtrarArquivos({ menu, ano, categoria }) {
+  arquivos.value = filterArquivos.value.filter((arquivo) => {
+    return (
+      (!menu || arquivo.descMenu === menu.txtDescricao) &&
+      (!ano || arquivo.anoPub === ano) &&
+      (!categoria || arquivo.descCategoria === categoria.txtTitulo)
+    )
+  })
+}
+
+function excluirArq(arquivo) {
+  console.log(arquivo.data)
+  confirm.require({
+    group: 'headless',
+    header: 'Tem certeza de que deseja excluir?',
+    target: `${arquivo.data.nomeArquivo}`,
+    message: 'Por favor, confirme para prosseguir.',
+    accept: async () => {
+      const response = await deleteArquivo(arquivo.data.idArquivo)
+      const status = response.metadata.statusCode
+
+      if (status === 200) {
+        showSuccess(response.data)
+        await fetchArquivos()
+      } else {
+        showError(response.data)
+      }
+    }
+  })
+}
+
+function excluirArqSelected() {
+  confirm.require({
+    group: 'headless',
+    header: 'Tem certeza que deseja excluir os arquivos selecionados?',
+    message: 'Por favor, confirme para prosseguir',
+    accept: async () => {
+      await console.log(selectedArquivo)
+    }
+  })
+}
+
+function moverArqSelected() {
+  try {
+    if (!validarCampos()) {
+      return
+    }
+  } catch (e) {
+    console.error(`error: ${e.message}`)
+  }
+}
+
+function onRowEditSave(event) {
+  console.log(event)
+  let { newData, index } = event
+  arquivos.value[index] = newData
+}
+
 async function fetchCategorias() {
   const response = await getCategorias()
   categorias.value = response.data
@@ -113,10 +157,12 @@ async function fetchMenus() {
   })
 }
 
-function onRowEditSave(event) {
-  console.log(event)
-  let { newData, index } = event
-  arquivos.value[index] = newData
+function validarCampos() {
+  if (!id_Menu.value || !ano.value || !idCategoriaArquivos.value) {
+    isValid.value = false
+  }
+
+  return isValid.value
 }
 
 function formatDate(date) {
@@ -129,16 +175,6 @@ function showSuccess(message) {
 
 function showError(message) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 5000 })
-}
-
-function filtrarArquivos({ menu, ano, categoria }) {
-  arquivos.value = filterArquivos.value.filter((arquivo) => {
-    return (
-      (!menu || arquivo.descMenu === menu.txtDescricao) &&
-      (!ano || arquivo.anoPub === ano) &&
-      (!categoria || arquivo.descCategoria === categoria.txtTitulo)
-    )
-  })
 }
 
 EventBus.on('filterChange', filtrarArquivos)
@@ -199,17 +235,16 @@ onMounted(() => {
     </div>
 
     <div v-if="!loading" class="relative mt-8 overflow-x-auto rounded-lg border">
-      <!-- <Toolbar>
+      <Toolbar>
         <template #start>
           <Button
-            label="Excluir"
-            icon="pi pi-trash"
-            severity="danger"
-            @click="excluirArqSelected"
-            :disabled="!selectedArquivo || !selectedArquivo.length"
+            @click="showCadastroArq = true"
+            size="small"
+            label="Adicionar arquivo"
+            icon="pi pi-plus"
           />
         </template>
-      </Toolbar> -->
+      </Toolbar>
       <DataTable
         v-model:selection="selectedArquivo"
         v-model:filters="filters"
@@ -229,12 +264,25 @@ onMounted(() => {
       >
         <template #header>
           <div class="flex justify-between">
-            <Button
-              @click="showCadastroArq = true"
-              size="small"
-              label="Adicionar arquivo"
-              icon="pi pi-plus"
-            />
+            <div class="flex gap-2">
+              <Button
+                label="Excluir"
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                @click="excluirArqSelected()"
+                :disabled="!selectedArquivo || !selectedArquivo.length"
+              />
+
+              <Button
+                label="Mover arquivo"
+                @click="arquivoDialog = true"
+                size="small"
+                icon="pi pi-file-export"
+                severity="contrast"
+                :disabled="!selectedArquivo || !selectedArquivo.length"
+              />
+            </div>
 
             <IconField iconPosition="left">
               <InputIcon class="pi pi-search" />
@@ -248,7 +296,7 @@ onMounted(() => {
           </div>
         </template>
 
-        <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
+        <Column selectionMode="multiple"></Column>
 
         <Column header="Ano" field="anoPub">
           <template #editor="{ data, field }">
@@ -322,6 +370,85 @@ onMounted(() => {
           </template>
         </Column>
       </DataTable>
+
+      <Dialog
+        v-model:visible="arquivoDialog"
+        modal
+        header="Mover Arquivo(s)"
+        :style="{ width: '25rem' }"
+      >
+        <span class="mb-5 block text-surface-600 dark:text-surface-0/70">
+          Selecione o local pra onde deseja mover.
+        </span>
+
+        <div class="grid grid-cols-1 gap-x-2">
+          <label class="block py-1 text-sm" for="ddMenu">Menu</label>
+          <Dropdown
+            v-model="id_Menu"
+            :options="menus"
+            optionLabel="txtDescricao"
+            id="ddMenu"
+            placeholder="Selecione um menu"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!id_Menu && !isValid"
+          />
+          <small v-if="!id_Menu && !isValid" class="text-red-600">
+            Obrigatório selecionar um menu
+          </small>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-2 pt-2">
+          <label class="block py-1 text-sm" for="categoria">Categoria</label>
+          <Dropdown
+            v-model="idCategoriaArquivos"
+            :options="categorias"
+            optionLabel="txtTitulo"
+            id="categoria"
+            placeholder="Selecione uma categoria"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!idCategoriaArquivos && !isValid"
+          />
+          <small v-if="!idCategoriaArquivos && !isValid" class="text-red-600">
+            Obrigatório selecionar uma categoria
+          </small>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-2 pt-2">
+          <label class="block py-1 text-sm" for="ano">Ano</label>
+          <Dropdown
+            v-model="ano"
+            :options="anos"
+            id="ano"
+            placeholder="Selecione um ano"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!ano && !isValid"
+          />
+          <small v-if="!ano && !isValid" class="text-red-600">Obrigatório selecionar um ano</small>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <Button
+            type="button"
+            label="Cancelar"
+            severity="secondary"
+            size="small"
+            class="text-sm"
+            text
+            @click="arquivoDialog = false"
+          />
+          <Button
+            type="button"
+            label="Salvar"
+            size="small"
+            class="text-sm"
+            text
+            @click="moverArqSelected()"
+          />
+        </div>
+      </Dialog>
     </div>
   </section>
 </template>
