@@ -1,6 +1,12 @@
 <script setup>
 import { onMounted, ref, watch, computed } from 'vue'
-import { LerArquivoPorIdApi, deleteArquivo, getArquivos, getCategorias } from '@/services/arquivos'
+import {
+  LerArquivoPorIdApi,
+  deleteArquivo,
+  getArquivos,
+  getCategorias,
+  atualizarArquivo
+} from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
 import { truncateNoMeio } from '@/utils/truncateString'
 import EventBus from '@/utils/eventBus'
@@ -139,10 +145,26 @@ function moverArqSelected() {
   }
 }
 
-function onRowEditSave(event) {
-  console.log(event)
-  let { newData, index } = event
-  arquivos.value[index] = newData
+async function onRowEditSave(event) {
+  try {
+    let { newData } = event
+
+    const dados = {
+      anoPub: newData.anoPub,
+      idCategoriaPubArquivo: newData.descCategoria,
+      idMenu: newData.descMenu,
+      txtDescricaoArquivo: newData.nomeArquivo,
+      lstArquivos: [newData.idArquivo]
+    }
+
+    await atualizarArquivo(dados)
+
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+  } catch (error) {
+    showError('Ocorreu um erro ao Editar')
+    console.error(error)
+  }
 }
 
 async function fetchCategorias() {
@@ -309,7 +331,7 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="categorias"
-              optionValue="txtTitulo"
+              optionValue="idCategoriaPubArquivo"
               optionLabel="txtTitulo"
               panelClass="text-sm"
             />
@@ -321,7 +343,7 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="menus"
-              optionValue="txtDescricao"
+              optionValue="idMenu"
               optionLabel="txtDescricao"
               panelClass="text-sm"
             />
