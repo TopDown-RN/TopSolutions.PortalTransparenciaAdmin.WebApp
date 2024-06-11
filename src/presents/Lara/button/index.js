@@ -183,6 +183,26 @@ export default {
           props.outlined && props.severity === 'danger' && !props.plain
       },
 
+      // Contrast Button
+      {
+        'text-white dark:text-surface-900':
+          props.severity === 'contrast' && !props.text && !props.outlined && !props.plain,
+        'bg-surface-900 dark:bg-surface-0':
+          props.severity === 'contrast' && !props.text && !props.outlined && !props.plain,
+        'border border-surface-900 dark:border-surface-0':
+          props.severity === 'contrast' && !props.text && !props.outlined && !props.plain
+      },
+      // Contrast Text Button
+      {
+        'text-surface-900 dark:text-surface-0':
+          props.text && props.severity === 'contrast' && !props.plain
+      },
+      // Contrast Outlined Button
+      {
+        'text-surface-900 dark:text-surface-0 border border-surface-900 dark:border-surface-0':
+          props.outlined && props.severity === 'contrast' && !props.plain
+      },
+
       // --- Severity Button States ---
       'focus:outline-none focus:outline-offset-0 focus:ring',
 
