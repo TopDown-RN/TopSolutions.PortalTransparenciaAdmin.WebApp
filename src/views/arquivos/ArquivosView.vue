@@ -151,8 +151,10 @@ async function onRowEditSave(event) {
 
     const dados = {
       anoPub: newData.anoPub,
-      idCategoriaPubArquivo: newData.descCategoria,
-      idMenu: newData.descMenu,
+      idCategoriaPubArquivo: Number.isInteger(newData.descCategoria)
+        ? newData.descCategoria
+        : newData.idCategoriaPubArquivo,
+      idMenu: Number.isInteger(newData.descMenu) ? newData.descMenu : newData.idMenu,
       txtDescricaoArquivo: newData.nomeArquivo,
       lstArquivos: [newData.idArquivo]
     }
