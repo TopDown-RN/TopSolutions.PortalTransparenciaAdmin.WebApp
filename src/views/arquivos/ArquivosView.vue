@@ -104,33 +104,38 @@ function filtrarArquivos({ menu, ano, categoria }) {
 }
 
 function excluirArq(arquivo) {
-  console.log(arquivo.data)
   confirm.require({
     group: 'headless',
     header: 'Tem certeza de que deseja excluir?',
     target: `${arquivo.data.nomeArquivo}`,
     message: 'Por favor, confirme para prosseguir.',
     accept: async () => {
-      const response = await deleteArquivo(arquivo.data.idArquivo)
-      const status = response.metadata.statusCode
-
-      if (status === 200) {
-        showSuccess(response.data)
+      const response = await deleteArquivo([arquivo.data.idArquivo])
+      if (response) {
+        showSuccess('Arquivo excluído com sucesso!')
         await fetchArquivos()
       } else {
-        showError(response.data)
+        showError('Ocorreu um erro ao excluir arquivo!')
       }
     }
   })
 }
 
 function excluirArqSelected() {
+  const dados = selectedArquivo.value.map((item) => item.idArquivo)
+
   confirm.require({
     group: 'headless',
     header: 'Tem certeza que deseja excluir os arquivos selecionados?',
     message: 'Por favor, confirme para prosseguir',
     accept: async () => {
-      await console.log(selectedArquivo)
+      const response = await deleteArquivo(dados)
+      if (response) {
+        showSuccess('Arquivos excluídos com sucesso!')
+        await fetchArquivos()
+      } else {
+        showError('Ocorreu um erro ao excluir arquivos!')
+      }
     }
   })
 }

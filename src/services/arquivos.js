@@ -48,12 +48,14 @@ export function atualizarArquivo(dados) {
     })
 }
 
-export function deleteArquivo(id) {
+export function deleteArquivo(ids) {
   return api
-    .delete(`arquivo/DeletarCategoriaArquivoAsync?idArquivo=${id}`, {
+    .delete('arquivo/DeletarCategoriaArquivoAsync', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      data: ids
     })
     .then((response) => response.data)
     .catch((error) => console.error(error))
