@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from '@/services/auth/authToken.js'
+import { getToken, removeToken } from '@/services/auth/authStorage.js'
 
 function getBaseUrl() {
   if (import.meta.env.DEV) {
@@ -9,7 +9,7 @@ function getBaseUrl() {
   return window.location.hostname ===
     'top-solutions-portal-transparencia-admin-web-app-develop.vercel.app'
     ? 'https://demo.topsolutionsrn.com.br/apiportaltranspadmin'
-    : `https://api.${window.location.hostname}`
+    : `https://api${window.location.hostname}`
 }
 
 const api = axios.create({
@@ -19,15 +19,35 @@ const api = axios.create({
   }
 })
 
-api.interceptors.request.use((config) => {
-  const token = getToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
   }
-  return config
-}, error => {
-  return Promise.reject(error)
-})
+)
+
+api.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const token = getToken()
+      if (token) {
+        localStorage.setItem('sessao-expirada', 'Sessão expirada')
+        removeToken()
+        window.location.reload()
+      }
+    }
+    return Promise.reject(error)
+  }
+)
 
 // Axios response interceptor
 // api.interceptors.response.use(

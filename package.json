@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@remixicon/vue": "^4.2.0",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.5.1",
+    "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
     "primevue": "^3.51.0",
     "v-mask": "^2.3.0",
@@ -30,7 +32,8 @@
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "postcss": "^8.4.35",
-    "prettier": "^3.0.3",
+    "prettier": "^3.3.1",
+    "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.1",
     "vite": "^5.2.11"
   }

@@ -1,26 +1,57 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { getListaUsuarios } from '@/services/usuario'
+import { useToastStore } from '@/stores/toastStore'
+import router from '@/router/index.js'
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ProgressSpinner from 'primevue/progressspinner'
-import router from '@/router/index.js'
+import InputText from 'primevue/inputtext'
+import Toast from 'primevue/toast'
+import OverlayPanel from 'primevue/overlaypanel'
+import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
+import { FilterMatchMode } from 'primevue/api'
+import { useToast } from 'primevue/usetoast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const loading = ref(true)
 const result = ref()
 
+const toastStore = useToastStore()
+const toast = useToast()
+
+const toastMessage = ref('')
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+})
+
+const op = ref(null)
+const txtChaveAcessoAPI = ref()
+
 async function fetchUsuario() {
   try {
     const response = await getListaUsuarios(false)
-    result.value = response.data
-    //console.log(result.value);
-    //localStorage.setItem('token', response.token)
-    //router.push({name: 'home'})
+    result.value = response.data.filter((item) => item.idUsuario > 4)
   } catch (error) {
     result.value = []
     console.error('erro ao obter os arquivos:', error)
   }
+}
+
+function toggleOverlay(chaveAcesso) {
+  op.value.show(event)
+  txtChaveAcessoAPI.value = chaveAcesso
+}
+
+function copyKey() {
+  const inputElement = document.querySelector('.w-25rem input')
+  inputElement.select()
+  navigator.clipboard.writeText(inputElement.value)
 }
 
 function editUsuario(event) {
@@ -30,43 +61,106 @@ function editUsuario(event) {
   })
 }
 
+watch(toastMessage, (newToast) => {
+  toast.add({ severity: 'success', summary: 'Sucesso!', detail: newToast, life: 5000 })
+})
+
 watch(result, () => {
   loading.value = false
 })
 
 onMounted(() => {
   fetchUsuario()
+  toastMessage.value = toastStore.showToast
 })
 </script>
 
 <template>
-  <div class="flex md:justify-end m-2">
-    <Button
-      type="button"
-      onclick="location.href='/usuarios/novo'"
-      class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3"
-    >
-      Adicionar novo usuário
-    </Button>
-  </div>
+  <Toast position="top-center" />
+  <HeadingComponent
+    title="Usuários"
+    subtitle="Lista dos usuários cadastrados no sistema"
+    description="Mantenha-os sempre atualizados."
+  />
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
 
-  <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
-    <DataTable :value="result" paginator :rows="10">
+  <div v-if="!loading" class="relative overflow-x-auto rounded-lg border">
+    <DataTable
+      :value="result"
+      v-model:filters="filters"
+      size="small"
+      paginator
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      stripedRows
+    >
       <template #header>
-        <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-          <h4 class="m-0">Usuários</h4>
+        <div class="flex justify-between">
+          <Button
+            size="small"
+            label="Adicionar novo usuário"
+            icon="pi pi-plus"
+            onclick="location.href='/usuarios/novo'"
+          />
+          <IconField iconPosition="left">
+            <InputIcon class="pi pi-search" />
+            <InputText
+              size="small"
+              v-model="filters['global'].value"
+              placeholder="Pesquisar..."
+              class="font-normal"
+            />
+          </IconField>
         </div>
       </template>
       <Column field="txtNome" header="Nome"></Column>
       <Column field="txtCpfCnpj" header="CPF"></Column>
       <Column field="txtEmail" header="E-mail"></Column>
-      <Column header="Ações" :exportable="false" style="min-width: 8rem">
+      <Column field="txtChaveAcessoAPI" header="Chave de Acesso">
+        <template #body="slotProps">
+          <Button
+            v-if="slotProps.data.txtChaveAcessoAPI"
+            @click="toggleOverlay(slotProps.data.txtChaveAcessoAPI)"
+            v-tooltip.top="'Chave de Acesso Externo'"
+            icon="pi pi-key"
+            size="small"
+            severity="success"
+            outlined
+            rounded
+          />
+          <OverlayPanel ref="op">
+            <div class="flex-column w-25rem flex gap-3">
+              <div>
+                <span class="text-900 mb-2 block font-medium">Chave Acesso Externo</span>
+                <InputGroup>
+                  <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
+                  <InputGroupAddon
+                    class="cursor-pointer hover:bg-gray-200"
+                    @click="copyKey"
+                    v-tooltip.top="'Copiar'"
+                  >
+                    <i class="pi pi-copy"></i>
+                  </InputGroupAddon>
+                </InputGroup>
+              </div>
+            </div>
+          </OverlayPanel>
+        </template>
+      </Column>
+      <Column header="Ações" :exportable="false">
         <template #body="event">
-          <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editUsuario(event)" />
-          <Button icon="pi pi-trash" outlined rounded severity="danger" />
+          <Button
+            icon="pi pi-pencil"
+            size="small"
+            outlined
+            rounded
+            class="mr-2"
+            @click="editUsuario(event)"
+            v-tooltip.top="'Editar'"
+          />
+          <!--          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />-->
         </template>
       </Column>
     </DataTable>

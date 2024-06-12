@@ -1,6 +1,14 @@
 import api from './api'
 
-export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _blnAcessoExterno) {
+export function postSaveUsuario(
+  _idUsuario,
+  _nome,
+  _cpfcnpj,
+  _email,
+  _senha,
+  _blnAcessoExterno,
+  _blnAlterarSenha
+) {
   return api
     .post(
       'usuario/registro',
@@ -10,12 +18,15 @@ export function postSaveUsuario(_idUsuario, _nome, _cpfcnpj, _email, _senha, _bl
         txtNome: _nome,
         txtEmail: _email,
         txtSenha: _senha,
-        blnAcessoExterno: _blnAcessoExterno
+        blnAcessoExterno: _blnAcessoExterno,
+        blnAlterarSenha: _blnAlterarSenha
       },
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function getListaUsuarios(_blnAcessoExterno) {
@@ -26,7 +37,9 @@ export function getListaUsuarios(_blnAcessoExterno) {
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
 }
 
 export function getUsuario(_idUsuario) {
@@ -37,7 +50,34 @@ export function getUsuario(_idUsuario) {
       { Authorization: `Bearer ${localStorage.getItem('token')}` }
     )
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw error
+    })
+}
+
+export function getPorToken() {
+  return api
+    .get(
+      'usuario/LerPorToken',
+      { params: { token: localStorage.getItem('token') } },
+      { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
+export function alterarSenha(senha, cpf) {
+  console.log(senha, cpf)
+  return api
+    .patch(`usuario/alterarsenha?novaSenha=${senha}&txtCpfCnpj=${cpf}`, {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
 }
 
 export default api

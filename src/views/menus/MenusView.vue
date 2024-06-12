@@ -1,15 +1,20 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { getMenus, postMenu } from '@/services/menu'
-import { RiEdit2Line, RiArrowLeftFill, RiArrowRightFill } from '@remixicon/vue'
-import usePagination from '@/utils/pagination'
-import { truncateUrl } from '@/utils/truncateString'
+import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import { FilterMatchMode } from 'primevue/api'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const btnCadastraMenu = ref(true)
+const erros = ref([])
 
-// Campos de cadastrp de arquivo
+// Campos de cadastro de arquivo
 const idArquivo = ref(0)
 const txtDescricao = ref('')
 const txtDescricaoGeral = ref('')
@@ -28,6 +33,8 @@ const menus = ref([])
 const success = ref(false)
 const error = ref(false)
 
+const loading = ref(true)
+
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
   { valor: 1, descricao: 'Header' },
@@ -37,12 +44,38 @@ const locais_load = [
   { valor: 5, descricao: 'Custom' }
 ]
 
-// ---------------------  Funções gerais
-const menusSorted = computed(() => {
-  return menus.value.slice().sort((a, b) => {
-    return a.txtDescricao.localeCompare(b.txtDescricao)
-  })
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
+
+// Watcher para atualizar a URL do menu quando a opção "Arquivo" é marcada
+watch(blnArquivo, (newVal) => {
+  if (newVal && !txtUrl.value.startsWith('/arquivos/')) {
+    txtUrl.value = `/arquivos/${txtUrl.value}`
+  } else if (!newVal && txtUrl.value.startsWith('/arquivos/')) {
+    txtUrl.value = txtUrl.value.replace('/arquivos/', '')
+  }
+})
+
+// Watcher para desativar uma opção quando a outra é ativada
+watch(blnArquivo, (newVal) => {
+  if (newVal) {
+    blnPopUp.value = false // Desativa Pop-Up se Arquivo é ativado
+  }
+})
+
+watch(blnPopUp, (newVal) => {
+  if (newVal) {
+    blnArquivo.value = false // Desativa Arquivo se Pop-Up é ativado
+  }
+})
+
+// ---------------------  Funções gerais
+// const menusSorted = computed(() => {
+//   return menus.value.slice().sort((a, b) => {
+//     return a.txtDescricao.localeCompare(b.txtDescricao)
+//   })
+// })
 
 function limpar() {
   idArquivo.value = 0
@@ -71,15 +104,15 @@ function editar(menu) {
 }
 
 // ------------------- Paginação
-const paginationMenus = usePagination(menusSorted, 10)
+// const paginationMenus = usePagination(menus, 10)
 
-const {
-  currentPage: currentPageMenu,
-  paginatedItems: paginatedItemsMenu,
-  nextPage: nextPageMenu,
-  previousPage: previousPageMenu,
-  totalPages: totalPagesMenu
-} = paginationMenus
+// const {
+//   currentPage: currentPageMenu,
+//   paginatedItems: paginatedItemsMenu,
+//   nextPage: nextPageMenu,
+//   previousPage: previousPageMenu,
+//   totalPages: totalPagesMenu
+// } = paginationMenus
 
 // -------------------- Função para controle de messages
 function mensagemSucesso() {
@@ -98,12 +131,19 @@ function mensagemErro() {
 
 // ------------------------- Metódos GET
 async function getMenusList() {
+  loading.value = true
   const response = await getMenus()
-  menus.value = response.data.reverse()
+  menus.value = response.data
+  //console.log(menus.value)
+  loading.value = false
 }
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
+  if (!validaCampos()) {
+    return
+  }
+
   try {
     btnCadastraMenu.value = false
     const locaisSelecionados = locais.value.map((local) => parseInt(local))
@@ -131,33 +171,60 @@ async function postGravarMenu() {
   }
 }
 
+// Validação de campos
+
+function validaCampos() {
+  erros.value = []
+  if (!txtDescricao.value) {
+    erros.value.push('Nome do menu é obrigatório')
+  }
+
+  if (!txtDescricaoGeral.value) {
+    erros.value.push('Descrição do menu é obrigatório')
+  }
+
+  // if (!txtUrl.value) {
+  //   erros.value.push('Url do menu é obrigatório')
+  // }
+
+  if (!locais.value.length) {
+    erros.value.push('Informe ao menos um local para o menu')
+  }
+
+  if (erros.value.length) {
+    return false
+  }
+
+  return true
+}
+
 onMounted(() => {
   getMenusList()
 })
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Menus</h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.
-    </p>
-    <div class="-mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
+  <div id="gridMenu">
+    <HeadingComponent
+      title="Menus"
+      subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
+      description="Mantenha-os sempre atualizados."
+    />
   </div>
-  <div class="container max-w-screen-base mx-auto">
+  <div class="max-w-screen-base container overflow-x-auto">
     <div>
-      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 mt-6">
+      <div class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8">
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Menu salvo sucesso</Message
+            >Menu salvo com sucesso</Message
           >
           <Message severity="error" :sticky="true" :life="2000" v-if="error"
             >Erro ao cadastrar Menu</Message
           >
         </div>
-        <div class="grid gap text-sm grid-cols-1">
+        <div class="gap grid grid-cols-1 text-sm">
           <div class="lg:col-span-2">
-            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5 content-end">
+            <div class="grid grid-cols-1 content-end gap-4 gap-y-2 text-sm md:grid-cols-5">
               <div class="md:col-span-5">
                 <label>Nome do menu</label>
                 <input
@@ -165,7 +232,7 @@ onMounted(() => {
                   type="text"
                   name="nomemenu"
                   id="nomemenu"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
                   placeholder="Digite o nome que deseja dar ao menu, ex: Receita, Despesa..."
                 />
               </div>
@@ -176,7 +243,7 @@ onMounted(() => {
                   type="text"
                   name="descricaomenu"
                   id="descricaomenu"
-                  class="h-20 border mt-1 rounded px-4 w-full bg-transparent"
+                  class="mt-1 h-20 w-full rounded border bg-transparent px-4"
                   placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
                 />
               </div>
@@ -187,15 +254,15 @@ onMounted(() => {
                   type="text"
                   name="urlmenu"
                   id="urlmenu"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
                   placeholder="Digite a url do menu. Ex: /receita"
                 />
               </div>
 
               <div class="md:col-span-5">
                 <label>Configurações</label>
-                <div class="grid grid-cols-4 gap-x-4 mt-2">
-                  <div class="flex items-center col-span-1">
+                <div class="mt-2 grid grid-cols-4 gap-x-4">
+                  <div class="col-span-1 flex items-center">
                     <input
                       v-model="blnAtivo"
                       type="checkbox"
@@ -205,7 +272,7 @@ onMounted(() => {
                     />
                     <label for="ativo">Ativo</label>
                   </div>
-                  <div class="flex items-center col-span-1">
+                  <div class="col-span-1 flex items-center">
                     <input
                       v-model="blnArquivo"
                       type="checkbox"
@@ -215,7 +282,7 @@ onMounted(() => {
                     />
                     <label for="arquivo">Arquivo</label>
                   </div>
-                  <div class="flex items-center col-span-1">
+                  <div class="col-span-1 flex items-center">
                     <input
                       v-model="blnPopUp"
                       type="checkbox"
@@ -236,10 +303,10 @@ onMounted(() => {
                 <label>É submenu de outro ítem?</label>
                 <select
                   v-model="idMenuPai"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
                 >
                   <option value="0">Selecione</option>
-                  <option v-for="menu in menusSorted" :key="menu.idMenu" :value="menu.idMenu">
+                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
                     {{ menu.txtDescricao }}
                   </option>
                 </select>
@@ -247,11 +314,11 @@ onMounted(() => {
 
               <div class="md:col-span-5">
                 <label>Local do Menu</label>
-                <div class="grid grid-cols-5 gap-x-4 mt-2">
+                <div class="mt-2 grid grid-cols-5 gap-x-4">
                   <div
                     v-for="item in locais_load"
                     :key="item.valor"
-                    class="flex items-center col-span-1"
+                    class="col-span-1 flex items-center"
                   >
                     <input
                       v-model="locais"
@@ -266,7 +333,7 @@ onMounted(() => {
                 </div>
               </div>
 
-              <div class="md:col-span-5 text-right">
+              <div class="text-right md:col-span-5">
                 <div class="inline-flex items-end">
                   <div class="mr-2">
                     <!-- <button
@@ -278,11 +345,11 @@ onMounted(() => {
                     <button
                       @click="btnCadastraMenu ? postGravarMenu() : null"
                       :class="{
-                        'bg-blue-500 hover:bg-blue-700': btnCadastraMenu,
-                        'bg-blue-700 cursor-not-allowed': !btnCadastraMenu
+                        'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
+                        'cursor-not-allowed bg-primary-700': !btnCadastraMenu
                       }"
                       :disabled="!btnCadastraMenu"
-                      class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                      class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
                     >
                       <span v-if="btnCadastraMenu">Gravar</span>
                       <span v-else>
@@ -297,71 +364,95 @@ onMounted(() => {
                   <div>
                     <button
                       @click="limpar"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      class="rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
                     >
                       Limpar
                     </button>
                   </div>
                 </div>
               </div>
+
+              <div class="text-right md:col-span-5">
+                <ul>
+                  <li class="list-disc text-red-600" v-for="erro in erros" :key="erro">
+                    {{ erro }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <table class="min-w-full bg-white shadow-md rounded-xl">
-        <thead>
-          <tr class="bg-blue-gray-100 text-gray-700">
-            <th class="py-3 px-4 text-left">Menu</th>
-            <th class="py-3 px-4 text-left">URL</th>
-            <th class="py-3 px-4 text-left">Local</th>
-            <th class="py-3 px-4 text-left">Ações</th>
-          </tr>
-        </thead>
-        <tbody class="text-blue-gray-900">
-          <tr
-            v-for="menu in paginatedItemsMenu"
-            :key="menu.idMenu"
-            class="border-b border-blue-gray-200"
-          >
-            <td class="py-3 px-4">{{ menu.txtDescricao }}</td>
-            <td class="py-3 px-4">
-              <a :href="menu.txtUrl" v-text="truncateUrl(menu.txtUrl, 30)"></a>
-            </td>
 
-            <td class="py-3 px-4">
-              <span v-for="(local, index) in menu.locais" :key="index">
-                {{ locais_load.find((item) => item.valor === local).descricao }}
-                <template v-if="index !== menu.locais.length - 1"> </template>
+      <!-- <div class="border bg-white rounded p-2 px-3 mt-6 mb-2">
+        <input type="text" placeholder="Buscar Menu" class="outline-0 w-full h-full" >
+      </div> -->
+
+      <div v-if="loading" class="my-4 text-center">
+        <ProgressSpinner />
+      </div>
+      <div v-if="!loading" class="relative overflow-x-auto rounded-lg border">
+        <DataTable
+          :value="menus"
+          v-model:filters="filters"
+          size="small"
+          :paginator="true"
+          :rows="5"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          stripedRows
+        >
+          <template #header>
+            <div class="flex justify-end">
+              <span class="relative">
+                <i
+                  class="pi pi-search absolute left-3 top-2/4 -mt-2 text-surface-400 dark:text-surface-600"
+                />
+                <InputText
+                  size="small"
+                  v-model="filters['global'].value"
+                  placeholder="Pesquisar..."
+                  class="pl-10 font-normal"
+                />
               </span>
-            </td>
-            <td class="py-3 px-4 flex">
-              <button @click="editar(menu)" class="text-primary-700 pr-2" title="Editar">
-                <RiEdit2Line />
-              </button>
-              <!-- <button class="text-red-600">
-                <RiDeleteBin5Line />
-              </button> -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="flex items-center justify-center p-2">
-      <button
-        @click="previousPageMenu"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPageMenu === 1"
-      >
-        <RiArrowLeftFill></RiArrowLeftFill>
-      </button>
-      <span class="px-5 py-2">Página {{ currentPageMenu }} de {{ totalPagesMenu }}</span>
-      <button
-        @click="nextPageMenu"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-        :disabled="currentPageMenu === totalPagesMenu"
-      >
-        <RiArrowRightFill></RiArrowRightFill>
-      </button>
+            </div>
+          </template>
+          <Column field="txtDescricao" header="Menu"></Column>
+          <Column field="txtUrl" header="URL">
+            <template #body="rowData">
+              {{ truncateNoFim(rowData.data.txtUrl, 30) }}
+            </template>
+          </Column>
+          <Column header="Local">
+            <template #body="rowData">
+              {{
+                rowData.data.locais
+                  .map((local) => locais_load.find((item) => item.valor === local)?.descricao)
+                  .join(', ')
+              }}
+            </template>
+          </Column>
+          <Column field="blnAtivo" header="Ativo">
+            <template #body="rowData">
+              {{ rowData.data.blnAtivo ? 'Sim' : 'Não' }}
+            </template>
+          </Column>
+          <Column header="Ações">
+            <template #body="rowData">
+              <a href="#gridMenu">
+                <Button
+                  icon="pi pi-pencil"
+                  size="small"
+                  outlined
+                  rounded
+                  @click="editar(rowData.data)"
+                  class="text-primary-700"
+                  title="Editar"
+                />
+              </a>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
     </div>
   </div>
 </template>

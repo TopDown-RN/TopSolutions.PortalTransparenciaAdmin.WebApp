@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { getToken } from '@/services/auth/authStorage'
 import AutenticacaoRoutes from '@/router/auth'
 import DadosAdminRoutes from '@/router/dadosadministrativos'
 import UsuariosRoutes from '@/router/usuarios'
 import ArquivosRoutes from '@/router/arquivos'
 import MenusRoutes from '@/router/menus'
-import { getToken } from '@/services/auth/authToken'
+import OuvidoriaRoutes from '@/router/ouvidoria'
+import ImportacaoPlanilhaRoutes from '@/router/importacao-planilha'
+import CredenciaisRoutes from '@/router/credenciais'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +22,10 @@ const router = createRouter({
     ...DadosAdminRoutes,
     ...AutenticacaoRoutes,
     ...ArquivosRoutes,
-    ...MenusRoutes
+    ...MenusRoutes,
+    ...OuvidoriaRoutes,
+    ...ImportacaoPlanilhaRoutes,
+    ...CredenciaisRoutes
   ]
 })
 
