@@ -1,6 +1,12 @@
 <script setup>
 import { onMounted, ref, watch, computed } from 'vue'
-import { LerArquivoPorIdApi, deleteArquivo, getArquivos, getCategorias } from '@/services/arquivos'
+import {
+  LerArquivoPorIdApi,
+  deleteArquivo,
+  getArquivos,
+  getCategorias,
+  atualizarArquivo
+} from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
 import { truncateNoMeio } from '@/utils/truncateString'
 import EventBus from '@/utils/eventBus'
@@ -98,51 +104,90 @@ function filtrarArquivos({ menu, ano, categoria }) {
 }
 
 function excluirArq(arquivo) {
-  console.log(arquivo.data)
   confirm.require({
     group: 'headless',
     header: 'Tem certeza de que deseja excluir?',
     target: `${arquivo.data.nomeArquivo}`,
     message: 'Por favor, confirme para prosseguir.',
     accept: async () => {
-      const response = await deleteArquivo(arquivo.data.idArquivo)
-      const status = response.metadata.statusCode
-
-      if (status === 200) {
-        showSuccess(response.data)
+      const response = await deleteArquivo([arquivo.data.idArquivo])
+      if (response) {
+        showSuccess('Arquivo excluído com sucesso!')
         await fetchArquivos()
       } else {
-        showError(response.data)
+        showError('Ocorreu um erro ao excluir arquivo!')
       }
     }
   })
 }
 
 function excluirArqSelected() {
+  const dados = selectedArquivo.value.map((item) => item.idArquivo)
+
   confirm.require({
     group: 'headless',
     header: 'Tem certeza que deseja excluir os arquivos selecionados?',
     message: 'Por favor, confirme para prosseguir',
     accept: async () => {
-      await console.log(selectedArquivo)
+      const response = await deleteArquivo(dados)
+      if (response) {
+        showSuccess('Arquivos excluídos com sucesso!')
+        await fetchArquivos()
+      } else {
+        showError('Ocorreu um erro ao excluir arquivos!')
+      }
     }
   })
 }
 
-function moverArqSelected() {
+async function moverArqSelected() {
   try {
     if (!validarCampos()) {
       return
     }
+
+    const lstArquivos = selectedArquivo.value.map((item) => item.idArquivo)
+
+    const dados = {
+      anoPub: ano.value,
+      idCategoriaPubArquivo: idCategoriaArquivos.value.idCategoriaPubArquivo,
+      idMenu: id_Menu.value.idMenu,
+      txtDescricaoArquivo: null,
+      lstArquivos: lstArquivos
+    }
+
+    await atualizarArquivo(dados)
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+    arquivoDialog.value = false
   } catch (e) {
+    showError('Ocorreu um erro ao mover arquivo.')
     console.error(`error: ${e.message}`)
   }
 }
 
-function onRowEditSave(event) {
-  console.log(event)
-  let { newData, index } = event
-  arquivos.value[index] = newData
+async function onRowEditSave(event) {
+  try {
+    let { newData } = event
+
+    const dados = {
+      anoPub: newData.anoPub,
+      idCategoriaPubArquivo: Number.isInteger(newData.descCategoria)
+        ? newData.descCategoria
+        : newData.idCategoriaPubArquivo,
+      idMenu: Number.isInteger(newData.descMenu) ? newData.descMenu : newData.idMenu,
+      txtDescricaoArquivo: newData.nomeArquivo,
+      lstArquivos: [newData.idArquivo]
+    }
+
+    await atualizarArquivo(dados)
+
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+  } catch (error) {
+    showError('Ocorreu um erro ao Editar')
+    console.error(error)
+  }
 }
 
 async function fetchCategorias() {
@@ -309,7 +354,7 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="categorias"
-              optionValue="txtTitulo"
+              optionValue="idCategoriaPubArquivo"
               optionLabel="txtTitulo"
               panelClass="text-sm"
             />
@@ -321,7 +366,7 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="menus"
-              optionValue="txtDescricao"
+              optionValue="idMenu"
               optionLabel="txtDescricao"
               panelClass="text-sm"
             />
