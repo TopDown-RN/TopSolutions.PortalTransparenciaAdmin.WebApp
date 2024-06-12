@@ -176,7 +176,7 @@ async function onRowEditSave(event) {
         ? newData.descCategoria
         : newData.idCategoriaPubArquivo,
       idMenu: Number.isInteger(newData.descMenu) ? newData.descMenu : newData.idMenu,
-      txtDescricaoArquivo: newData.nomeArquivo,
+      txtDescricaoArquivo: newData.descArquivo,
       lstArquivos: [newData.idArquivo]
     }
 
@@ -373,7 +373,16 @@ onMounted(() => {
           </template>
         </Column>
 
-        <Column header="Arquivo" field="nomeArquivo">
+        <Column header="Descrição" field="descArquivo" style="text-align: left">
+          <template #body="slotProps">
+            {{ truncateNoMeio(slotProps.data.descArquivo, 25) }}
+          </template>
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" class="w-full" />
+          </template>
+        </Column>
+
+        <Column header="Arquivo" field="nomeArquivo" style="text-align: left">
           <template #body="slotProps">
             <button
               @click="downloadArq(slotProps.data.idArquivo, slotProps.data.nomeArquivo)"
@@ -382,9 +391,6 @@ onMounted(() => {
             >
               {{ truncateNoMeio(slotProps.data.nomeArquivo, 50) }}
             </button>
-          </template>
-          <template #editor="{ data, field }">
-            <InputText v-model="data[field]" class="w-full" />
           </template>
         </Column>
 
