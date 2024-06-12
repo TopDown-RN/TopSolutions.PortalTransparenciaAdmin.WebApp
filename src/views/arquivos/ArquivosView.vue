@@ -135,12 +135,28 @@ function excluirArqSelected() {
   })
 }
 
-function moverArqSelected() {
+async function moverArqSelected() {
   try {
     if (!validarCampos()) {
       return
     }
+
+    const lstArquivos = selectedArquivo.value.map((item) => item.idArquivo)
+
+    const dados = {
+      anoPub: ano.value,
+      idCategoriaPubArquivo: idCategoriaArquivos.value.idCategoriaPubArquivo,
+      idMenu: id_Menu.value.idMenu,
+      txtDescricaoArquivo: null,
+      lstArquivos: lstArquivos
+    }
+
+    await atualizarArquivo(dados)
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+    arquivoDialog.value = false
   } catch (e) {
+    showError('Ocorreu um erro ao mover arquivo.')
     console.error(`error: ${e.message}`)
   }
 }
