@@ -45,6 +45,12 @@ const menusPrincipal = ref([
     nome: 'Importar Dados',
     icon: 'pi pi-upload',
     rota: '/importacaodadosplanilha'
+  },
+  {
+    id: 7,
+    nome: 'Notícias',
+    icon: 'pi pi-address-book',
+    rota: '/noticias'
   }
 ])
 
