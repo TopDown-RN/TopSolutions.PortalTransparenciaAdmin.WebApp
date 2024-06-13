@@ -444,6 +444,7 @@ onMounted(() => {
             panelClass="text-sm"
             :invalid="!id_Menu && !isValid"
           />
+          {{ id_Menu }}
           <small v-if="!id_Menu && !isValid" class="text-red-600">
             Obrigatório selecionar um menu
           </small>
