@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getNoticias, postNoticias } from '@/services/noticias'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -8,25 +9,70 @@ import OrderList from 'primevue/orderlist'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
+
 const titulo = ref('')
 const data = ref('')
-const imagem = ref('')
-
-const noticias = ref([
-  {
-    id: '1',
-    title: 'A gestão do seu município está bem planejada para 2024?',
-    data: 'Janeiro 01, 2024',
-    image:
-      'https://media.licdn.com/dms/image/D4D22AQGSJgloMqYnNA/feedshare-shrink_800/0/1704737189769?e=2147483647&v=beta&t=mL1P54v1DwfXDmTZGLJSah6upTP-rU-B3e1XvIZETiQ'
-  }
-])
-
-const toast = useToast()
+const image = ref()
 const loading = ref(false)
+const noticias = ref([])
+
+async function fetchNoticias() {
+  const response = await getNoticias()
+  noticias.value = response.data
+}
+
+async function adicionarNoticias() {
+  try {
+    const formData = new FormData()
+
+    formData.append('txtTitulo', titulo.value)
+    formData.append('txtData', data.value)
+    formData.append('image', image.value)
+
+    await postNoticias(formData)
+    showSuccess()
+    fetchNoticias()
+    limparCampos()
+  } catch (error) {
+    showError()
+  }
+}
+
+function limparCampos() {
+  titulo.value = ''
+  data.value = ''
+}
+
+const onSelectedFile = (event) => {
+  image.value = event.files[0]
+}
+
+const showSuccess = () => {
+  toast.add({
+    severity: 'success',
+    summary: 'Enviado!',
+    detail: 'Notícia cadastrada com sucesso',
+    life: 5000
+  })
+}
+
+const showError = () => {
+  toast.add({
+    severity: 'error',
+    summary: 'Erro',
+    detail: 'Ocorreu um erro ao cadastrar a notícia',
+    life: 5000
+  })
+}
+
+onMounted(() => {
+  fetchNoticias()
+})
 </script>
 
 <template>
+  <Toast position="top-center" />
   <section class="mx-auto max-w-3xl text-center">
     <HeadingComponent
       title="Notícias"
@@ -64,13 +110,15 @@ const loading = ref(false)
         <div class="mt-4 w-full">
           <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Imagem</label>
           <FileUpload
-            name="demo[]"
-            url="/api/upload"
-            @upload="onAdvancedUpload($event)"
+            name="image[]"
+            v-model="image"
+            @select="onSelectedFile"
             :multiple="false"
             accept="image/*"
             :maxFileSize="1048576"
             invalidFileSizeMessage="Tamanho de arquivo inválido. O tamanho do arquivo deve ser menor que 1 MB."
+            :showUploadButton="false"
+            :showCancelButton="false"
           >
             <template #empty>
               <p>Arraste e solte a imagem aqui para fazer upload.</p>
@@ -80,8 +128,9 @@ const loading = ref(false)
 
         <div class="my-4 flex justify-end">
           <Button
-            type="submit"
+            type="button"
             label="Salvar"
+            @click="adicionarNoticias()"
             :loading="loading"
             class="text-sm font-medium tracking-wide"
           />
@@ -89,20 +138,20 @@ const loading = ref(false)
       </form>
     </div>
 
-    <div class="flex justify-center pt-8">
+    <div class="pt-8">
       <OrderList v-model="noticias" listStyle="height:auto" dataKey="id">
         <template #header> Lista de Notícias </template>
         <template #item="slotProps">
           <div class="flex flex-wrap items-center gap-4 p-2">
             <img
-              class="w-[4rem] shrink-0 rounded-md shadow-md"
-              :src="slotProps.item.image"
-              :alt="slotProps.item.title"
+              class="w-[12rem] shrink-0 rounded-md shadow-md"
+              :src="'data:image/' + slotProps.item.txtExtensao + ';base64,' + slotProps.item.image"
+              :alt="slotProps.item.txtTitulo"
             />
             <div class="flex flex-1 flex-col gap-2">
-              <span class="font-bold">{{ slotProps.item.title }}</span>
+              <span class="font-bold">{{ slotProps.item.txtTitulo }}</span>
               <div class="flex items-center gap-2">
-                <span>{{ slotProps.item.data }}</span>
+                <span>{{ slotProps.item.txtData }}</span>
               </div>
             </div>
           </div>

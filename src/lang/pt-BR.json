@@ -24,6 +24,8 @@
   "reject": "Não",
   "choose": "Escolha",
   "upload": "Upload",
+  "pending": "Pendente",
+  "completed": "Enviado",
   "cancel": "Cancelar",
   "dayNames": [
     "Domingo",
