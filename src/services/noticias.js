@@ -17,3 +17,16 @@ export function postNoticias(formData) {
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
+
+export function delNoticias(id) {
+  return api
+    .delete('noticias/deletarasync', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      data: id
+    })
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}
