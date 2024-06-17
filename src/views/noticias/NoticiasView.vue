@@ -4,26 +4,28 @@ import { delNoticias, getNoticias, postNoticias } from '@/services/noticias'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import InputMask from 'primevue/inputmask'
 import FileUpload from 'primevue/fileupload'
 import OrderList from 'primevue/orderlist'
 import Toast from 'primevue/toast'
-import { useToast } from 'primevue/usetoast'
-import InputMask from 'primevue/inputmask'
 import ConfirmDialog from 'primevue/confirmdialog'
+import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 
 const toast = useToast()
 const confirm = useConfirm()
 
+const loading = ref(false)
+const isValid = ref(true)
+
 const titulo = ref('')
 const data = ref('')
 const image = ref()
-const loading = ref(false)
-const noticias = ref([])
+
 const fileRef = ref(null)
-const isValid = ref(true)
-const listRef = ref(null)
+
 const selectedItems = ref([])
+const noticias = ref([])
 
 async function fetchNoticias() {
   const response = await getNoticias()
@@ -51,9 +53,8 @@ async function adicionarNoticias() {
   }
 }
 
-async function excluirNoticias() {
+function excluirNoticias() {
   const id = selectedItems.value.map((item) => item.id)
-  console.log(selectedItems.value)
 
   confirm.require({
     group: 'headless',
@@ -61,10 +62,13 @@ async function excluirNoticias() {
     message: 'Por favor, confirme para prosseguir.',
     accept: async () => {
       const response = await delNoticias(id)
-      selectedItems.value = []
       if (response) {
         showSuccess('Notícia excluída com sucesso!')
         await fetchNoticias()
+        selectedItems.value = []
+        setTimeout(() => {
+          window.location.reload()
+        }, 500)
       } else {
         showError('Ocorreu um erro ao excluir a notícia!')
       }
@@ -231,12 +235,11 @@ onMounted(() => {
     <div class="pt-8">
       <OrderList
         v-model="noticias"
-        ref="listRef"
         v-model:selection="selectedItems"
         listStyle="height:auto"
         dataKey="id"
       >
-        <template #header> Lista de Notícias </template>
+        <template #header>Lista de Notícias</template>
         <template #item="slotProps">
           <div class="flex flex-wrap items-center gap-4 p-2">
             <img
