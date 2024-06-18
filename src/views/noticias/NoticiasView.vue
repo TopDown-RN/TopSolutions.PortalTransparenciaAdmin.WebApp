@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { delNoticias, getNoticias, postNoticias } from '@/services/noticias'
+import { delNoticias, getNoticias, postNoticias, updateOrdem } from '@/services/noticias'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -74,6 +74,15 @@ function excluirNoticias() {
       }
     }
   })
+}
+
+async function onOrdenarNoticia(event) {
+  const newOrdem = {
+    id: event.map((item) => item.id),
+    ordem: event.map((_, index) => index + 1)
+  }
+
+  await updateOrdem(newOrdem)
 }
 
 function limparCampos() {
@@ -236,6 +245,7 @@ onMounted(() => {
       <OrderList
         v-model="noticias"
         v-model:selection="selectedItems"
+        @update:model-value="onOrdenarNoticia"
         listStyle="height:auto"
         dataKey="id"
       >
