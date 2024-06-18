@@ -103,6 +103,10 @@ function validarCampos() {
 }
 
 const onSelectedFile = (event) => {
+  if (fileRef.value.files.length > 1) {
+    fileRef.value.files[1] = null
+  }
+
   image.value = event.files[0]
 }
 
@@ -177,6 +181,7 @@ onMounted(() => {
               id="titulo"
               type="text"
               placeholder="Título da Notícia"
+              maxlength="250"
               class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
               :invalid="!titulo && !isValid"
             />
@@ -216,6 +221,8 @@ onMounted(() => {
             :maxFileSize="1048576"
             :fileLimit="1"
             invalidFileSizeMessage="Tamanho de arquivo inválido. O tamanho do arquivo deve ser menor que 1 MB."
+            invalidFileLimitMessage="Número máximo de arquivos excedido. O limite é de 1 arquivo."
+            invalidFileTypeMessage="{0}: Formato inválido. Por favor, envie um arquivo do tipo imagem."
             :showUploadButton="false"
             :showCancelButton="false"
             :invalid="!image && !isValid"
