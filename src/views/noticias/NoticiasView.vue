@@ -21,6 +21,7 @@ const isValid = ref(true)
 const titulo = ref('')
 const data = ref('')
 const image = ref()
+const link = ref('')
 
 const fileRef = ref(null)
 
@@ -43,6 +44,7 @@ async function adicionarNoticias() {
     formData.append('txtTitulo', titulo.value)
     formData.append('txtData', data.value)
     formData.append('image', image.value)
+    formData.append('txtUrl', link.value)
 
     await postNoticias(formData)
     showSuccess('Notícia cadastrada com sucesso')
@@ -89,13 +91,14 @@ function limparCampos() {
   titulo.value = ''
   data.value = ''
   image.value = null
+  link.value = ''
   fileRef.value.clear()
 }
 
 function validarCampos() {
   isValid.value = true
 
-  if (!titulo.value || !data.value || !image.value) {
+  if (!titulo.value || !data.value || !image.value || !link.value) {
     isValid.value = false
   }
 
@@ -174,7 +177,7 @@ onMounted(() => {
     <div class="w-full pt-8">
       <form>
         <div class="-mx-2 md:flex md:items-center">
-          <div class="flex-1 px-2">
+          <div class="flex-1 px-2 pb-4">
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Título</label>
             <InputText
               v-model="titulo"
@@ -188,6 +191,23 @@ onMounted(() => {
             <small v-if="!titulo && !isValid" class="text-red-600"
               >O campo Título é obrigatório</small
             >
+          </div>
+        </div>
+
+        <div class="-mx-2 md:flex md:items-center">
+          <div class="flex-1 px-2">
+            <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
+              >Link da Notícia</label
+            >
+            <InputText
+              v-model="link"
+              id="link"
+              type="text"
+              placeholder="Link da Notícia"
+              class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
+              :invalid="!link && !isValid"
+            />
+            <small v-if="!link && !isValid" class="text-red-600">O campo Link é obrigatório</small>
           </div>
 
           <div class="flex-2 mt-4 px-2 md:mt-0">
