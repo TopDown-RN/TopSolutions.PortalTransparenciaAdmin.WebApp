@@ -30,3 +30,15 @@ export function delNoticias(id) {
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
+
+export function updateOrdem(newOrdem) {
+  return api
+    .post('noticias/alterarordem', newOrdem, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}
