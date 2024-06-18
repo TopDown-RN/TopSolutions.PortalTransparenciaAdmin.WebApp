@@ -106,11 +106,18 @@ function validarCampos() {
 }
 
 const onSelectedFile = (event) => {
-  if (fileRef.value.files.length > 1) {
-    fileRef.value.files[1] = null
-  }
-
   image.value = event.files[0]
+
+  if (fileRef.value.files.length > 1) {
+    fileRef.value.clear()
+    image.value = event.files[1]
+    fileRef.value.files = [event.files[1]]
+  }
+}
+
+const onRemoveFile = () => {
+  image.value = null
+  fileRef.value.clear()
 }
 
 const showSuccess = (message) => {
@@ -236,6 +243,7 @@ onMounted(() => {
             name="image[]"
             v-model="image"
             @select="onSelectedFile"
+            @remove="onRemoveFile"
             :multiple="false"
             accept="image/*"
             :maxFileSize="1048576"
