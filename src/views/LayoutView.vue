@@ -63,9 +63,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative flex min-h-screen">
+  <div class="flex min-h-screen flex-col md:flex-row">
     <SidebarComponent :dataShowSidebar="showSidebar" />
-    <div class="flex-1">
+    <div class="flex flex-1 flex-col">
       <HeaderComponent :toggleSidebar="toggleSidebar" />
       <AbasComponent
         :abas="abas"
@@ -73,7 +73,7 @@ onMounted(() => {
         @updateActiveIndex="handleUpdateActiveIndex"
         @removeTab="removeTab"
       />
-      <div class="my-12 p-4 sm:px-12">
+      <div class="my-12 flex-1 p-4 sm:px-12">
         <RouterView />
       </div>
     </div>

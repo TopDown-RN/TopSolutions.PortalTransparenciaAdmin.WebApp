@@ -99,8 +99,10 @@ onMounted(() => {
 
 <template>
   <div
-    class="absolute inset-y-0 left-0 w-[300px] -translate-x-full transform space-y-6 bg-gradient-to-br from-primary-900 to-primary-900 px-2 py-4 text-white transition duration-200 ease-in-out md:relative md:translate-x-0"
-    :class="{ 'relative translate-x-0': props.dataShowSidebar }"
+    :class="[
+      'fixed inset-y-0 left-0 z-30 w-[300px] transform bg-gradient-to-br from-primary-900 to-primary-900 px-2 py-4 text-white transition-transform duration-200 ease-in-out md:relative md:translate-x-0',
+      { '-translate-x-full': !props.dataShowSidebar, 'translate-x-0': props.dataShowSidebar }
+    ]"
   >
     <a class="flex items-center justify-center space-x-2 px-4">
       <span class="text-lg font-medium">Portal da Transparência</span>
