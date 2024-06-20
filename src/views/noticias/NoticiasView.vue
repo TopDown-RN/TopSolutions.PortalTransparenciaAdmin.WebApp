@@ -17,6 +17,7 @@ const confirm = useConfirm()
 
 const loading = ref(false)
 const isValid = ref(true)
+const isDataValid = ref(true)
 
 const titulo = ref('')
 const data = ref('')
@@ -39,10 +40,14 @@ async function adicionarNoticias() {
       return
     }
 
+    if (!validarData()) {
+      return
+    }
+
     const formData = new FormData()
 
     formData.append('txtTitulo', titulo.value)
-    formData.append('txtData', data.value)
+    formData.append('dtPublicacao', data.value)
     formData.append('image', image.value)
     formData.append('txtUrl', link.value)
 
@@ -105,6 +110,19 @@ function validarCampos() {
   return isValid.value
 }
 
+function validarData() {
+  isDataValid.value = true
+  const splitData = data.value.split('/')
+  if (splitData[0] <= 0 || splitData[0] >= 32) {
+    isDataValid.value = false
+  }
+  if (splitData[1] <= 0 || splitData[1] >= 13) {
+    isDataValid.value = false
+  }
+
+  return isDataValid.value
+}
+
 const onSelectedFile = (event) => {
   image.value = event.files[0]
 
@@ -118,6 +136,10 @@ const onSelectedFile = (event) => {
 const onRemoveFile = () => {
   image.value = null
   fileRef.value.clear()
+}
+
+function formatDate(date) {
+  return new Date(date).toLocaleDateString('pt-BR')
 }
 
 const showSuccess = (message) => {
@@ -227,12 +249,13 @@ onMounted(() => {
               v-model="data"
               placeholder="dd/mm/aaaa"
               mask="99/99/9999"
-              :invalid="!data && !isValid"
+              :invalid="(!data && !isValid) || !isDataValid"
             />
 
             <small v-if="!data && !isValid" class="text-red-600"
               >O campo Data da publicação é obrigatório</small
             >
+            <small v-if="!isDataValid" class="text-red-600">Data informada não é válida</small>
           </div>
         </div>
 
@@ -295,7 +318,7 @@ onMounted(() => {
             <div class="flex flex-1 flex-col gap-2">
               <span class="font-bold">{{ slotProps.item.txtTitulo }}</span>
               <div class="flex items-center gap-2">
-                <span>{{ slotProps.item.txtData }}</span>
+                <span>{{ formatDate(slotProps.item.dtPublicacao) }}</span>
               </div>
             </div>
           </div>
