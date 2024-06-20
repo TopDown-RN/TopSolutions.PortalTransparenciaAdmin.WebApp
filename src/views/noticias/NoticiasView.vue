@@ -17,10 +17,12 @@ const confirm = useConfirm()
 
 const loading = ref(false)
 const isValid = ref(true)
+const isDataValid = ref(true)
 
 const titulo = ref('')
 const data = ref('')
 const image = ref()
+const link = ref('')
 
 const fileRef = ref(null)
 
@@ -38,11 +40,16 @@ async function adicionarNoticias() {
       return
     }
 
+    if (!validarData()) {
+      return
+    }
+
     const formData = new FormData()
 
     formData.append('txtTitulo', titulo.value)
-    formData.append('txtData', data.value)
+    formData.append('dtPublicacao', data.value)
     formData.append('image', image.value)
+    formData.append('txtUrl', link.value)
 
     await postNoticias(formData)
     showSuccess('Notícia cadastrada com sucesso')
@@ -89,25 +96,50 @@ function limparCampos() {
   titulo.value = ''
   data.value = ''
   image.value = null
+  link.value = ''
   fileRef.value.clear()
 }
 
 function validarCampos() {
   isValid.value = true
 
-  if (!titulo.value || !data.value || !image.value) {
+  if (!titulo.value || !data.value || !image.value || !link.value) {
     isValid.value = false
   }
 
   return isValid.value
 }
 
-const onSelectedFile = (event) => {
-  if (fileRef.value.files.length > 1) {
-    fileRef.value.files[1] = null
+function validarData() {
+  isDataValid.value = true
+  const splitData = data.value.split('/')
+  if (splitData[0] <= 0 || splitData[0] >= 32) {
+    isDataValid.value = false
+  }
+  if (splitData[1] <= 0 || splitData[1] >= 13) {
+    isDataValid.value = false
   }
 
+  return isDataValid.value
+}
+
+const onSelectedFile = (event) => {
   image.value = event.files[0]
+
+  if (fileRef.value.files.length > 1) {
+    fileRef.value.clear()
+    image.value = event.files[1]
+    fileRef.value.files = [event.files[1]]
+  }
+}
+
+const onRemoveFile = () => {
+  image.value = null
+  fileRef.value.clear()
+}
+
+function formatDate(date) {
+  return new Date(date).toLocaleDateString('pt-BR')
 }
 
 const showSuccess = (message) => {
@@ -174,7 +206,7 @@ onMounted(() => {
     <div class="w-full pt-8">
       <form>
         <div class="-mx-2 md:flex md:items-center">
-          <div class="flex-1 px-2">
+          <div class="flex-1 px-2 pb-4">
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Título</label>
             <InputText
               v-model="titulo"
@@ -189,6 +221,23 @@ onMounted(() => {
               >O campo Título é obrigatório</small
             >
           </div>
+        </div>
+
+        <div class="-mx-2 md:flex md:items-center">
+          <div class="flex-1 px-2">
+            <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
+              >Link da Notícia</label
+            >
+            <InputText
+              v-model="link"
+              id="link"
+              type="text"
+              placeholder="Link da Notícia"
+              class="mt-2 block w-full rounded-md border border-gray-200 bg-white px-5 py-3 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
+              :invalid="!link && !isValid"
+            />
+            <small v-if="!link && !isValid" class="text-red-600">O campo Link é obrigatório</small>
+          </div>
 
           <div class="flex-2 mt-4 px-2 md:mt-0">
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
@@ -200,12 +249,13 @@ onMounted(() => {
               v-model="data"
               placeholder="dd/mm/aaaa"
               mask="99/99/9999"
-              :invalid="!data && !isValid"
+              :invalid="(!data && !isValid) || !isDataValid"
             />
 
             <small v-if="!data && !isValid" class="text-red-600"
               >O campo Data da publicação é obrigatório</small
             >
+            <small v-if="!isDataValid" class="text-red-600">Data informada não é válida</small>
           </div>
         </div>
 
@@ -216,6 +266,7 @@ onMounted(() => {
             name="image[]"
             v-model="image"
             @select="onSelectedFile"
+            @remove="onRemoveFile"
             :multiple="false"
             accept="image/*"
             :maxFileSize="1048576"
@@ -267,7 +318,7 @@ onMounted(() => {
             <div class="flex flex-1 flex-col gap-2">
               <span class="font-bold">{{ slotProps.item.txtTitulo }}</span>
               <div class="flex items-center gap-2">
-                <span>{{ slotProps.item.txtData }}</span>
+                <span>{{ formatDate(slotProps.item.dtPublicacao) }}</span>
               </div>
             </div>
           </div>

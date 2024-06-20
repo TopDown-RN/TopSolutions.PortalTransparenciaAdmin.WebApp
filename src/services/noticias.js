@@ -15,7 +15,9 @@ export function postNoticias(formData) {
       }
     })
     .then((response) => response.data)
-    .catch((error) => console.error(error))
+    .catch((error) => {
+      throw new Error(error.message)
+    })
 }
 
 export function delNoticias(id) {
