@@ -35,7 +35,6 @@ async function fetchNoticias() {
 }
 
 async function adicionarNoticias() {
-  console.log(data.value)
   try {
     if (!validarCampos()) {
       return
