@@ -28,12 +28,12 @@ const menusPrincipal = ref([
     icon: 'pi pi-folder-open',
     rota: '/arquivos'
   },
-  {
-    id: 4,
-    nome: 'Arquivos (Novo)',
-    icon: 'pi pi-folder-open',
-    rota: '/arquivosview'
-  },
+  // {
+  //   id: 4,
+  //   nome: 'Arquivos (Novo)',
+  //   icon: 'pi pi-folder-open',
+  //   rota: '/arquivosview'
+  // },
   {
     id: 5,
     nome: 'Ouvidoria',
