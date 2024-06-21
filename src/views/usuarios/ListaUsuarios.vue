@@ -14,6 +14,9 @@ import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import { FilterMatchMode } from 'primevue/api'
 import { useToast } from 'primevue/usetoast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const loading = ref(true)
 const result = ref()
@@ -73,21 +76,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <Toast />
-  <div class="flex md:justify-end m-2">
-    <Button
-      type="button"
-      onclick="location.href='/usuarios/novo'"
-      class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3"
-    >
-      Adicionar novo usuário
-    </Button>
-  </div>
+  <Toast position="top-center" />
+  <HeadingComponent
+    title="Usuários"
+    subtitle="Lista dos usuários cadastrados no sistema"
+    description="Mantenha-os sempre atualizados."
+  />
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
 
-  <div v-if="!loading" class="relative overflow-x-auto border rounded-lg">
+  <div v-if="!loading" class="relative overflow-x-auto rounded-lg border">
     <DataTable
       :value="result"
       v-model:filters="filters"
@@ -98,18 +97,22 @@ onMounted(() => {
       stripedRows
     >
       <template #header>
-        <div class="flex justify-end">
-          <span class="relative">
-            <i
-              class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600"
-            />
+        <div class="flex justify-between">
+          <Button
+            size="small"
+            label="Adicionar novo usuário"
+            icon="pi pi-plus"
+            onclick="location.href='/usuarios/novo'"
+          />
+          <IconField iconPosition="left">
+            <InputIcon class="pi pi-search" />
             <InputText
               size="small"
               v-model="filters['global'].value"
               placeholder="Pesquisar..."
-              class="pl-10 font-normal"
+              class="font-normal"
             />
-          </span>
+          </IconField>
         </div>
       </template>
       <Column field="txtNome" header="Nome"></Column>
@@ -128,9 +131,9 @@ onMounted(() => {
             rounded
           />
           <OverlayPanel ref="op">
-            <div class="flex flex-column gap-3 w-25rem">
+            <div class="flex-column w-25rem flex gap-3">
               <div>
-                <span class="font-medium text-900 block mb-2">Chave Acesso Externo</span>
+                <span class="text-900 mb-2 block font-medium">Chave Acesso Externo</span>
                 <InputGroup>
                   <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
                   <InputGroupAddon

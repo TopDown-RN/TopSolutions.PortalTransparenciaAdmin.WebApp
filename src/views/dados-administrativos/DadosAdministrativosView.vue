@@ -8,6 +8,7 @@ import InputText from 'primevue/inputtext'
 import InputMask from 'primevue/inputmask'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const loading = ref(true)
 const toast = useToast()
@@ -193,30 +194,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <Toast />
-  <div class="mx-auto max-w-3xl text-center">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-      Editar Dados Administrativos
-    </h2>
-    <p class="mt-2 text-lg leading-8 text-gray-600">
-      Os dados alterados aqui impactam diretamente no Portal da Transparência.
-    </p>
-    <div class="mt-2 text-base leading-8 text-gray-600">Mantenha-os sempre atualizados.</div>
-  </div>
+  <Toast position="top-center" />
+  <HeadingComponent
+    title="Dados Administrativos"
+    subtitle="Os dados alterados aqui impactam diretamente no Portal da Transparência."
+    description="Mantenha-os sempre atualizados."
+  />
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
-  <div v-if="!loading" class="container max-w-screen-base mx-auto">
+  <div v-if="!loading" class="max-w-screen-base container mx-auto">
     <div>
-      <div class="bg-white rounded shadow-md p-4 px-4 md:p-8 mb-6 mt-6 border">
-        <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
-          <div class="text-gray-600 content-center">
-            <p class="font-medium text-lg pt-10">Redes Sociais</p>
+      <div class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-md md:p-8">
+        <div class="grid grid-cols-1 gap-4 gap-y-2 text-sm lg:grid-cols-3">
+          <div class="content-center text-gray-600">
+            <p class="pt-10 text-lg font-medium">Redes Sociais</p>
 
-            <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
+            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
               <div>
                 <button
-                  class="flex items-center bg-gray-100 rounded-l-md border border-white justify-center w-12 h-12 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
                 >
                   <RiFacebookLine class="h-6 w-6 text-gray-900" />
                 </button>
@@ -226,16 +223,16 @@ onMounted(() => {
                   type="search"
                   x-model="input3"
                   v-model="facebook"
-                  class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
                   placeholder="facebook.com/nome"
                 />
               </div>
             </div>
 
-            <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
+            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
               <div>
                 <button
-                  class="flex items-center bg-gray-100 rounded-l-md border border-white justify-center w-12 h-12 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
                 >
                   <RiInstagramLine class="h-6 w-6 text-gray-900" />
                 </button>
@@ -245,16 +242,16 @@ onMounted(() => {
                   type="search"
                   x-model="input1"
                   v-model="instagram"
-                  class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
                   placeholder="@instagram"
                 />
               </div>
             </div>
 
-            <div class="my-2 border w-10/12 justify-center flex items-center rounded-md shadow-md">
+            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
               <div>
                 <button
-                  class="flex items-center bg-gray-100 rounded-l-md border border-white justify-center w-12 h-12 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
                 >
                   <RiTwitterXLine class="h-6 w-6 text-gray-900" />
                 </button>
@@ -264,7 +261,7 @@ onMounted(() => {
                   type="search"
                   x-model="input2"
                   v-model="x"
-                  class="w-full h-12 px-4 py-1 rounded-r-md border border-gray-100 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
                   placeholder="@twitter"
                 />
               </div>
@@ -272,23 +269,23 @@ onMounted(() => {
           </div>
 
           <div class="lg:col-span-2">
-            <div class="grid gap-y-2 text-sm grid-cols-1 md:grid-cols-2 content-center">
+            <div class="grid grid-cols-1 content-center gap-y-2 text-sm md:grid-cols-2">
               <div>
-                <div class="flex items-center relative">
+                <div class="relative flex items-center">
                   <input
                     type="file"
                     id="inputImagemLogo"
                     accept="image/*"
                     @change="logoPreview"
-                    class="absolute top-0 left-0 opacity-0 h-full cursor-pointer"
+                    class="absolute left-0 top-0 h-full cursor-pointer opacity-0"
                   />
                   <img
-                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    class="h-24 w-24 cursor-pointer rounded-full object-cover"
                     :src="srcImgLogo"
                     alt="Base64 Image Logo"
                   />
                   <div>
-                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                    <h1 class="text-lg font-semibold capitalize text-gray-700 dark:text-white">
                       Logo do Município
                     </h1>
                     <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -299,21 +296,21 @@ onMounted(() => {
               </div>
 
               <div>
-                <div class="flex items-center relative">
+                <div class="relative flex items-center">
                   <input
                     type="file"
                     id="inputImagemCapa"
                     accept="image/*"
                     @change="capaPreview"
-                    class="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
+                    class="absolute left-0 top-0 h-full cursor-pointer opacity-0"
                   />
                   <img
-                    class="object-cover w-24 h-24 rounded-full cursor-pointer"
+                    class="h-24 w-24 cursor-pointer rounded-full object-cover"
                     :src="srcImgCapa"
                     alt="Base64 Image Capa"
                   />
                   <div>
-                    <h1 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">
+                    <h1 class="text-lg font-semibold capitalize text-gray-700 dark:text-white">
                       Foto de Capa
                     </h1>
                     <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -324,14 +321,14 @@ onMounted(() => {
               </div>
             </div>
 
-            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+            <div class="grid grid-cols-1 gap-4 gap-y-2 text-sm md:grid-cols-5">
               <div class="md:col-span-4">
                 <label for="orgao">Órgão</label>
                 <InputText
                   id="orgao"
                   v-model="orgao"
                   placeholder="Informe o órgão"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   :invalid="!orgao"
                 />
                 <small v-if="!orgao" class="text-red-600">O campo Órgão é obrigatório</small>
@@ -343,7 +340,7 @@ onMounted(() => {
                   v-model="cnpj"
                   placeholder="##.###.###/####-##"
                   mask="99.999.999/9999-99"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   :invalid="!cnpj"
                 />
                 <small v-if="!cnpj" class="text-red-600">O campo CNPJ é obrigatório</small>
@@ -354,7 +351,7 @@ onMounted(() => {
                   type="text"
                   name="rua"
                   id="rua"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   v-model="rua_avenida"
                   placeholder="Informe a rua ou avenida"
                   :invalid="!rua_avenida"
@@ -369,7 +366,7 @@ onMounted(() => {
                   type="text"
                   name="numero"
                   id="numero"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   v-model="numero"
                   placeholder="Informe o número"
                   :invalid="!numero"
@@ -382,7 +379,7 @@ onMounted(() => {
                   type="text"
                   name="cidade"
                   id="cidade"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   v-model="cidade"
                   placeholder="Informe a cidade"
                   :invalid="!cidade"
@@ -394,7 +391,7 @@ onMounted(() => {
                 <select
                   name="estado"
                   id="estado"
-                  class="h-10 bg-gray-50 border border-gray-200 rounded mt-1 px-4 outline-none text-gray-800 w-full bg-transparent"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
                   v-model="estado"
                 >
                   <option value="" disabled selected>Selecione o estado</option>
@@ -413,7 +410,7 @@ onMounted(() => {
                 <InputMask
                   name="cep"
                   id="cep"
-                  class="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 flex h-10 w-full items-center rounded border bg-gray-50 px-4 transition-all"
                   placeholder="99999-999"
                   v-model="cep"
                   mask="99999-999"
@@ -427,7 +424,7 @@ onMounted(() => {
                   type="text"
                   name="telefone"
                   id="telefone"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   v-model="telefone"
                   placeholder="(##) #####-####"
                   v-mask="['(##) ####-####', '(##) #####-####']"
@@ -440,13 +437,13 @@ onMounted(() => {
                   type="text"
                   name="email"
                   id="email"
-                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  class="mt-1 h-10 w-full rounded border bg-gray-50 px-4"
                   v-model="email"
                   placeholder="Informe o e-mail"
                 />
                 <!-- <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small> -->
               </div>
-              <div class="md:col-span-5 text-right">
+              <div class="text-right md:col-span-5">
                 <div class="inline-flex items-end">
                   <!-- <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -458,10 +455,10 @@ onMounted(() => {
                     @click="btnAtualizar ? atualizarDadosAdmin() : null"
                     :class="{
                       'bg-primary-500 hover:bg-primary-700': btnAtualizar,
-                      'bg-primary-700 cursor-not-allowed': !btnAtualizar
+                      'cursor-not-allowed bg-primary-700': !btnAtualizar
                     }"
                     :disabled="!btnAtualizar"
-                    class="text-white font-bold py-2 px-4 rounded h-9 w-24 flex items-center justify-center"
+                    class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
                   >
                     <span v-if="btnAtualizar">Atualizar</span>
                     <span v-else>

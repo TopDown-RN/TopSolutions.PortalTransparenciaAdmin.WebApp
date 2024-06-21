@@ -12,7 +12,7 @@ const menuActive = ref()
 const menusPrincipal = ref([
   {
     id: 1,
-    nome: 'Dashboard',
+    nome: 'Início',
     icon: 'pi pi-home',
     rota: '/'
   },
@@ -27,6 +27,30 @@ const menusPrincipal = ref([
     nome: 'Arquivos',
     icon: 'pi pi-folder-open',
     rota: '/arquivos'
+  },
+  // {
+  //   id: 4,
+  //   nome: 'Arquivos (Novo)',
+  //   icon: 'pi pi-folder-open',
+  //   rota: '/arquivosview'
+  // },
+  {
+    id: 5,
+    nome: 'Ouvidoria',
+    icon: 'pi pi-headphones',
+    rota: '/ouvidoria'
+  },
+  // {
+  //   id: 6,
+  //   nome: 'Importar Dados',
+  //   icon: 'pi pi-upload',
+  //   rota: '/importacaodadosplanilha'
+  // },
+  {
+    id: 7,
+    nome: 'Notícias',
+    icon: 'pi pi-address-book',
+    rota: '/noticias'
   }
 ])
 
@@ -43,14 +67,14 @@ const menusConfig = ref([
     icon: 'pi pi-wrench',
     rota: '/dados-administrativos'
   },
-  // {
-  //   id: 3,
-  //   nome: 'Suporte',
-  //   icon: 'pi pi-headphones',
-  //   url: `https://dataapi${window.location.hostname}/swagger/index.html`
-  // },
   {
     id: 3,
+    nome: 'Credenciais',
+    icon: 'pi pi-cog',
+    rota: '/credenciais'
+  },
+  {
+    id: 4,
     nome: 'Dados API',
     icon: 'pi pi-code',
     url: `https://dataapi${window.location.hostname}/swagger/index.html`
@@ -75,36 +99,38 @@ onMounted(() => {
 
 <template>
   <div
-    class="bg-gradient-to-br from-primary-900 text-white to-primary-900 w-[300px] space-y-6 px-2 py-4 absolute inset-y-0 left-0 md:relative md:translate-x-0 transform -translate-x-full transition duration-200 ease-in-out"
-    :class="{ 'relative translate-x-0': props.dataShowSidebar }"
+    :class="[
+      'fixed inset-y-0 left-0 z-30 w-[300px] transform bg-gradient-to-br from-primary-900 to-primary-900 px-2 py-4 text-white transition-transform duration-200 ease-in-out md:relative md:translate-x-0',
+      { '-translate-x-full': !props.dataShowSidebar, 'translate-x-0': props.dataShowSidebar }
+    ]"
   >
     <a class="flex items-center justify-center space-x-2 px-4">
       <span class="text-lg font-medium">Portal da Transparência</span>
     </a>
-    <div class="text-left px-2 whitespace-nowrap">
+    <div class="break-normal px-4 text-center">
       <div class="flex justify-center p-5">
-        <div class="flex flex-col justify-center items-center">
+        <div class="flex flex-col items-center justify-center">
           <img
             :src="'data:image/' + extensaoLogo + ';base64,' + logo"
-            class="p-1 w-24 h-24 rounded-full ring-2 ring-gray-300 mb-4"
+            class="mb-4 h-24 w-24 rounded-full p-1 ring-2 ring-gray-300"
             alt="Base64 Image"
             width="100px"
           />
-          <h5 class="text-lg font-medium leading-tight mb-2">{{ txtCliente }}</h5>
+          <h5 class="text-md mb-2 font-medium leading-tight">{{ txtCliente }}</h5>
           <span class="text-xs text-gray-300"> Painel Administrativo </span>
         </div>
       </div>
-      <nav class="m-4">
+      <nav class="m-4 text-left">
         <ul class="mb-4 flex flex-col gap-1 pb-4">
           <li v-for="menu in menusPrincipal" :key="menu.id">
             <RouterLink
               :to="menu.rota"
-              class="font-sans font-bold center transition-all hover:bg-white/10 text-sm py-2 rounded-lg text-white w-full flex items-center gap-2 px-2 capitalize"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               type="button"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
               :class="{
-                'shadow-md shadow-white-500/20 text-white hover:shadow-lg hover:shadow-white-500/40 active:opacity-[0.85] bg-gradient-to-tr from-white/20 to-white/30':
+                'shadow-white-500/20 hover:shadow-white-500/40 bg-gradient-to-tr from-white/20 to-white/30 text-white shadow-md hover:shadow-lg active:opacity-[0.85]':
                   menuActive === menu.nome
               }"
             >
@@ -114,9 +140,9 @@ onMounted(() => {
           </li>
         </ul>
         <ul class="mb-4 flex flex-col gap-1">
-          <li class="mx-3.5 mt-4 mb-2">
+          <li class="mx-3.5 mb-2 mt-4">
             <p
-              class="block antialiased text-sm leading-normal text-white font-black uppercase opacity-75"
+              class="block text-sm font-black uppercase leading-normal text-white antialiased opacity-75"
             >
               Configurações
             </p>
@@ -125,12 +151,12 @@ onMounted(() => {
             <RouterLink
               v-if="menu.rota"
               :to="menu.rota"
-              class="font-sans font-bold center transition-all hover:bg-white/10 text-sm py-2 rounded-lg text-white w-full flex items-center gap-2 px-2 capitalize"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               type="button"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
               :class="{
-                'shadow-md shadow-white-500/20 text-white hover:shadow-lg hover:shadow-white-500/40 active:opacity-[0.85] bg-gradient-to-tr from-white/20 to-white/30':
+                'shadow-white-500/20 hover:shadow-white-500/40 bg-gradient-to-tr from-white/20 to-white/30 text-white shadow-md hover:shadow-lg active:opacity-[0.85]':
                   menuActive === menu.nome
               }"
             >
@@ -141,7 +167,7 @@ onMounted(() => {
               v-else
               :href="menu.url"
               target="_blank"
-              class="font-sans font-bold center transition-all hover:bg-white/10 text-sm py-2 rounded-lg text-white w-full flex items-center gap-2 px-2 capitalize"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
             >
@@ -152,7 +178,7 @@ onMounted(() => {
         </ul>
       </nav>
     </div>
-    <div class="flex items-center justify-center space-x-2 px-4 border-t border-white/20 py-4">
+    <div class="flex items-center justify-center space-x-2 border-t border-white/20 px-4 py-4">
       <span class="text-sm text-gray-300">Para suporte: (84) 3207-1622</span>
     </div>
   </div>

@@ -68,19 +68,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="bg-white shadow px-4 py-4">
-    <div class="flex justify-between items-center p-4">
-      <div class="cursor-pointer md:hidden" @click="props.toggleSidebar">
+  <header class="relative z-40 bg-white sm:py-1">
+    <div class="flex items-center justify-between px-4 py-2 sm:p-4">
+      <div class="z-50 cursor-pointer md:hidden" @click="props.toggleSidebar">
         <i class="pi pi-bars"></i>
       </div>
       <div class="">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">Top Solutions</h1>
       </div>
-      <div class="flex space-x-3 items-center justify-center px-3">
+      <div class="flex items-center justify-center space-x-3 px-3">
         <div class="text-md">{{ usuarioLogado.txtNome }}</div>
         <Avatar
           icon="pi pi-user"
-          class="mr-2 bg-primary-800 text-white cursor-pointer"
+          class="mr-2 cursor-pointer bg-primary-800 text-white"
           shape="circle"
           @click="toggle"
           aria-haspopup="true"
