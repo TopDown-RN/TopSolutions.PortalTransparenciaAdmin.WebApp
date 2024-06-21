@@ -18,6 +18,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import ConfirmDialog from 'primevue/confirmdialog'
 import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
+import HeadingComponent from '@/components/HeadingComponent.vue'
 
 const confirm = useConfirm()
 const idMenu = ref(0)
@@ -255,7 +256,6 @@ onMounted(async () => {
         :paginator="true"
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
-        stripedRows
       >
         <template #header>
           <div class="flex justify-end">
@@ -320,26 +320,22 @@ onMounted(async () => {
   </Dialog>
 
   <div>
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="text2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-        Importação manual de dados
-      </h2>
-      <p class="mt-2 text-lg leading-8 text-gray-600">
-        Importe seus dados manualmente via planilha
-      </p>
-    </div>
+    <HeadingComponent
+      :title="'Importação manual de dados'"
+      :description="'Importe seus dados manualmente via planilha'"
+    />
 
     <div class="max-w-screen-base container mx-auto">
       <div>
-        <div class="mb-6 mt-6 rounded bg-white p-4 px-4 shadow-lg md:p-8">
+        <div class="mb-6 mt-6 rounded bg-white p-4 px-4 shadow-lg md:p-8 dark:bg-surface-800">
           <div class="gap grid grid-cols-1 text-sm">
             <div class="lg:col-span-3">
               <div class="md:col-span-2">
-                <label>Selecione um modelo de importação</label>
+                <label class="dark:text-white/80">Selecione um modelo de importação</label>
                 <select
                   v-model="idMenu"
                   :disabled="desativar"
-                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
                 >
                   <option value="0" disabled selected>Selecione</option>
                   <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
@@ -422,7 +418,6 @@ onMounted(async () => {
             :paginator="true"
             :rows="10"
             :rowsPerPageOptions="[5, 10, 20, 50]"
-            stripedRows
           >
             <template #header>
               <div class="flex justify-end">

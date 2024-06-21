@@ -143,7 +143,7 @@ onMounted(() => {
     subtitle="Novos usuários podem acessar e fazer edições através do Painel Administrativo."
   />
 
-  <form class="mx-auto max-w-6xl sm:mt-10">
+  <form class="mx-auto max-w-6xl sm:mt-10 dark:text-white/80">
     <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="sm:col-span-2">
         <label for="fullName">Nome completo</label>

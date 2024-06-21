@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
     title="Cadastre seu usuário"
     aviso="Você precisa criar seu usuario para os próximos logins"
   />
-  <form class="mx-auto max-w-6xl sm:mt-10">
+  <form class="mx-auto max-w-6xl sm:mt-10 dark:text-white/80">
     <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="sm:col-span-2">
         <label for="fullName">Nome completo</label>
