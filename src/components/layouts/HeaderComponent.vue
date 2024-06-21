@@ -11,6 +11,7 @@ const router = useRouter()
 
 const usuarioLogado = ref('')
 const idUsuarioLogado = ref()
+const darkMode = ref(localStorage.getItem('darkMode') === 'true')
 
 const items = ref([
   {
@@ -62,19 +63,36 @@ function logout() {
   window.location.reload()
 }
 
+function toggleDarkMode() {
+  darkMode.value = !darkMode.value
+  localStorage.setItem('darkMode', darkMode.value)
+  updateDarkMode()
+}
+
+function updateDarkMode() {
+  if (darkMode.value) {
+    document.body.classList.add('dark')
+  } else {
+    document.body.classList.remove('dark')
+  }
+}
+
 onMounted(() => {
   fetchUsuarioLogado()
+  updateDarkMode()
 })
 </script>
 
 <template>
-  <header class="bg-white py-1 shadow">
-    <div class="flex items-center justify-between p-4">
-      <div class="cursor-pointer md:hidden" @click="props.toggleSidebar">
+  <header class="relative z-40 bg-white sm:py-1 dark:bg-surface-800 dark:text-white/80">
+    <div class="flex items-center justify-between px-4 py-2 sm:p-4">
+      <div class="z-50 cursor-pointer md:hidden" @click="props.toggleSidebar">
         <i class="pi pi-bars"></i>
       </div>
       <div class="">
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900">Top Solutions</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white/80">
+          Top Solutions
+        </h1>
       </div>
       <div class="flex items-center justify-center space-x-3 px-3">
         <div class="text-md">{{ usuarioLogado.txtNome }}</div>
@@ -87,6 +105,11 @@ onMounted(() => {
           aria-controls="overlay_menu"
         />
         <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" />
+        <i
+          :class="['pi cursor-pointer', darkMode ? 'pi-moon' : 'pi-sun']"
+          @click="toggleDarkMode"
+          style="font-size: 1rem"
+        ></i>
       </div>
     </div>
   </header>

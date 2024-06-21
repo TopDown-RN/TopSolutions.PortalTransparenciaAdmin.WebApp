@@ -78,8 +78,11 @@ onMounted(() => {
     subtitle="Nosso sistema foi desenvolvido para atender às suas necessidades da melhor forma possível."
     description="Estamos constantemente trabalhando para aprimorar e oferecer recursos que facilitem sua jornada aqui. Fique à vontade para explorar todas as funcionalidades disponíveis. Caso tenha alguma dúvida ou precise de ajuda, nossa equipe de suporte está pronta para auxiliá-lo(a) a qualquer momento."
   />
-  <div class="flex justify-center space-x-6">
-    <div class="relative mt-6 overflow-x-auto rounded-lg border" v-if="!loading">
+  <div class="justify-center md:flex md:space-x-6">
+    <div
+      class="relative mt-6 overflow-x-auto rounded-lg border dark:border-white/20"
+      v-if="!loading"
+    >
       <DataTable
         :value="registros"
         :filters="filtersRegistros"
@@ -89,10 +92,9 @@ onMounted(() => {
         :rowsPerPageOptions="[5, 10, 20, 50]"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} resultados"
-        stripedRows
       >
         <template #header>
-          <div class="flex justify-between">
+          <div>
             <p class="mt-1 font-medium text-gray-500 dark:text-gray-300">
               Atualizações das consultas no Portal da Transparência
             </p>
@@ -119,7 +121,10 @@ onMounted(() => {
         <Column field="txtNomeUsuario" header="Atualizado por"></Column>
       </DataTable>
     </div>
-    <div class="relative mt-6 overflow-x-auto rounded-lg border" v-if="!loading">
+    <div
+      class="relative mt-6 overflow-x-auto rounded-lg border dark:border-white/20"
+      v-if="!loading"
+    >
       <DataTable
         :value="arquivos"
         :filters="filtersArquivos"
@@ -129,10 +134,9 @@ onMounted(() => {
         :rowsPerPageOptions="[5, 10, 20, 50]"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} resultados"
-        stripedRows
       >
         <template #header>
-          <div class="flex justify-between">
+          <div>
             <p class="mt-1 font-medium text-gray-500 dark:text-gray-300">
               Atualizações dos arquivos no Portal da Transparência
             </p>
