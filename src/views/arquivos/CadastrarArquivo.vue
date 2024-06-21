@@ -111,8 +111,10 @@ watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => 
 <template>
   <Toast position="top-center" />
 
-  <section class="mx-auto max-w-5xl rounded-md border bg-white p-6 dark:bg-gray-800">
-    <h2 class="pb-4 text-lg font-semibold capitalize text-gray-700 dark:text-white">
+  <section
+    class="mx-auto max-w-5xl rounded-md border bg-white p-6 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
+  >
+    <h2 class="pb-4 text-lg font-semibold capitalize text-gray-700 dark:text-white/80">
       Adicionar Arquivo
     </h2>
     <div class="grid gap-4 text-sm">
@@ -201,7 +203,7 @@ watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => 
           <ul
             v-if="files.length > 0"
             role="list"
-            class="mt-2 divide-y divide-gray-100 rounded-md border border-gray-200"
+            class="mt-2 divide-y divide-gray-100 rounded-md border border-gray-200 dark:divide-white/20 dark:border-white/20"
           >
             <li
               v-for="file of files"
@@ -215,7 +217,9 @@ watch([id_Menu, ano, idCategoriaArquivos], ([newMenu, newAno, newCategoria]) => 
                   />
                 </button>
                 <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                  <span class="truncate font-medium text-gray-600">{{ file.name }}</span>
+                  <span class="truncate font-medium text-gray-600 dark:text-white/80">{{
+                    file.name
+                  }}</span>
                 </div>
               </div>
             </li>

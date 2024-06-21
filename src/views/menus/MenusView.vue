@@ -308,7 +308,7 @@ onMounted(() => {
                 <label>É submenu de outro ítem?</label>
                 <select
                   v-model="idMenuPai"
-                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                  class="mt-1 h-10 w-full rounded border bg-transparent px-4 dark:bg-surface-800"
                 >
                   <option value="0">Selecione</option>
                   <option v-for="menu in submenus" :key="menu.idMenu" :value="menu.idMenu">
