@@ -110,9 +110,17 @@ const {
 
 // --------------------Funções
 const anos = computed(() => {
-  const anoAtual = new Date().getFullYear()
+  const listaMenuIds = [35, 59, 107];
+  let qtdAnos = 20
+  let anoAtual = new Date().getFullYear()
+
+  if (listaMenuIds.includes(id_Menu.value)) {
+    anoAtual = new Date().getFullYear() + 1
+    qtdAnos = 21
+  }
+
   const anos = []
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < qtdAnos; i++) {
     anos.push(anoAtual - i)
   }
   return anos
