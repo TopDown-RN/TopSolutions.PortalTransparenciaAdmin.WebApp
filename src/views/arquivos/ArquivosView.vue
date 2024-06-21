@@ -167,11 +167,13 @@ onMounted(() => {
 
     <ConfirmDialog ref="arq" group="headless">
       <template #container="{ message, acceptCallback, rejectCallback }">
-        <div class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900">
+        <div
+          class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900 dark:text-white/80"
+        >
           <div
             class="bg-primarytext-white -mt-8 inline-flex h-[6rem] w-[6rem] items-center justify-center rounded-full dark:text-surface-950"
           >
-            <i class="pi pi-question text-4xl"></i>
+            <i class="pi pi-question text-4xl dark:text-white/80"></i>
           </div>
           <span class="mb-2 block text-xl font-bold">{{ message.header }}</span>
           <p class="text-sm font-semibold">{{ message.target }}</p>
@@ -198,7 +200,10 @@ onMounted(() => {
       <CadastrarArquivo :categorias="categorias" :menus="menus" :anos="anos" />
     </div>
 
-    <div v-if="!loading" class="relative mt-8 overflow-x-auto rounded-lg border">
+    <div
+      v-if="!loading"
+      class="relative mt-8 overflow-x-auto rounded-lg border dark:border-white/20"
+    >
       <!-- <Toolbar>
         <template #start>
           <Button
@@ -220,7 +225,6 @@ onMounted(() => {
         class="text-sm"
         size="small"
         dataKey="idArquivo"
-        stripedRows
         paginator
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50, 100]"
