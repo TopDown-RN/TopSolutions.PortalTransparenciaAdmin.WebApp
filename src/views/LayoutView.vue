@@ -63,7 +63,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col md:flex-row">
+  <div class="flex min-h-screen flex-col md:flex-row dark:bg-surface-800">
     <SidebarComponent :dataShowSidebar="showSidebar" />
     <div class="flex flex-1 flex-col">
       <HeaderComponent :toggleSidebar="toggleSidebar" />

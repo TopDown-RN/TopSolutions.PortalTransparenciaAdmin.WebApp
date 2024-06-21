@@ -100,7 +100,7 @@ onMounted(() => {
 <template>
   <div
     :class="[
-      'fixed inset-y-0 left-0 z-30 w-[300px] transform bg-gradient-to-br from-primary-900 to-primary-900 px-2 py-4 text-white transition-transform duration-200 ease-in-out md:relative md:translate-x-0',
+      'fixed inset-y-0 left-0 z-30 w-[300px] transform bg-gradient-to-br from-primary-700 to-primary-900 px-2 py-4 text-white transition-transform duration-200 ease-in-out md:relative md:translate-x-0 dark:bg-gradient-to-br dark:from-surface-700 dark:to-surface-900',
       { '-translate-x-full': !props.dataShowSidebar, 'translate-x-0': props.dataShowSidebar }
     ]"
   >

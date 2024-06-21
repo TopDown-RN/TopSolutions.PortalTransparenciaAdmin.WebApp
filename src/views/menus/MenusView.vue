@@ -213,7 +213,9 @@ onMounted(() => {
   </div>
   <div class="max-w-screen-base container overflow-x-auto">
     <div>
-      <div class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8">
+      <div
+        class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
+      >
         <div>
           <Message severity="success" :sticky="true" :life="2000" v-if="success"
             >Menu salvo com sucesso</Message
@@ -391,7 +393,7 @@ onMounted(() => {
       <div v-if="loading" class="my-4 text-center">
         <ProgressSpinner />
       </div>
-      <div v-if="!loading" class="relative overflow-x-auto rounded-lg border">
+      <div v-if="!loading" class="relative overflow-x-auto rounded-lg border dark:border-white/20">
         <DataTable
           :value="menus"
           v-model:filters="filters"
@@ -399,7 +401,6 @@ onMounted(() => {
           :paginator="true"
           :rows="5"
           :rowsPerPageOptions="[5, 10, 20, 50]"
-          stripedRows
         >
           <template #header>
             <div class="flex justify-end">
