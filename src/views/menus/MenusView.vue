@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { getMenus, postMenu } from '@/services/menu'
+import { getMenus, getSubmenus, postMenu } from '@/services/menu'
 import { truncateNoFim } from '@/utils/truncateString'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -28,6 +28,7 @@ const txtFiltro = ref('') // sem campo na tela ainda
 
 // Campos de listagem de menus
 const menus = ref([])
+const submenus = ref([])
 
 // variáveis de controle de Messages
 const success = ref(false)
@@ -133,7 +134,9 @@ function mensagemErro() {
 async function getMenusList() {
   loading.value = true
   const response = await getMenus()
+  const responseSubmenu = await getSubmenus()
   menus.value = response.data
+  submenus.value = responseSubmenu.data
   //console.log(menus.value)
   loading.value = false
 }
@@ -308,7 +311,7 @@ onMounted(() => {
                   class="mt-1 h-10 w-full rounded border bg-transparent px-4"
                 >
                   <option value="0">Selecione</option>
-                  <option v-for="menu in menus" :key="menu.idMenu" :value="menu.idMenu">
+                  <option v-for="menu in submenus" :key="menu.idMenu" :value="menu.idMenu">
                     {{ menu.txtDescricao }}
                   </option>
                 </select>

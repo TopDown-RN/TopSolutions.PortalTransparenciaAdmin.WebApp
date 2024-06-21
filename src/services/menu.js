@@ -14,6 +14,13 @@ export function getMenus() {
     .catch((error) => console.error(error))
 }
 
+export function getSubmenus() {
+  return api
+    .get('menu/ListarTodosSubmenusAsync')
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}
+
 export function getMenusArquivo() {
   return api
     .get('menu/ListarMenusArquivoAsync')
