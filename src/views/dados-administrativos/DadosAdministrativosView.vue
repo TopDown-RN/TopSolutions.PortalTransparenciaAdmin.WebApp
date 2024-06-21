@@ -205,17 +205,21 @@ onMounted(() => {
   </div>
   <div v-if="!loading" class="max-w-screen-base container mx-auto">
     <div>
-      <div class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-md md:p-8">
+      <div
+        class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-md md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
+      >
         <div class="grid grid-cols-1 gap-4 gap-y-2 text-sm lg:grid-cols-3">
-          <div class="content-center text-gray-600">
+          <div class="content-center text-gray-600 dark:text-white/80">
             <p class="pt-10 text-lg font-medium">Redes Sociais</p>
 
-            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
+            <div
+              class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md dark:border-none"
+            >
               <div>
                 <button
-                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white dark:bg-surface-900"
                 >
-                  <RiFacebookLine class="h-6 w-6 text-gray-900" />
+                  <RiFacebookLine class="h-6 w-6 text-gray-900 dark:text-white/80" />
                 </button>
               </div>
               <div class="w-full">
@@ -223,18 +227,20 @@ onMounted(() => {
                   type="search"
                   x-model="input3"
                   v-model="facebook"
-                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none dark:bg-surface-800 dark:text-white/80"
                   placeholder="facebook.com/nome"
                 />
               </div>
             </div>
 
-            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
+            <div
+              class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md dark:border-none"
+            >
               <div>
                 <button
-                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white dark:bg-surface-900"
                 >
-                  <RiInstagramLine class="h-6 w-6 text-gray-900" />
+                  <RiInstagramLine class="h-6 w-6 text-gray-900 dark:text-white/80" />
                 </button>
               </div>
               <div class="w-full">
@@ -242,18 +248,20 @@ onMounted(() => {
                   type="search"
                   x-model="input1"
                   v-model="instagram"
-                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none dark:bg-surface-800 dark:text-white/80"
                   placeholder="@instagram"
                 />
               </div>
             </div>
 
-            <div class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md">
+            <div
+              class="my-2 flex w-10/12 items-center justify-center rounded-md border shadow-md dark:border-none"
+            >
               <div>
                 <button
-                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white"
+                  class="flex h-12 w-12 items-center justify-center rounded-l-md border border-white bg-gray-100 text-white dark:bg-surface-900"
                 >
-                  <RiTwitterXLine class="h-6 w-6 text-gray-900" />
+                  <RiTwitterXLine class="h-6 w-6 text-gray-900 dark:text-white/80" />
                 </button>
               </div>
               <div class="w-full">
@@ -261,7 +269,7 @@ onMounted(() => {
                   type="search"
                   x-model="input2"
                   v-model="x"
-                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none"
+                  class="h-12 w-full rounded-r-md border border-gray-100 px-4 py-1 text-gray-800 focus:outline-none dark:bg-surface-800 dark:text-white/80"
                   placeholder="@twitter"
                 />
               </div>
@@ -391,7 +399,7 @@ onMounted(() => {
                 <select
                   name="estado"
                   id="estado"
-                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none"
+                  class="mt-1 h-10 w-full rounded border border-gray-200 bg-gray-50 bg-transparent px-4 text-gray-800 outline-none dark:border-white/20 dark:bg-surface-900 dark:text-white/90"
                   v-model="estado"
                 >
                   <option value="" disabled selected>Selecione o estado</option>

@@ -186,7 +186,7 @@ onMounted(() => {
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} resultados"
         size="small"
-        class="border text-sm"
+        class="border text-sm dark:border-white/20"
       >
         <template #header>
           <div class="flex justify-end">

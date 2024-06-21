@@ -110,7 +110,7 @@ const {
 
 // --------------------Funções
 const anos = computed(() => {
-  const listaMenuIds = [35, 59, 107];
+  const listaMenuIds = [35, 59, 107]
   let qtdAnos = 20
   let anoAtual = new Date().getFullYear()
 
