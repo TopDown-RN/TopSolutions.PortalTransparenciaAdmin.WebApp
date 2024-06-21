@@ -1,13 +1,13 @@
 const routes = [
   {
-    path: '/arquivos',
-    name: 'Arquivos',
+    path: '/arquivosold',
+    name: 'Arquivos Old',
     meta: { requiresAuth: true },
     component: () => import('@/views/arquivos/Arquivos-Tmp.vue')
   },
   {
-    path: '/arquivosview',
-    name: 'Arquivos (Novo)',
+    path: '/arquivos',
+    name: 'Arquivos',
     meta: { requiresAuth: true },
     component: () => import('@/views/arquivos/ArquivosView.vue')
   }
