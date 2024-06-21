@@ -1,6 +1,12 @@
 <script setup>
 import { onMounted, ref, watch, computed } from 'vue'
-import { LerArquivoPorIdApi, deleteArquivo, getArquivos, getCategorias } from '@/services/arquivos'
+import {
+  LerArquivoPorIdApi,
+  deleteArquivo,
+  getArquivos,
+  getCategorias,
+  atualizarArquivo
+} from '@/services/arquivos'
 import { getMenusArquivo } from '@/services/menu'
 import { truncateNoMeio } from '@/utils/truncateString'
 import EventBus from '@/utils/eventBus'
@@ -14,7 +20,9 @@ import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Toolbar from 'primevue/toolbar'
 import Toast from 'primevue/toast'
+import Dialog from 'primevue/dialog'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
@@ -29,6 +37,11 @@ const selectedArquivo = ref()
 const editingRows = ref([])
 
 const showCadastroArq = ref(false)
+const arquivoDialog = ref(false)
+const id_Menu = ref('')
+const ano = ref('')
+const idCategoriaArquivos = ref('')
+const isValid = ref(true)
 
 const loading = ref(true)
 
@@ -59,27 +72,6 @@ async function fetchArquivos() {
   }
 }
 
-function excluirArq(arquivo) {
-  console.log(arquivo.data)
-  confirm.require({
-    group: 'headless',
-    header: 'Tem certeza de que deseja excluir?',
-    target: `${arquivo.data.nomeArquivo}`,
-    message: 'Por favor, confirme para prosseguir.',
-    accept: async () => {
-      const response = await deleteArquivo(arquivo.data.idArquivo)
-      const status = response.metadata.statusCode
-
-      if (status === 200) {
-        showSuccess(response.data)
-        await fetchArquivos()
-      } else {
-        showError(response.data)
-      }
-    }
-  })
-}
-
 async function downloadArq(idArquivo, nomeArquivo) {
   try {
     const dados = await LerArquivoPorIdApi(idArquivo)
@@ -101,6 +93,103 @@ async function downloadArq(idArquivo, nomeArquivo) {
   }
 }
 
+function filtrarArquivos({ menu, ano, categoria }) {
+  arquivos.value = filterArquivos.value.filter((arquivo) => {
+    return (
+      (!menu || arquivo.descMenu === menu.txtDescricao) &&
+      (!ano || arquivo.anoPub === ano) &&
+      (!categoria || arquivo.descCategoria === categoria.txtTitulo)
+    )
+  })
+}
+
+function excluirArq(arquivo) {
+  confirm.require({
+    group: 'headless',
+    header: 'Tem certeza de que deseja excluir?',
+    target: `${arquivo.data.nomeArquivo}`,
+    message: 'Por favor, confirme para prosseguir.',
+    accept: async () => {
+      const response = await deleteArquivo([arquivo.data.idArquivo])
+      if (response) {
+        showSuccess('Arquivo excluído com sucesso!')
+        await fetchArquivos()
+      } else {
+        showError('Ocorreu um erro ao excluir arquivo!')
+      }
+    }
+  })
+}
+
+function excluirArqSelected() {
+  const dados = selectedArquivo.value.map((item) => item.idArquivo)
+
+  confirm.require({
+    group: 'headless',
+    header: 'Tem certeza que deseja excluir os arquivos selecionados?',
+    message: 'Por favor, confirme para prosseguir',
+    accept: async () => {
+      const response = await deleteArquivo(dados)
+      if (response) {
+        showSuccess('Arquivos excluídos com sucesso!')
+        await fetchArquivos()
+      } else {
+        showError('Ocorreu um erro ao excluir arquivos!')
+      }
+    }
+  })
+}
+
+async function moverArqSelected() {
+  try {
+    if (!validarCampos()) {
+      return
+    }
+
+    const lstArquivos = selectedArquivo.value.map((item) => item.idArquivo)
+
+    const dados = {
+      anoPub: ano.value,
+      idCategoriaPubArquivo: idCategoriaArquivos.value.idCategoriaPubArquivo,
+      idMenu: id_Menu.value.idMenu,
+      txtDescricaoArquivo: null,
+      lstArquivos: lstArquivos
+    }
+
+    await atualizarArquivo(dados)
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+    arquivoDialog.value = false
+  } catch (e) {
+    showError('Ocorreu um erro ao mover arquivo.')
+    console.error(`error: ${e.message}`)
+  }
+}
+
+async function onRowEditSave(event) {
+  try {
+    let { newData } = event
+
+    const dados = {
+      anoPub: newData.anoPub,
+      idCategoriaPubArquivo: Number.isInteger(newData.descCategoria)
+        ? newData.descCategoria
+        : newData.idCategoriaPubArquivo,
+      idMenu: Number.isInteger(newData.descMenu) ? newData.descMenu : newData.idMenu,
+      txtDescricaoArquivo: newData.descArquivo,
+      lstArquivos: [newData.idArquivo]
+    }
+
+    await atualizarArquivo(dados)
+
+    fetchArquivos()
+    showSuccess('campos atualizados com sucesso!')
+  } catch (error) {
+    showError('Ocorreu um erro ao Editar')
+    console.error(error)
+  }
+}
+
 async function fetchCategorias() {
   const response = await getCategorias()
   categorias.value = response.data
@@ -113,10 +202,12 @@ async function fetchMenus() {
   })
 }
 
-function onRowEditSave(event) {
-  console.log(event)
-  let { newData, index } = event
-  arquivos.value[index] = newData
+function validarCampos() {
+  if (!id_Menu.value || !ano.value || !idCategoriaArquivos.value) {
+    isValid.value = false
+  }
+
+  return isValid.value
 }
 
 function formatDate(date) {
@@ -129,16 +220,6 @@ function showSuccess(message) {
 
 function showError(message) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 5000 })
-}
-
-function filtrarArquivos({ menu, ano, categoria }) {
-  arquivos.value = filterArquivos.value.filter((arquivo) => {
-    return (
-      (!menu || arquivo.descMenu === menu.txtDescricao) &&
-      (!ano || arquivo.anoPub === ano) &&
-      (!categoria || arquivo.descCategoria === categoria.txtTitulo)
-    )
-  })
 }
 
 EventBus.on('filterChange', filtrarArquivos)
@@ -167,11 +248,13 @@ onMounted(() => {
 
     <ConfirmDialog ref="arq" group="headless">
       <template #container="{ message, acceptCallback, rejectCallback }">
-        <div class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900">
+        <div
+          class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900 dark:text-white/80"
+        >
           <div
             class="bg-primarytext-white -mt-8 inline-flex h-[6rem] w-[6rem] items-center justify-center rounded-full dark:text-surface-950"
           >
-            <i class="pi pi-question text-4xl"></i>
+            <i class="pi pi-question text-4xl dark:text-white/80"></i>
           </div>
           <span class="mb-2 block text-xl font-bold">{{ message.header }}</span>
           <p class="text-sm font-semibold">{{ message.target }}</p>
@@ -198,18 +281,20 @@ onMounted(() => {
       <CadastrarArquivo :categorias="categorias" :menus="menus" :anos="anos" />
     </div>
 
-    <div v-if="!loading" class="relative mt-8 overflow-x-auto rounded-lg border">
-      <!-- <Toolbar>
+    <div
+      v-if="!loading"
+      class="relative mt-8 overflow-x-auto rounded-lg border dark:border-white/20"
+    >
+      <Toolbar>
         <template #start>
           <Button
-            label="Excluir"
-            icon="pi pi-trash"
-            severity="danger"
-            @click="excluirArqSelected"
-            :disabled="!selectedArquivo || !selectedArquivo.length"
+            @click="showCadastroArq = true"
+            size="small"
+            label="Adicionar arquivo"
+            icon="pi pi-plus"
           />
         </template>
-      </Toolbar> -->
+      </Toolbar>
       <DataTable
         v-model:selection="selectedArquivo"
         v-model:filters="filters"
@@ -220,7 +305,6 @@ onMounted(() => {
         class="text-sm"
         size="small"
         dataKey="idArquivo"
-        stripedRows
         paginator
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50, 100]"
@@ -229,12 +313,25 @@ onMounted(() => {
       >
         <template #header>
           <div class="flex justify-between">
-            <Button
-              @click="showCadastroArq = true"
-              size="small"
-              label="Adicionar arquivo"
-              icon="pi pi-plus"
-            />
+            <div class="flex gap-2">
+              <Button
+                label="Excluir"
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                @click="excluirArqSelected()"
+                :disabled="!selectedArquivo || !selectedArquivo.length"
+              />
+
+              <Button
+                label="Mover arquivo"
+                @click="arquivoDialog = true"
+                size="small"
+                icon="pi pi-file-export"
+                severity="contrast"
+                :disabled="!selectedArquivo || !selectedArquivo.length"
+              />
+            </div>
 
             <IconField iconPosition="left">
               <InputIcon class="pi pi-search" />
@@ -248,7 +345,7 @@ onMounted(() => {
           </div>
         </template>
 
-        <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
+        <Column selectionMode="multiple"></Column>
 
         <Column header="Ano" field="anoPub">
           <template #editor="{ data, field }">
@@ -261,7 +358,7 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="categorias"
-              optionValue="txtTitulo"
+              optionValue="idCategoriaPubArquivo"
               optionLabel="txtTitulo"
               panelClass="text-sm"
             />
@@ -273,14 +370,23 @@ onMounted(() => {
             <Dropdown
               v-model="data[field]"
               :options="menus"
-              optionValue="txtDescricao"
+              optionValue="idMenu"
               optionLabel="txtDescricao"
               panelClass="text-sm"
             />
           </template>
         </Column>
 
-        <Column header="Arquivo" field="nomeArquivo">
+        <Column header="Descrição" field="descArquivo" style="text-align: left">
+          <template #body="slotProps">
+            {{ truncateNoMeio(slotProps.data.descArquivo, 25) }}
+          </template>
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" class="w-full" />
+          </template>
+        </Column>
+
+        <Column header="Arquivo" field="nomeArquivo" style="text-align: left">
           <template #body="slotProps">
             <button
               @click="downloadArq(slotProps.data.idArquivo, slotProps.data.nomeArquivo)"
@@ -289,9 +395,6 @@ onMounted(() => {
             >
               {{ truncateNoMeio(slotProps.data.nomeArquivo, 50) }}
             </button>
-          </template>
-          <template #editor="{ data, field }">
-            <InputText v-model="data[field]" class="w-full" />
           </template>
         </Column>
 
@@ -322,6 +425,85 @@ onMounted(() => {
           </template>
         </Column>
       </DataTable>
+
+      <Dialog
+        v-model:visible="arquivoDialog"
+        modal
+        header="Mover Arquivo(s)"
+        :style="{ width: '25rem' }"
+      >
+        <span class="mb-5 block text-surface-600 dark:text-surface-0/70">
+          Selecione o local pra onde deseja mover.
+        </span>
+
+        <div class="grid grid-cols-1 gap-x-2">
+          <label class="block py-1 text-sm" for="ddMenu">Menu</label>
+          <Dropdown
+            v-model="id_Menu"
+            :options="menus"
+            optionLabel="txtDescricao"
+            id="ddMenu"
+            placeholder="Selecione um menu"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!id_Menu && !isValid"
+          />
+          <small v-if="!id_Menu && !isValid" class="text-red-600">
+            Obrigatório selecionar um menu
+          </small>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-2 pt-2">
+          <label class="block py-1 text-sm" for="categoria">Categoria</label>
+          <Dropdown
+            v-model="idCategoriaArquivos"
+            :options="categorias"
+            optionLabel="txtTitulo"
+            id="categoria"
+            placeholder="Selecione uma categoria"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!idCategoriaArquivos && !isValid"
+          />
+          <small v-if="!idCategoriaArquivos && !isValid" class="text-red-600">
+            Obrigatório selecionar uma categoria
+          </small>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-2 pt-2">
+          <label class="block py-1 text-sm" for="ano">Ano</label>
+          <Dropdown
+            v-model="ano"
+            :options="anos"
+            id="ano"
+            placeholder="Selecione um ano"
+            class="w-full"
+            panelClass="text-sm"
+            :invalid="!ano && !isValid"
+          />
+          <small v-if="!ano && !isValid" class="text-red-600">Obrigatório selecionar um ano</small>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <Button
+            type="button"
+            label="Cancelar"
+            severity="secondary"
+            size="small"
+            class="text-sm"
+            text
+            @click="arquivoDialog = false"
+          />
+          <Button
+            type="button"
+            label="Salvar"
+            size="small"
+            class="text-sm"
+            text
+            @click="moverArqSelected()"
+          />
+        </div>
+      </Dialog>
     </div>
   </section>
 </template>

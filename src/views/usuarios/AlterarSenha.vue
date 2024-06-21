@@ -88,7 +88,7 @@ onMounted(async () => {
         : ''
     "
   />
-  <form action="" class="mx-auto max-w-2xl sm:mt-5">
+  <form action="" class="mx-auto max-w-2xl sm:mt-5 dark:text-white/80">
     <div class="grid grid-cols-1 gap-x-5 gap-y-5 sm:grid-cols-1">
       <!-- <div>
         <label for="password">Senha atual</label>
