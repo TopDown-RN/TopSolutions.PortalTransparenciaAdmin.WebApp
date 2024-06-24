@@ -41,6 +41,7 @@ const arquivoDialog = ref(false)
 const id_Menu = ref('')
 const ano = ref('')
 const idCategoriaArquivos = ref('')
+const idMenuSelected = ref('')
 const isValid = ref(true)
 
 const loading = ref(true)
@@ -52,9 +53,17 @@ const filters = ref({
 const menus = ref([])
 const categorias = ref([])
 const anos = computed(() => {
-  const currentYear = new Date().getFullYear()
+  const listaMenuIds = [35, 59, 107]
+  let qtdAnos = 20
+  let currentYear = new Date().getFullYear()
+
+  if (listaMenuIds.includes(idMenuSelected.value)) {
+    currentYear = new Date().getFullYear() + 1
+    qtdAnos = 21
+  }
+
   const anos = []
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < qtdAnos; i++) {
     anos.push(currentYear - i)
   }
   return anos
@@ -94,6 +103,7 @@ async function downloadArq(idArquivo, nomeArquivo) {
 }
 
 function filtrarArquivos({ menu, ano, categoria }) {
+  idMenuSelected.value = menu.idMenu
   arquivos.value = filterArquivos.value.filter((arquivo) => {
     return (
       (!menu || arquivo.descMenu === menu.txtDescricao) &&
@@ -227,6 +237,12 @@ EventBus.on('arquivosChanged', fetchArquivos)
 
 watch(arquivos, () => {
   loading.value = false
+})
+
+watch(editingRows, () => {
+  if (editingRows.value.length > 0) {
+    idMenuSelected.value = editingRows.value[0].idMenu
+  }
 })
 
 onMounted(() => {
