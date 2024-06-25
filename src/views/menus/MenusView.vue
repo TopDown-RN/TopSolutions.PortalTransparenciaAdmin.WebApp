@@ -49,7 +49,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
-// Watcher para atualizar a URL do menu quando a opção "Arquivo" é marcada
+// Watchers
 watch(blnArquivo, (newVal) => {
   if (newVal && !txtUrl.value.startsWith('/arquivos/')) {
     txtUrl.value = `/arquivos/${txtUrl.value}`
@@ -58,16 +58,15 @@ watch(blnArquivo, (newVal) => {
   }
 })
 
-// Watcher para desativar uma opção quando a outra é ativada
 watch(blnArquivo, (newVal) => {
   if (newVal) {
-    blnPopUp.value = false // Desativa Pop-Up se Arquivo é ativado
+    blnPopUp.value = false
   }
 })
 
 watch(blnPopUp, (newVal) => {
   if (newVal) {
-    blnArquivo.value = false // Desativa Arquivo se Pop-Up é ativado
+    blnArquivo.value = false
   }
 })
 
@@ -83,11 +82,11 @@ function limpar() {
   txtDescricao.value = ''
   txtDescricaoGeral.value = ''
   txtUrl.value = ''
-  blnAtivo.value = ''
-  blnArquivo.value = ''
-  blnPopUp.value = ''
+  blnAtivo.value = false
+  blnArquivo.value = false
+  blnPopUp.value = false
   locais.value = []
-  idMenuPai.value = ''
+  idMenuPai.value = 0
   txtFiltro.value = ''
 }
 
@@ -162,7 +161,6 @@ async function postGravarMenu() {
       idMenuPai: idMenuPai.value,
       txtFiltro: txtFiltro.value
     }
-
     await postMenu(menu)
 
     getMenusList()
