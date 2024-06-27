@@ -56,7 +56,7 @@ function copyKey() {
 
 function editUsuario(event) {
   router.push({
-    name: 'usuario-editar',
+    name: 'Editar usuário',
     params: { id: event.data.idUsuario }
   })
 }

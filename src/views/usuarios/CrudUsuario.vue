@@ -39,7 +39,7 @@ const senhaRepetida = ref('')
 const blnAcessoExterno = ref(false)
 const blnAlterarSenha = ref(false)
 
-const alterarSenha = route.name === 'usuario-editar' ? ref(false) : ref(true)
+const alterarSenha = route.name === 'Editar usuário' ? ref(false) : ref(true)
 
 const isValid = ref(true)
 
@@ -100,7 +100,7 @@ function removeMask() {
 function validarCampos() {
   isValid.value = true
 
-  if (route.name === 'usuario-editar' && !alterarSenha.value) {
+  if (route.name === 'Editar usuário' && !alterarSenha.value) {
     if (!txtNome.value || !txtCpfCnpj.value || !txtEmail.value) {
       isValid.value = false
     }
@@ -139,7 +139,7 @@ onMounted(() => {
   <Toast position="top-center" />
 
   <HeadingComponent
-    :title="route.name === 'usuario-editar' ? 'Editar usuário' : 'Cadastrar usuário'"
+    :title="route.name === 'Editar usuário' ? 'Editar usuário' : 'Cadastrar usuário'"
     subtitle="Novos usuários podem acessar e fazer edições através do Painel Administrativo."
   />
 
@@ -250,7 +250,7 @@ onMounted(() => {
         />
         <label for="senhaPadrao" class="ml-2"> Alterar senha no próximo Login </label>
       </div>
-      <div v-if="route.name === 'usuario-editar'" class="flex items-center">
+      <div v-if="route.name === 'Editar usuário'" class="flex items-center">
         <Checkbox
           v-model="alterarSenha"
           inputId="alterarSenha"
