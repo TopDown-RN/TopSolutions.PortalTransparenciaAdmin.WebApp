@@ -10,6 +10,8 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { FilterMatchMode } from 'primevue/api'
 import HeadingComponent from '@/components/HeadingComponent.vue'
+import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -25,6 +27,7 @@ const blnPopUp = ref(false)
 const locais = ref([])
 const idMenuPai = ref(0)
 const txtFiltro = ref('') // sem campo na tela ainda
+const txtUrlArquivo = ref('')
 
 // Campos de listagem de menus
 const menus = ref([])
@@ -38,11 +41,11 @@ const loading = ref(true)
 
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
-  { valor: 1, descricao: 'Header' },
-  { valor: 2, descricao: 'Nav' },
-  { valor: 3, descricao: 'Body' },
-  { valor: 4, descricao: 'Footer' },
-  { valor: 5, descricao: 'Custom' }
+  { valor: 1, descricao: 'Cabeçalho' },
+  // { valor: 2, descricao: 'Nav' },
+  { valor: 3, descricao: 'Conteúdo' },
+  { valor: 4, descricao: 'Rodapé' }
+  // { valor: 5, descricao: 'Custom' }
 ]
 
 const filters = ref({
@@ -51,10 +54,16 @@ const filters = ref({
 
 // Watchers
 watch(blnArquivo, (newVal) => {
-  if (newVal && !txtUrl.value.startsWith('/arquivos/')) {
-    txtUrl.value = `/arquivos/${txtUrl.value}`
-  } else if (!newVal && txtUrl.value.startsWith('/arquivos/')) {
-    txtUrl.value = txtUrl.value.replace('/arquivos/', '')
+  if (newVal) {
+    txtUrl.value = `/arquivos/${txtUrlArquivo.value}`
+  } else {
+    txtUrl.value = txtUrlArquivo.value
+  }
+})
+
+watch(txtUrlArquivo, (newVal) => {
+  if (blnArquivo.value) {
+    txtUrl.value = `/arquivos/${newVal}`
   }
 })
 
@@ -82,6 +91,7 @@ function limpar() {
   txtDescricao.value = ''
   txtDescricaoGeral.value = ''
   txtUrl.value = ''
+  txtUrlArquivo.value = ''
   blnAtivo.value = false
   blnArquivo.value = false
   blnPopUp.value = false
@@ -91,6 +101,7 @@ function limpar() {
 }
 
 function editar(menu) {
+  console.log(menu)
   idArquivo.value = menu.idMenu
   txtDescricao.value = menu.txtDescricao
   txtDescricaoGeral.value = menu.txtDescricaoGeral
@@ -101,6 +112,11 @@ function editar(menu) {
   idMenuPai.value = menu.idMenuPai
   txtFiltro.value = menu.txtFiltro
   locais.value = menu.locais
+  if (menu.txtUrl.startsWith('/arquivos/')) {
+    txtUrlArquivo.value = menu.txtUrl.replace('/arquivos/', '')
+  } else {
+    txtUrlArquivo.value = menu.txtUrl
+  }
 }
 
 // ------------------- Paginação
@@ -250,7 +266,8 @@ onMounted(() => {
                   placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
                 />
               </div>
-              <div class="md:col-span-5">
+
+              <!-- <div class="md:col-span-5">
                 <label>Url do menu</label>
                 <input
                   v-model="txtUrl"
@@ -260,45 +277,104 @@ onMounted(() => {
                   class="mt-1 h-10 w-full rounded border bg-transparent px-4"
                   placeholder="Digite a url do menu. Ex: /receita"
                 />
+              </div> -->
+
+              <div class="md:col-span-5">
+                <label>Url do menu</label>
+                <div v-if="blnArquivo" class="relative flex items-center justify-between">
+                  <InputGroup>
+                    <InputGroupAddon class="mt-1 h-10">/arquivos/</InputGroupAddon>
+                    <InputText
+                      v-model="txtUrlArquivo"
+                      type="text"
+                      name="urlmenu"
+                      id="urlmenu"
+                      class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                      placeholder="Complemente a URL. Ex: receitas"
+                    />
+                  </InputGroup>
+                </div>
+
+                <div v-else class="">
+                  <input
+                    v-model="txtUrl"
+                    type="text"
+                    name="urlmenu"
+                    id="urlmenu"
+                    class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                    :placeholder="
+                      blnPopUp
+                        ? 'Insira o link para a página externa. Exemplo: https://www.google.com/'
+                        : 'Digite a URL do menu. Exemplo: /receitas'
+                    "
+                  />
+                </div>
               </div>
 
               <div class="md:col-span-5">
                 <label>Configurações</label>
+                <div class="mt-2">
+                  <div class="col-span-1 flex flex-col">
+                    <div class="flex items-center">
+                      <input
+                        v-model="blnAtivo"
+                        type="checkbox"
+                        name="ativo"
+                        id="ativo"
+                        class="mr-2"
+                      />
+                      <label class="flex items-center" for="ativo"
+                        >Ativo
+                        <i
+                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                          v-tooltip.bottom="{
+                            value: 'Marque caso este menu deva estar ativo'
+                          }"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
                 <div class="mt-2 grid grid-cols-4 gap-x-4">
-                  <div class="col-span-1 flex items-center">
-                    <input
-                      v-model="blnAtivo"
-                      type="checkbox"
-                      name="ativo"
-                      id="ativo"
-                      class="mr-2"
-                    />
-                    <label for="ativo">Ativo</label>
+                  <div class="flex=col col-span-1 flex">
+                    <div class="flex items-center">
+                      <input
+                        v-model="blnArquivo"
+                        type="checkbox"
+                        name="arquivo"
+                        id="arquivo"
+                        class="mr-2"
+                      />
+                      <label for="arquivo"
+                        >Arquivo
+                        <i
+                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                          v-tooltip.bottom="{
+                            value: 'Marque caso queira adicionar arquivos'
+                          }"
+                        />
+                      </label>
+                    </div>
                   </div>
-                  <div class="col-span-1 flex items-center">
-                    <input
-                      v-model="blnArquivo"
-                      type="checkbox"
-                      name="arquivo"
-                      id="arquivo"
-                      class="mr-2"
-                    />
-                    <label for="arquivo">Arquivo</label>
+                  <div class="col-span-1 flex flex-col">
+                    <div class="flex items-center">
+                      <input
+                        v-model="blnPopUp"
+                        type="checkbox"
+                        name="popup"
+                        id="popup"
+                        class="mr-2"
+                      />
+                      <label for="popup"
+                        >Link Externo
+                        <i
+                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                          v-tooltip.bottom="{
+                            value: 'Marque caso queira redirecionar para uma página externa'
+                          }"
+                      /></label>
+                    </div>
                   </div>
-                  <div class="col-span-1 flex items-center">
-                    <input
-                      v-model="blnPopUp"
-                      type="checkbox"
-                      name="popup"
-                      id="popup"
-                      class="mr-2"
-                    />
-                    <label for="popup">Pop-Up</label>
-                  </div>
-                  <!-- <div class="flex items-center col-span-1">
-                    <input type="checkbox" name="novapagina" id="novapagina" class="mr-2" />
-                    <label for="novapagina">Nova Página</label>
-                  </div> -->
                 </div>
               </div>
 
@@ -459,4 +535,8 @@ onMounted(() => {
   </div>
 </template>
 
-<style></style>
+<style>
+/* .input-field {
+  outline: none;
+} */
+</style>
