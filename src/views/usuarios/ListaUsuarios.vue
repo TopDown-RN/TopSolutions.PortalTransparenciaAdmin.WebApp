@@ -61,6 +61,10 @@ function editUsuario(event) {
   })
 }
 
+function cadastrarUsuario() {
+  router.push({ name: 'Cadastrar usuário' })
+}
+
 watch(toastMessage, (newToast) => {
   toast.add({ severity: 'success', summary: 'Sucesso!', detail: newToast, life: 5000 })
 })
@@ -101,7 +105,7 @@ onMounted(() => {
             size="small"
             label="Adicionar novo usuário"
             icon="pi pi-plus"
-            onclick="location.href='/usuarios/novo'"
+            @click="cadastrarUsuario()"
           />
           <IconField iconPosition="left">
             <InputIcon class="pi pi-search" />
