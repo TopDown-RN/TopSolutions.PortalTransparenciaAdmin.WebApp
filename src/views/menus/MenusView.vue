@@ -2,16 +2,17 @@
 import { ref, onMounted, watch } from 'vue'
 import { getMenus, getSubmenus, postMenu } from '@/services/menu'
 import { truncateNoFim } from '@/utils/truncateString'
+import HeadingComponent from '@/components/HeadingComponent.vue'
+import { FilterMatchMode } from 'primevue/api'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-import { FilterMatchMode } from 'primevue/api'
-import HeadingComponent from '@/components/HeadingComponent.vue'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
+import Dropdown from 'primevue/dropdown'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -29,7 +30,7 @@ const idMenuPai = ref(0)
 const txtFiltro = ref('') // sem campo na tela ainda
 const txtUrlArquivo = ref('')
 
-// Campos de listagem de menus
+// listagem de menus
 const menus = ref([])
 const submenus = ref([])
 
@@ -52,99 +53,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
-// Watchers
-watch(blnArquivo, (newVal) => {
-  if (newVal) {
-    txtUrl.value = `/arquivos/${txtUrlArquivo.value}`
-  } else {
-    txtUrl.value = txtUrlArquivo.value
-  }
-})
-
-watch(txtUrlArquivo, (newVal) => {
-  if (blnArquivo.value) {
-    txtUrl.value = `/arquivos/${newVal}`
-  }
-})
-
-watch(blnArquivo, (newVal) => {
-  if (newVal) {
-    blnPopUp.value = false
-  }
-})
-
-watch(blnPopUp, (newVal) => {
-  if (newVal) {
-    blnArquivo.value = false
-  }
-})
-
-// ---------------------  Funções gerais
-// const menusSorted = computed(() => {
-//   return menus.value.slice().sort((a, b) => {
-//     return a.txtDescricao.localeCompare(b.txtDescricao)
-//   })
-// })
-
-function limpar() {
-  idArquivo.value = 0
-  txtDescricao.value = ''
-  txtDescricaoGeral.value = ''
-  txtUrl.value = ''
-  txtUrlArquivo.value = ''
-  blnAtivo.value = false
-  blnArquivo.value = false
-  blnPopUp.value = false
-  locais.value = []
-  idMenuPai.value = 0
-  txtFiltro.value = ''
-}
-
-function editar(menu) {
-  console.log(menu)
-  idArquivo.value = menu.idMenu
-  txtDescricao.value = menu.txtDescricao
-  txtDescricaoGeral.value = menu.txtDescricaoGeral
-  txtUrl.value = menu.txtUrl
-  blnAtivo.value = menu.blnAtivo
-  blnArquivo.value = menu.blnArquivo
-  blnPopUp.value = menu.blnPopUp
-  idMenuPai.value = menu.idMenuPai
-  txtFiltro.value = menu.txtFiltro
-  locais.value = menu.locais
-  if (menu.txtUrl.startsWith('/arquivos/')) {
-    txtUrlArquivo.value = menu.txtUrl.replace('/arquivos/', '')
-  } else {
-    txtUrlArquivo.value = menu.txtUrl
-  }
-}
-
-// ------------------- Paginação
-// const paginationMenus = usePagination(menus, 10)
-
-// const {
-//   currentPage: currentPageMenu,
-//   paginatedItems: paginatedItemsMenu,
-//   nextPage: nextPageMenu,
-//   previousPage: previousPageMenu,
-//   totalPages: totalPagesMenu
-// } = paginationMenus
-
-// -------------------- Função para controle de messages
-function mensagemSucesso() {
-  success.value = true
-  setTimeout(() => {
-    success.value = false
-  }, 2000)
-}
-
-function mensagemErro() {
-  error.value = true
-  setTimeout(() => {
-    error.value = false
-  }, 2000)
-}
-
+// funções
 // ------------------------- Metódos GET
 async function getMenusList() {
   loading.value = true
@@ -188,7 +97,52 @@ async function postGravarMenu() {
   }
 }
 
-// Validação de campos
+function limpar() {
+  idArquivo.value = 0
+  txtDescricao.value = ''
+  txtDescricaoGeral.value = ''
+  txtUrl.value = ''
+  txtUrlArquivo.value = ''
+  blnAtivo.value = false
+  blnArquivo.value = false
+  blnPopUp.value = false
+  locais.value = []
+  idMenuPai.value = 0
+  txtFiltro.value = ''
+}
+
+function editar(menu) {
+  console.log(menu)
+  idArquivo.value = menu.idMenu
+  txtDescricao.value = menu.txtDescricao
+  txtDescricaoGeral.value = menu.txtDescricaoGeral
+  txtUrl.value = menu.txtUrl
+  blnAtivo.value = menu.blnAtivo
+  blnArquivo.value = menu.blnArquivo
+  blnPopUp.value = menu.blnPopUp
+  idMenuPai.value = menu.idMenuPai
+  txtFiltro.value = menu.txtFiltro
+  locais.value = menu.locais
+  if (menu.txtUrl.startsWith('/arquivos/')) {
+    txtUrlArquivo.value = menu.txtUrl.replace('/arquivos/', '')
+  } else {
+    txtUrlArquivo.value = menu.txtUrl
+  }
+}
+
+function mensagemSucesso() {
+  success.value = true
+  setTimeout(() => {
+    success.value = false
+  }, 2000)
+}
+
+function mensagemErro() {
+  error.value = true
+  setTimeout(() => {
+    error.value = false
+  }, 2000)
+}
 
 function validaCampos() {
   erros.value = []
@@ -200,10 +154,6 @@ function validaCampos() {
     erros.value.push('Descrição do menu é obrigatório')
   }
 
-  // if (!txtUrl.value) {
-  //   erros.value.push('Url do menu é obrigatório')
-  // }
-
   if (!locais.value.length) {
     erros.value.push('Informe ao menos um local para o menu')
   }
@@ -214,6 +164,37 @@ function validaCampos() {
 
   return true
 }
+
+// Watchers
+watch(blnArquivo, (newVal) => {
+  if (newVal) {
+    txtUrl.value = `/arquivos/${txtUrlArquivo.value}`
+  } else {
+    txtUrl.value = txtUrlArquivo.value
+  }
+})
+
+watch(txtUrlArquivo, (newVal) => {
+  if (blnArquivo.value) {
+    txtUrl.value = `/arquivos/${newVal}`
+  }
+})
+
+watch(blnArquivo, (newVal) => {
+  if (newVal) {
+    blnPopUp.value = false
+  }
+})
+
+watch(blnPopUp, (newVal) => {
+  if (newVal) {
+    blnArquivo.value = false
+  }
+})
+
+watch([blnPopUp, blnArquivo], () => {
+  txtUrl.value = blnPopUp.value && blnArquivo.value ? txtUrl.value : ''
+})
 
 onMounted(() => {
   getMenusList()
@@ -246,7 +227,7 @@ onMounted(() => {
             <div class="grid grid-cols-1 content-end gap-4 gap-y-2 text-sm md:grid-cols-5">
               <div class="md:col-span-5">
                 <label>Nome do menu</label>
-                <input
+                <InputText
                   v-model="txtDescricao"
                   type="text"
                   name="nomemenu"
@@ -257,7 +238,7 @@ onMounted(() => {
               </div>
               <div class="md:col-span-5">
                 <label>Descrição do menu</label>
-                <input
+                <InputText
                   v-model="txtDescricaoGeral"
                   type="text"
                   name="descricaomenu"
@@ -266,18 +247,6 @@ onMounted(() => {
                   placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
                 />
               </div>
-
-              <!-- <div class="md:col-span-5">
-                <label>Url do menu</label>
-                <input
-                  v-model="txtUrl"
-                  type="text"
-                  name="urlmenu"
-                  id="urlmenu"
-                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
-                  placeholder="Digite a url do menu. Ex: /receita"
-                />
-              </div> -->
 
               <div class="md:col-span-5">
                 <label>Url do menu</label>
@@ -296,46 +265,25 @@ onMounted(() => {
                 </div>
 
                 <div v-else class="">
-                  <input
+                  <InputText
                     v-model="txtUrl"
                     type="text"
                     name="urlmenu"
                     id="urlmenu"
-                    class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                    class="mt-1 h-10 w-full rounded border px-4"
+                    :disabled="blnPopUp ? false : true"
                     :placeholder="
                       blnPopUp
                         ? 'Insira o link para a página externa. Exemplo: https://www.google.com/'
-                        : 'Digite a URL do menu. Exemplo: /receitas'
+                        : 'Desabilitado'
                     "
                   />
                 </div>
+                <small> Selecione uma das opções abaixo para ativar a Url do menu. </small>
               </div>
 
               <div class="md:col-span-5">
-                <label>Configurações</label>
-                <div class="mt-2">
-                  <div class="col-span-1 flex flex-col">
-                    <div class="flex items-center">
-                      <input
-                        v-model="blnAtivo"
-                        type="checkbox"
-                        name="ativo"
-                        id="ativo"
-                        class="mr-2"
-                      />
-                      <label class="flex items-center" for="ativo"
-                        >Ativo
-                        <i
-                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
-                          v-tooltip.bottom="{
-                            value: 'Marque caso este menu deva estar ativo'
-                          }"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-2 grid grid-cols-4 gap-x-4">
+                <div class="grid grid-cols-2 gap-x-4 md:grid-cols-4">
                   <div class="flex=col col-span-1 flex">
                     <div class="flex items-center">
                       <input
@@ -378,22 +326,23 @@ onMounted(() => {
                 </div>
               </div>
 
-              <div class="md:col-span-5">
-                <label>É submenu de outro ítem?</label>
-                <select
+              <div class="mt-3 md:col-span-5">
+                <p>É submenu de outro ítem?</p>
+                <Dropdown
                   v-model="idMenuPai"
-                  class="mt-1 h-10 w-full rounded border bg-transparent px-4 dark:bg-surface-800"
+                  :options="submenus"
+                  optionLabel="txtDescricao"
+                  optionValue="idMenu"
+                  class="mt-1 h-10 w-full rounded border bg-transparent px-4 md:w-1/4 dark:bg-surface-800"
+                  panelClass="text-sm"
+                  placeholder="Selecione"
                 >
-                  <option value="0">Selecione</option>
-                  <option v-for="menu in submenus" :key="menu.idMenu" :value="menu.idMenu">
-                    {{ menu.txtDescricao }}
-                  </option>
-                </select>
+                </Dropdown>
               </div>
 
-              <div class="md:col-span-5">
+              <div class="mt-3 md:col-span-5">
                 <label>Local do Menu</label>
-                <div class="mt-2 grid grid-cols-5 gap-x-4">
+                <div class="mt-2 grid grid-cols-3 gap-x-4 md:grid-cols-5">
                   <div
                     v-for="item in locais_load"
                     :key="item.valor"
@@ -408,6 +357,32 @@ onMounted(() => {
                       class="mr-2"
                     />
                     <label :for="item.valor">{{ item.descricao }}</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 md:col-span-5">
+                <label>Configurações</label>
+                <div class="mt-2">
+                  <div class="col-span-1 flex flex-col">
+                    <div class="flex items-center">
+                      <input
+                        v-model="blnAtivo"
+                        type="checkbox"
+                        name="ativo"
+                        id="ativo"
+                        class="mr-2"
+                      />
+                      <label class="flex items-center" for="ativo"
+                        >Ativo
+                        <i
+                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                          v-tooltip.right="{
+                            value: 'Marque caso este menu deva estar ativo'
+                          }"
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -535,8 +510,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
-/* .input-field {
-  outline: none;
-} */
-</style>
+<style></style>
