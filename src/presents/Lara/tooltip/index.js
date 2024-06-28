@@ -1,9 +1,8 @@
 export default {
-  root: ({ context, props }) => ({
+  root: ({ context }) => ({
     class: [
       // Position and Shadows
       'absolute',
-      'shadow-md',
       'p-fadein',
       // Spacing
       {
@@ -15,7 +14,7 @@ export default {
       }
     ]
   }),
-  arrow: ({ context, props }) => ({
+  arrow: ({ context }) => ({
     class: [
       // Position
 
