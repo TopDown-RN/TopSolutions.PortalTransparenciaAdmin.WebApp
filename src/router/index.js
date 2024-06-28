@@ -19,6 +19,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
       component: () => import('@/views/home/HomeView.vue')
     },
+    {
+      path: '/:pathMatch(.*)',
+      name: 'not-found',
+      component: () => import('@/components/errors/NotFound.vue'),
+      meta: { layout: 'none' }
+    },
     ...UsuariosRoutes,
     ...DadosAdminRoutes,
     ...AutenticacaoRoutes,

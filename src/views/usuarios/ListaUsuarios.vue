@@ -56,9 +56,13 @@ function copyKey() {
 
 function editUsuario(event) {
   router.push({
-    name: 'usuario-editar',
+    name: 'Editar usuário',
     params: { id: event.data.idUsuario }
   })
+}
+
+function cadastrarUsuario() {
+  router.push({ name: 'Cadastrar usuário' })
 }
 
 watch(toastMessage, (newToast) => {
@@ -101,7 +105,7 @@ onMounted(() => {
             size="small"
             label="Adicionar novo usuário"
             icon="pi pi-plus"
-            onclick="location.href='/usuarios/novo'"
+            @click="cadastrarUsuario()"
           />
           <IconField iconPosition="left">
             <InputIcon class="pi pi-search" />

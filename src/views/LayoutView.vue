@@ -18,6 +18,10 @@ function toggleSidebar() {
 }
 
 function addAba(route) {
+  if (route.name === 'not-found') {
+    return
+  }
+
   const existingAba = abas.value.find((aba) => aba.to === route.path)
   if (!existingAba) {
     abas.value.push({
@@ -63,7 +67,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col md:flex-row dark:bg-surface-800">
+  <div
+    v-if="route.meta.layout !== 'none'"
+    class="flex min-h-screen flex-col md:flex-row dark:bg-surface-800"
+  >
     <SidebarComponent :dataShowSidebar="showSidebar" />
     <div class="flex flex-1 flex-col">
       <HeaderComponent :toggleSidebar="toggleSidebar" />
@@ -77,5 +84,8 @@ onMounted(() => {
         <RouterView />
       </div>
     </div>
+  </div>
+  <div v-else>
+    <RouterView />
   </div>
 </template>

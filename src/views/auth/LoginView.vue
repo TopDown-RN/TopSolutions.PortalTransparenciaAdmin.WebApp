@@ -30,10 +30,10 @@ async function postAutenticar() {
       response.data.txtCpfCnpj === '999.999.999-99'
     ) {
       await router.push('/usuario/novousuario')
-    }
-
-    if (response.data.blnAlterarSenha) {
+    } else if (response.data.blnAlterarSenha) {
       await router.push('/usuario/alterarsenha')
+    } else {
+      await router.push('/')
     }
 
     window.location.reload()
