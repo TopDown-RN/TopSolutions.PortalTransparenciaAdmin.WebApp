@@ -13,6 +13,7 @@ import InputText from 'primevue/inputtext'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import Dropdown from 'primevue/dropdown'
+import InputSwitch from 'primevue/inputswitch'
 
 const btnCadastraMenu = ref(true)
 const erros = ref([])
@@ -61,7 +62,6 @@ async function getMenusList() {
   const responseSubmenu = await getSubmenus()
   menus.value = response.data
   submenus.value = responseSubmenu.data
-  //console.log(menus.value)
   loading.value = false
 }
 
@@ -112,7 +112,6 @@ function limpar() {
 }
 
 function editar(menu) {
-  console.log(menu)
   idArquivo.value = menu.idMenu
   txtDescricao.value = menu.txtDescricao
   txtDescricaoGeral.value = menu.txtDescricaoGeral
@@ -193,7 +192,7 @@ watch(blnPopUp, (newVal) => {
 })
 
 watch([blnPopUp, blnArquivo], () => {
-  txtUrl.value = blnPopUp.value && blnArquivo.value ? txtUrl.value : ''
+  txtUrl.value = blnPopUp.value || blnArquivo.value ? txtUrl.value : ''
 })
 
 onMounted(() => {
@@ -366,7 +365,7 @@ onMounted(() => {
                 <div class="mt-2">
                   <div class="col-span-1 flex flex-col">
                     <div class="flex items-center">
-                      <input
+                      <InputSwitch
                         v-model="blnAtivo"
                         type="checkbox"
                         name="ativo"
