@@ -4,7 +4,6 @@ import { getMenus, getSubmenus, postMenu } from '@/services/menu'
 import { truncateNoFim } from '@/utils/truncateString'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import { FilterMatchMode } from 'primevue/api'
-import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -14,9 +13,15 @@ import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import Dropdown from 'primevue/dropdown'
 import InputSwitch from 'primevue/inputswitch'
+import Dialog from 'primevue/dialog'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
+
+const menuDialog = ref(false)
 const btnCadastraMenu = ref(true)
-const erros = ref([])
+const isValid = ref(true)
 
 // Campos de cadastro de arquivo
 const idArquivo = ref(0)
@@ -35,19 +40,13 @@ const txtUrlArquivo = ref('')
 const menus = ref([])
 const submenus = ref([])
 
-// variáveis de controle de Messages
-const success = ref(false)
-const error = ref(false)
-
 const loading = ref(true)
 
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
   { valor: 1, descricao: 'Cabeçalho' },
-  // { valor: 2, descricao: 'Nav' },
   { valor: 3, descricao: 'Conteúdo' },
   { valor: 4, descricao: 'Rodapé' }
-  // { valor: 5, descricao: 'Custom' }
 ]
 
 const filters = ref({
@@ -67,7 +66,7 @@ async function getMenusList() {
 
 // ------------------------ Métodos POST
 async function postGravarMenu() {
-  if (!validaCampos()) {
+  if (!validarCampos()) {
     return
   }
 
@@ -86,14 +85,15 @@ async function postGravarMenu() {
       idMenuPai: idMenuPai.value,
       txtFiltro: txtFiltro.value
     }
-    await postMenu(menu)
 
-    getMenusList()
-    mensagemSucesso()
+    await postMenu(menu)
+    await getMenusList()
+    showSuccess('Menu salvo com sucesso')
     limpar()
     btnCadastraMenu.value = true
+    menuDialog.value = false
   } catch (error) {
-    mensagemErro()
+    showError('Erro ao cadastrar Menu')
   }
 }
 
@@ -112,6 +112,8 @@ function limpar() {
 }
 
 function editar(menu) {
+  menuDialog.value = true
+
   idArquivo.value = menu.idMenu
   txtDescricao.value = menu.txtDescricao
   txtDescricaoGeral.value = menu.txtDescricaoGeral
@@ -129,39 +131,27 @@ function editar(menu) {
   }
 }
 
-function mensagemSucesso() {
-  success.value = true
-  setTimeout(() => {
-    success.value = false
-  }, 2000)
+function cadastrar() {
+  limpar()
+  menuDialog.value = true
 }
 
-function mensagemErro() {
-  error.value = true
-  setTimeout(() => {
-    error.value = false
-  }, 2000)
+function showSuccess(message) {
+  toast.add({ severity: 'success', summary: 'Confirmado', detail: message, life: 5000 })
 }
 
-function validaCampos() {
-  erros.value = []
-  if (!txtDescricao.value) {
-    erros.value.push('Nome do menu é obrigatório')
+function showError(message) {
+  toast.add({ severity: 'error', summary: 'Erro!', detail: message, life: 5000 })
+}
+
+function validarCampos() {
+  isValid.value = true
+
+  if (!txtDescricao.value || !txtDescricaoGeral.value || !locais.value.length) {
+    return (isValid.value = false)
   }
 
-  if (!txtDescricaoGeral.value) {
-    erros.value.push('Descrição do menu é obrigatório')
-  }
-
-  if (!locais.value.length) {
-    erros.value.push('Informe ao menos um local para o menu')
-  }
-
-  if (erros.value.length) {
-    return false
-  }
-
-  return true
+  return isValid.value
 }
 
 // Watchers
@@ -201,249 +191,238 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="gridMenu">
-    <HeadingComponent
-      title="Menus"
-      subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
-      description="Mantenha-os sempre atualizados."
-    />
-  </div>
+  <HeadingComponent
+    title="Menus"
+    subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
+    description="Mantenha-os sempre atualizados."
+  />
+
+  <Toast position="top-center" />
+
   <div class="max-w-screen-base container overflow-x-auto">
     <div>
-      <div
-        class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
-      >
-        <div>
-          <Message severity="success" :sticky="true" :life="2000" v-if="success"
-            >Menu salvo com sucesso</Message
-          >
-          <Message severity="error" :sticky="true" :life="2000" v-if="error"
-            >Erro ao cadastrar Menu</Message
-          >
-        </div>
-        <div class="gap grid grid-cols-1 text-sm">
-          <div class="lg:col-span-2">
-            <div class="grid grid-cols-1 content-end gap-4 gap-y-2 text-sm md:grid-cols-5">
-              <div class="md:col-span-5">
-                <label>Nome do menu</label>
-                <InputText
-                  v-model="txtDescricao"
-                  type="text"
-                  name="nomemenu"
-                  id="nomemenu"
-                  class="mt-1 h-10 w-full rounded border bg-transparent px-4"
-                  placeholder="Digite o nome que deseja dar ao menu, ex: Receita, Despesa..."
-                />
-              </div>
-              <div class="md:col-span-5">
-                <label>Descrição do menu</label>
-                <InputText
-                  v-model="txtDescricaoGeral"
-                  type="text"
-                  name="descricaomenu"
-                  id="descricaomenu"
-                  class="mt-1 h-20 w-full rounded border bg-transparent px-4"
-                  placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
-                />
-              </div>
+      <div v-if="loading" class="my-4 text-center">
+        <ProgressSpinner />
+      </div>
 
-              <div class="md:col-span-5">
-                <label>Url do menu</label>
-                <div v-if="blnArquivo" class="relative flex items-center justify-between">
-                  <InputGroup>
-                    <InputGroupAddon class="mt-1 h-10">/arquivos/</InputGroupAddon>
+      <Dialog v-model:visible="menuDialog" modal header="Cadastrar menu">
+        <div
+          class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
+        >
+          <div class="gap grid grid-cols-1 text-sm">
+            <div class="lg:col-span-2">
+              <div class="grid grid-cols-1 content-end gap-4 gap-y-2 text-sm md:grid-cols-5">
+                <div class="md:col-span-5">
+                  <label>Nome do menu</label>
+                  <InputText
+                    v-model="txtDescricao"
+                    type="text"
+                    name="nomemenu"
+                    id="nomemenu"
+                    class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                    placeholder="Digite o nome que deseja dar ao menu, ex: Receita, Despesa..."
+                    :invalid="!txtDescricao && !isValid"
+                  />
+                  <small v-if="!txtDescricao && !isValid" class="text-red-500">
+                    Nome do menu é obrigatório
+                  </small>
+                </div>
+                <div class="md:col-span-5">
+                  <label>Descrição do menu</label>
+                  <InputText
+                    v-model="txtDescricaoGeral"
+                    type="text"
+                    name="descricaomenu"
+                    id="descricaomenu"
+                    class="mt-1 h-20 w-full rounded border bg-transparent px-4"
+                    placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
+                    :invalid="!txtDescricao && !isValid"
+                  />
+                  <small v-if="!txtDescricao && !isValid" class="text-red-500">
+                    Descrição do menu é obrigatório
+                  </small>
+                </div>
+
+                <div class="md:col-span-5">
+                  <label>Url do menu</label>
+                  <div v-if="blnArquivo" class="relative flex items-center justify-between">
+                    <InputGroup>
+                      <InputGroupAddon class="mt-1 h-10">/arquivos/</InputGroupAddon>
+                      <InputText
+                        v-model="txtUrlArquivo"
+                        type="text"
+                        name="urlmenu"
+                        id="urlmenu"
+                        class="mt-1 h-10 w-full rounded border bg-transparent px-4"
+                        placeholder="Complemente a URL. Ex: receitas"
+                      />
+                    </InputGroup>
+                  </div>
+
+                  <div v-else class="">
                     <InputText
-                      v-model="txtUrlArquivo"
+                      v-model="txtUrl"
                       type="text"
                       name="urlmenu"
                       id="urlmenu"
-                      class="mt-1 h-10 w-full rounded border bg-transparent px-4"
-                      placeholder="Complemente a URL. Ex: receitas"
+                      class="mt-1 h-10 w-full rounded border px-4"
+                      :disabled="blnPopUp ? false : true"
+                      :placeholder="
+                        blnPopUp
+                          ? 'Insira o link para a página externa. Exemplo: https://www.google.com/'
+                          : 'Desabilitado'
+                      "
                     />
-                  </InputGroup>
+                  </div>
+                  <small> Selecione uma das opções abaixo para ativar a Url do menu. </small>
                 </div>
 
-                <div v-else class="">
-                  <InputText
-                    v-model="txtUrl"
-                    type="text"
-                    name="urlmenu"
-                    id="urlmenu"
-                    class="mt-1 h-10 w-full rounded border px-4"
-                    :disabled="blnPopUp ? false : true"
-                    :placeholder="
-                      blnPopUp
-                        ? 'Insira o link para a página externa. Exemplo: https://www.google.com/'
-                        : 'Desabilitado'
-                    "
-                  />
-                </div>
-                <small> Selecione uma das opções abaixo para ativar a Url do menu. </small>
-              </div>
-
-              <div class="md:col-span-5">
-                <div class="grid grid-cols-2 gap-x-4 md:grid-cols-4">
-                  <div class="flex=col col-span-1 flex">
-                    <div class="flex items-center">
-                      <input
-                        v-model="blnArquivo"
-                        type="checkbox"
-                        name="arquivo"
-                        id="arquivo"
-                        class="mr-2"
-                      />
-                      <label for="arquivo"
-                        >Arquivo
-                        <i
-                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
-                          v-tooltip.bottom="{
-                            value: 'Marque caso queira adicionar arquivos'
-                          }"
+                <div class="md:col-span-5">
+                  <div class="grid grid-cols-2 gap-x-4 md:grid-cols-4">
+                    <div class="flex=col col-span-1 flex">
+                      <div class="flex items-center">
+                        <input
+                          v-model="blnArquivo"
+                          type="checkbox"
+                          name="arquivo"
+                          id="arquivo"
+                          class="mr-2"
                         />
-                      </label>
+                        <label for="arquivo"
+                          >Arquivo
+                          <i
+                            class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                            v-tooltip.bottom="{
+                              value: 'Marque caso queira adicionar arquivos'
+                            }"
+                          />
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-span-1 flex flex-col">
-                    <div class="flex items-center">
-                      <input
-                        v-model="blnPopUp"
-                        type="checkbox"
-                        name="popup"
-                        id="popup"
-                        class="mr-2"
-                      />
-                      <label for="popup"
-                        >Link Externo
-                        <i
-                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
-                          v-tooltip.bottom="{
-                            value: 'Marque caso queira redirecionar para uma página externa'
-                          }"
-                      /></label>
+                    <div class="col-span-1 flex flex-col">
+                      <div class="flex items-center">
+                        <input
+                          v-model="blnPopUp"
+                          type="checkbox"
+                          name="popup"
+                          id="popup"
+                          class="mr-2"
+                        />
+                        <label for="popup"
+                          >Link Externo
+                          <i
+                            class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                            v-tooltip.bottom="{
+                              value: 'Marque caso queira redirecionar para uma página externa'
+                            }"
+                        /></label>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="mt-3 md:col-span-5">
-                <p>É submenu de outro ítem?</p>
-                <Dropdown
-                  v-model="idMenuPai"
-                  :options="submenus"
-                  optionLabel="txtDescricao"
-                  optionValue="idMenu"
-                  class="mt-1 h-10 w-full rounded border bg-transparent px-4 md:w-1/4 dark:bg-surface-800"
-                  panelClass="text-sm"
-                  placeholder="Selecione"
-                >
-                </Dropdown>
-              </div>
-
-              <div class="mt-3 md:col-span-5">
-                <label>Local do Menu</label>
-                <div class="mt-2 grid grid-cols-3 gap-x-4 md:grid-cols-5">
-                  <div
-                    v-for="item in locais_load"
-                    :key="item.valor"
-                    class="col-span-1 flex items-center"
+                <div class="mt-3 md:col-span-5">
+                  <p>É submenu de outro ítem?</p>
+                  <Dropdown
+                    v-model="idMenuPai"
+                    :options="submenus"
+                    optionLabel="txtDescricao"
+                    optionValue="idMenu"
+                    class="mt-1 h-10 w-full rounded border bg-transparent px-4 md:w-1/4 dark:bg-surface-800"
+                    panelClass="text-sm"
+                    placeholder="Selecione"
                   >
-                    <input
-                      v-model="locais"
-                      :value="item.valor"
-                      type="checkbox"
-                      name="menuLocal"
-                      :id="item.valor"
-                      class="mr-2"
-                    />
-                    <label :for="item.valor">{{ item.descricao }}</label>
-                  </div>
+                  </Dropdown>
                 </div>
-              </div>
 
-              <div class="mt-3 md:col-span-5">
-                <label>Configurações</label>
-                <div class="mt-2">
-                  <div class="col-span-1 flex flex-col">
-                    <div class="flex items-center">
-                      <InputSwitch
-                        v-model="blnAtivo"
+                <div class="mt-3 md:col-span-5">
+                  <label>Local do Menu</label>
+                  <div class="mt-2 grid grid-cols-3 gap-x-4 md:grid-cols-5">
+                    <div
+                      v-for="item in locais_load"
+                      :key="item.valor"
+                      class="col-span-1 flex items-center"
+                    >
+                      <input
+                        v-model="locais"
+                        :value="item.valor"
                         type="checkbox"
-                        name="ativo"
-                        id="ativo"
+                        name="menuLocal"
+                        :id="item.valor"
                         class="mr-2"
                       />
-                      <label class="flex items-center" for="ativo"
-                        >Ativo
-                        <i
-                          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
-                          v-tooltip.right="{
-                            value: 'Marque caso este menu deva estar ativo'
-                          }"
+                      <label :for="item.valor">{{ item.descricao }}</label>
+                    </div>
+                  </div>
+                  <small v-if="!locais.length && !isValid" class="text-red-500">
+                    Informe ao menos um local para o menu
+                  </small>
+                </div>
+
+                <div class="mt-3 md:col-span-5">
+                  <label>Configurações</label>
+                  <div class="mt-2">
+                    <div class="col-span-1 flex flex-col">
+                      <div class="flex items-center">
+                        <InputSwitch
+                          v-model="blnAtivo"
+                          type="checkbox"
+                          name="ativo"
+                          id="ativo"
+                          class="mr-2"
                         />
-                      </label>
+                        <label class="flex items-center" for="ativo"
+                          >Ativo
+                          <i
+                            class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                            v-tooltip.right="{
+                              value: 'Marque caso este menu deva estar ativo'
+                            }"
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="text-right md:col-span-5">
-                <div class="inline-flex items-end">
-                  <div class="mr-2">
-                    <!-- <button
-                      @click="postGravarMenu"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Gravar
-                    </button> -->
-                    <button
-                      @click="btnCadastraMenu ? postGravarMenu() : null"
-                      :class="{
-                        'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
-                        'cursor-not-allowed bg-primary-700': !btnCadastraMenu
-                      }"
-                      :disabled="!btnCadastraMenu"
-                      class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
-                    >
-                      <span v-if="btnCadastraMenu">Gravar</span>
-                      <span v-else>
-                        <ProgressSpinner
-                          style="width: 20px; height: 20px"
-                          strokeWidth="8"
-                          aria-label="Custom ProgressSpinner"
-                        />
-                      </span>
-                    </button>
-                  </div>
-                  <div>
-                    <button
-                      @click="limpar"
-                      class="rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
-                    >
-                      Limpar
-                    </button>
+                <div class="text-right md:col-span-5">
+                  <div class="inline-flex items-end">
+                    <div class="mr-2">
+                      <button
+                        @click="btnCadastraMenu ? postGravarMenu() : null"
+                        :class="{
+                          'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
+                          'cursor-not-allowed bg-primary-700': !btnCadastraMenu
+                        }"
+                        :disabled="!btnCadastraMenu"
+                        class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
+                      >
+                        <span v-if="btnCadastraMenu">Gravar</span>
+                        <span v-else>
+                          <ProgressSpinner
+                            style="width: 20px; height: 20px"
+                            strokeWidth="8"
+                            aria-label="Custom ProgressSpinner"
+                          />
+                        </span>
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        @click="limpar"
+                        class="rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
+                      >
+                        Limpar
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="text-right md:col-span-5">
-                <ul>
-                  <li class="list-disc text-red-600" v-for="erro in erros" :key="erro">
-                    {{ erro }}
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Dialog>
 
-      <!-- <div class="border bg-white rounded p-2 px-3 mt-6 mb-2">
-        <input type="text" placeholder="Buscar Menu" class="outline-0 w-full h-full" >
-      </div> -->
-
-      <div v-if="loading" class="my-4 text-center">
-        <ProgressSpinner />
-      </div>
       <div v-if="!loading" class="relative overflow-x-auto rounded-lg border dark:border-white/20">
         <DataTable
           :value="menus"
@@ -454,7 +433,9 @@ onMounted(() => {
           :rowsPerPageOptions="[5, 10, 20, 50]"
         >
           <template #header>
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+              <Button label="Cadastrar Menu" @click="cadastrar" size="small" icon="pi pi-plus" />
+
               <span class="relative">
                 <i
                   class="pi pi-search absolute left-3 top-2/4 -mt-2 text-surface-400 dark:text-surface-600"
@@ -490,17 +471,15 @@ onMounted(() => {
           </Column>
           <Column header="Ações">
             <template #body="rowData">
-              <a href="#gridMenu">
-                <Button
-                  icon="pi pi-pencil"
-                  size="small"
-                  outlined
-                  rounded
-                  @click="editar(rowData.data)"
-                  class="text-primary-700"
-                  title="Editar"
-                />
-              </a>
+              <Button
+                icon="pi pi-pencil"
+                size="small"
+                outlined
+                rounded
+                @click="editar(rowData.data)"
+                class="text-primary-700"
+                title="Editar"
+              />
             </template>
           </Column>
         </DataTable>

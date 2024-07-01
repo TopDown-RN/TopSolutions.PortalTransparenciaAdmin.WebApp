@@ -93,6 +93,8 @@ async function onRowEditSave(event) {
 }
 
 function validarCampos() {
+  isValid.value = true
+
   if (!txtTituloCat.value || !txtDescricaoCat.value) {
     isValid.value = false
   }

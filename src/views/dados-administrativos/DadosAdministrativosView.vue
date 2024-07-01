@@ -170,6 +170,8 @@ function capaPreview(event) {
 }
 
 function validarCampos() {
+  isValid.value = true
+
   if (
     !orgao.value ||
     !cnpj.value ||
