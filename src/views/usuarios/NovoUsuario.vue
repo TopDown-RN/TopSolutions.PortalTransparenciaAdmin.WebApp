@@ -61,6 +61,8 @@ function showError(error) {
 }
 
 function validarCampos() {
+  isValid.value = true
+
   if (
     !txtNome.value ||
     !txtCpfCnpj.value ||

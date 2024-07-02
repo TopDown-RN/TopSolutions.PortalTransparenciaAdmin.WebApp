@@ -74,6 +74,8 @@ function deleteArquivoList(arquivo) {
 }
 
 function validarCampos() {
+  isValid.value = true
+
   if (!id_Menu.value || !ano.value || !idCategoriaArquivos.value || files.value.length === 0) {
     isValid.value = false
   }

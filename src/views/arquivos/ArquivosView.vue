@@ -213,6 +213,8 @@ async function fetchMenus() {
 }
 
 function validarCampos() {
+  isValid.value = true
+
   if (!id_Menu.value || !ano.value || !idCategoriaArquivos.value) {
     isValid.value = false
   }
