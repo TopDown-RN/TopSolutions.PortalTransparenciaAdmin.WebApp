@@ -30,10 +30,10 @@ async function postAutenticar() {
       response.data.txtCpfCnpj === '999.999.999-99'
     ) {
       await router.push('/usuario/novousuario')
-    }
-
-    if (response.data.blnAlterarSenha) {
+    } else if (response.data.blnAlterarSenha) {
       await router.push('/usuario/alterarsenha')
+    } else {
+      await router.push('/')
     }
 
     window.location.reload()
@@ -122,6 +122,7 @@ onMounted(() => {
               aria-labelledby="email"
               type="email"
               class="my-1 w-full"
+              placeholder="Digite seu e-mail, CPF ou CNPJ"
             />
             <small id="username-help" class="text-gray-500"
               >Informe apenas <b>Números</b> para CPF e CNPJ.</small
@@ -136,6 +137,7 @@ onMounted(() => {
               class="w-full py-2"
               :feedback="false"
               toggleMask
+              placeholder="Digite sua senha"
             />
           </div>
           <div class="mt-8">

@@ -89,10 +89,14 @@ onMounted(() => {
       <div class="z-50 cursor-pointer md:hidden" @click="props.toggleSidebar">
         <i class="pi pi-bars"></i>
       </div>
-      <div class="">
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white/80">
-          Top Solutions
-        </h1>
+      <div>
+        <img
+          src="/logoTopVertical.png"
+          class="focus:outline-none dark:brightness-0 dark:invert"
+          width="188"
+          aria-label="logo"
+          alt="logo"
+        />
       </div>
       <div class="flex items-center justify-center space-x-3 px-3">
         <div class="text-md">{{ usuarioLogado.txtNome }}</div>

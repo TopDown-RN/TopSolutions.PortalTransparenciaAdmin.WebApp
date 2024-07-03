@@ -39,7 +39,7 @@ const senhaRepetida = ref('')
 const blnAcessoExterno = ref(false)
 const blnAlterarSenha = ref(false)
 
-const alterarSenha = route.name === 'usuario-editar' ? ref(false) : ref(true)
+const alterarSenha = route.name === 'Editar Usuário' ? ref(false) : ref(true)
 
 const isValid = ref(true)
 
@@ -100,7 +100,7 @@ function removeMask() {
 function validarCampos() {
   isValid.value = true
 
-  if (route.name === 'usuario-editar' && !alterarSenha.value) {
+  if (route.name === 'Editar Usuário' && !alterarSenha.value) {
     if (!txtNome.value || !txtCpfCnpj.value || !txtEmail.value) {
       isValid.value = false
     }
@@ -139,7 +139,7 @@ onMounted(() => {
   <Toast position="top-center" />
 
   <HeadingComponent
-    :title="route.name === 'usuario-editar' ? 'Editar usuário' : 'Cadastrar usuário'"
+    :title="route.name === 'Editar Usuário' ? 'Editar Usuário' : 'Cadastrar Usuário'"
     subtitle="Novos usuários podem acessar e fazer edições através do Painel Administrativo."
   />
 
@@ -159,7 +159,7 @@ onMounted(() => {
         </div>
       </div>
       <div>
-        <label for="cpf">CPF</label>
+        <label for="cpf">CPF/CNPJ</label>
         <div class="mt-1.5">
           <InputText
             v-model="txtCpfCnpj"
@@ -219,7 +219,7 @@ onMounted(() => {
             v-model.trim="senhaRepetida"
             :invalid="alterarSenha && !senhaRepetida && !isValid"
             :disabled="!alterarSenha"
-            :placeholder="!alterarSenha ? 'Desabilitado' : 'Digite a senha'"
+            :placeholder="!alterarSenha ? 'Desabilitado' : 'Confirme a senha'"
             class="w-full"
           />
           <small v-if="alterarSenha && !senhaRepetida && !isValid" class="text-red-600"
@@ -229,7 +229,26 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="mt-4 flex flex-wrap justify-center gap-3">
+    <div class="justify-left mt-4 flex flex-wrap gap-3">
+      <div v-if="route.name === 'Editar Usuário'" class="flex items-center">
+        <Checkbox
+          v-model="alterarSenha"
+          inputId="alterarSenha"
+          name="alterarSenha"
+          :binary="true"
+          value="alterarSenha"
+        />
+        <label for="alterarSenha" class="ml-2"> Habilitar senha </label>
+        <i
+          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+          v-tooltip.right="{
+            value: 'Marque para alterar a senha'
+          }"
+        />
+      </div>
+    </div>
+
+    <div class="mt-4 grid grid-cols-2 gap-x-4 lg:grid-cols-3">
       <div class="flex items-center">
         <Checkbox
           v-model="blnAcessoExterno"
@@ -238,8 +257,15 @@ onMounted(() => {
           :binary="true"
           value="blnAcessoExterno"
         />
-        <label for="acesso" class="ml-2"> Acesso Externo </label>
+        <label for="acesso" class="ml-2"> Colaborador Externo </label>
+        <i
+          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+          v-tooltip.bottom="{
+            value: 'Marque caso o usuário seja um Colaborador Externo'
+          }"
+        />
       </div>
+
       <div class="flex items-center">
         <Checkbox
           v-model="blnAlterarSenha"
@@ -249,16 +275,12 @@ onMounted(() => {
           value="blnAlterarSenha"
         />
         <label for="senhaPadrao" class="ml-2"> Alterar senha no próximo Login </label>
-      </div>
-      <div v-if="route.name === 'usuario-editar'" class="flex items-center">
-        <Checkbox
-          v-model="alterarSenha"
-          inputId="alterarSenha"
-          name="alterarSenha"
-          :binary="true"
-          value="alterarSenha"
+        <i
+          class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+          v-tooltip.bottom="{
+            value: 'Marque para que o usuário possa alterar a senha no próximo login'
+          }"
         />
-        <label for="alterarSenha" class="ml-2"> Alterar Senha do usuário? </label>
       </div>
     </div>
 
