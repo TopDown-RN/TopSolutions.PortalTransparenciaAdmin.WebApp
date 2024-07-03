@@ -56,13 +56,13 @@ function copyKey() {
 
 function editUsuario(event) {
   router.push({
-    name: 'Editar usuário',
+    name: 'Editar Usuário',
     params: { id: event.data.idUsuario }
   })
 }
 
 function cadastrarUsuario() {
-  router.push({ name: 'Cadastrar usuário' })
+  router.push({ name: 'Cadastrar Usuário' })
 }
 
 watch(toastMessage, (newToast) => {
@@ -126,7 +126,7 @@ onMounted(() => {
           <Button
             v-if="slotProps.data.txtChaveAcessoAPI"
             @click="toggleOverlay(slotProps.data.txtChaveAcessoAPI)"
-            v-tooltip.top="'Chave de Acesso Externo'"
+            v-tooltip.top="'Chave de Acesso - Colaborador Externo'"
             icon="pi pi-key"
             size="small"
             severity="success"
@@ -136,7 +136,9 @@ onMounted(() => {
           <OverlayPanel ref="op">
             <div class="flex-column w-25rem flex gap-3">
               <div>
-                <span class="text-900 mb-2 block font-medium">Chave Acesso Externo</span>
+                <span class="text-900 mb-2 block font-medium"
+                  >Chave de Acesso - Colaborador Externo</span
+                >
                 <InputGroup>
                   <InputText :value="txtChaveAcessoAPI" readonly class="w-25rem"></InputText>
                   <InputGroupAddon
@@ -163,7 +165,7 @@ onMounted(() => {
             @click="editUsuario(event)"
             v-tooltip.top="'Editar'"
           />
-          <!--          <Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />-->
+          <!--<Button icon="pi pi-trash" size="small" outlined rounded severity="danger" />-->
         </template>
       </Column>
     </DataTable>

@@ -45,9 +45,22 @@ const loading = ref(true)
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
   { valor: 1, descricao: 'Cabeçalho' },
-  { valor: 3, descricao: 'Conteúdo' },
-  { valor: 4, descricao: 'Rodapé' }
+  { valor: 2, descricao: 'Conteúdo' },
+  { valor: 3, descricao: 'Rodapé' }
 ]
+
+function getTooltip(valor) {
+  switch (valor) {
+    case 1:
+      return 'O Menu será exibido no cabeçalho do Portal. Marque para informações importantes'
+    case 2:
+      return 'O Menu será exibido no conteúdo principal do Portal, com maior destaque'
+    case 3:
+      return 'O Menu será exibido no rodapé do Portal. Marque para informações suplementares'
+    default:
+      return ''
+  }
+}
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -205,7 +218,7 @@ onMounted(() => {
         <ProgressSpinner />
       </div>
 
-      <Dialog v-model:visible="menuDialog" modal header="Cadastrar menu">
+      <Dialog v-model:visible="menuDialog" modal header="Cadastrar Menu">
         <div
           class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-lg md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
         >
@@ -322,7 +335,7 @@ onMounted(() => {
                 </div>
 
                 <div class="mt-3 md:col-span-5">
-                  <p>É submenu de outro ítem?</p>
+                  <p>É submenu de outro item?</p>
                   <Dropdown
                     v-model="idMenuPai"
                     :options="submenus"
@@ -352,6 +365,12 @@ onMounted(() => {
                         class="mr-2"
                       />
                       <label :for="item.valor">{{ item.descricao }}</label>
+                      <i
+                        class="pi pi-question-circle mx-1 text-gray-500 dark:text-white"
+                        v-tooltip.bottom="{
+                          value: getTooltip(item.valor)
+                        }"
+                      />
                     </div>
                   </div>
                   <small v-if="!locais.length && !isValid" class="text-red-500">

@@ -200,7 +200,7 @@ onMounted(() => {
     <HeadingComponent
       title="Notícias"
       subtitle="Cadastre aqui as notícias a serem exibidas no Portal da Transparência."
-      description="Mantenha-os sempre atualizados."
+      description="Mantenha-as sempre atualizados."
     />
 
     <div class="w-full pt-8">

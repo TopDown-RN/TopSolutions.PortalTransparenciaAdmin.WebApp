@@ -71,9 +71,11 @@ const menusConfig = ref([
     id: 4,
     nome: 'Dados API',
     icon: 'pi pi-code',
-    url: `https://dataapi${window.location.hostname}/swagger/index.html`
+    url: `https://dataapi${removerPrefixo(window.location.hostname)}/swagger/index.html`
   }
 ])
+
+console.log(window.location)
 
 async function getDados() {
   try {
@@ -84,6 +86,10 @@ async function getDados() {
   } catch (e) {
     console.error('Não foi possível obter dados da api: ', e)
   }
+}
+
+function removerPrefixo() {
+  return window.location.hostname.replace('admin', '')
 }
 
 onMounted(() => {
