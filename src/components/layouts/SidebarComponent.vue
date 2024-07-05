@@ -34,12 +34,12 @@ const menusPrincipal = ref([
     icon: 'pi pi-headphones',
     rota: '/ouvidoria'
   },
-  // {
-  //   id: 6,
-  //   nome: 'Importar Dados',
-  //   icon: 'pi pi-upload',
-  //   rota: '/importacaodadosplanilha'
-  // },
+  {
+    id: 6,
+    nome: 'Importar Dados',
+    icon: 'pi pi-upload',
+    rota: '/importacaodadosplanilha'
+  },
   {
     id: 7,
     nome: 'Notícias',
