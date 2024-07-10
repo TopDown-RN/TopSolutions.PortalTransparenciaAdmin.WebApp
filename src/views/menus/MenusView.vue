@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { getMenus, getSubmenus, postMenu } from '@/services/menu'
+import { getMenus, getSubmenus, postMenu, delMenu } from '@/services/menu'
 import { truncateNoFim } from '@/utils/truncateString'
 import HeadingComponent from '@/components/HeadingComponent.vue'
 import { FilterMatchMode } from 'primevue/api'
@@ -15,9 +15,12 @@ import Dropdown from 'primevue/dropdown'
 import InputSwitch from 'primevue/inputswitch'
 import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
+const confirm = useConfirm()
 
 const menuDialog = ref(false)
 const btnCadastraMenu = ref(true)
@@ -144,6 +147,30 @@ function editar(menu) {
   }
 }
 
+function excluir(itensMenu) {
+  console.log(itensMenu)
+  // const id = selectedItems.value.map((item) => item.idMenu)
+
+  confirm.require({
+    group: 'headless',
+    header: 'Tem certeza de que deseja excluir?',
+    message: 'Por favor, confirme para prosseguir.',
+    accept: async () => {
+      const response = await delMenu([itensMenu.idMenu])
+      if (response) {
+        showSuccess('Menu excluído com sucesso!')
+        await delMenu()
+
+        setTimeout(() => {
+          window.location.reload()
+        }, 500)
+      } else {
+        showError('Ocorreu um erro ao excluir o menu!')
+      }
+    }
+  })
+}
+
 function cadastrar() {
   limpar()
   menuDialog.value = true
@@ -211,6 +238,33 @@ onMounted(() => {
   />
 
   <Toast position="top-center" />
+
+  <ConfirmDialog group="headless">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <div
+        class="flex flex-col items-center rounded-md bg-surface-0 p-5 dark:bg-surface-900 dark:text-white/80"
+      >
+        <div
+          class="bg-primarytext-white -mt-8 inline-flex h-[6rem] w-[6rem] items-center justify-center rounded-full dark:text-surface-950"
+        >
+          <i class="pi pi-question text-4xl dark:text-white/80"></i>
+        </div>
+        <span class="mb-2 block text-xl font-bold">{{ message.header }}</span>
+        <p class="text-sm font-semibold">{{ message.target }}</p>
+        <p class="m-4">{{ message.message }}</p>
+        <div class="mt-4 flex items-center gap-2">
+          <Button label="Confirmar" @click="acceptCallback" size="small" class="text-sm"></Button>
+          <Button
+            label="Cancelar"
+            outlined
+            @click="rejectCallback"
+            size="small"
+            class="text-sm"
+          ></Button>
+        </div>
+      </div>
+    </template>
+  </ConfirmDialog>
 
   <div class="max-w-screen-base container overflow-x-auto">
     <div>
@@ -468,12 +522,15 @@ onMounted(() => {
               </span>
             </div>
           </template>
+
           <Column field="txtDescricao" header="Menu"></Column>
+
           <Column field="txtUrl" header="URL">
             <template #body="rowData">
               {{ truncateNoFim(rowData.data.txtUrl, 30) }}
             </template>
           </Column>
+
           <Column header="Local">
             <template #body="rowData">
               {{
@@ -483,12 +540,14 @@ onMounted(() => {
               }}
             </template>
           </Column>
+
           <Column field="blnAtivo" header="Ativo">
             <template #body="rowData">
               {{ rowData.data.blnAtivo ? 'Sim' : 'Não' }}
             </template>
           </Column>
-          <Column header="Ações">
+
+          <Column header="Ações" bodyStyle="text-align: left">
             <template #body="rowData">
               <Button
                 icon="pi pi-pencil"
@@ -496,8 +555,22 @@ onMounted(() => {
                 outlined
                 rounded
                 @click="editar(rowData.data)"
-                class="text-primary-700"
+                class="mr-2 max-h-8 max-w-8"
                 title="Editar"
+              />
+
+              <Button
+                v-if="
+                  rowData.data.txtUrl === '' || rowData.data.blnPopUp || rowData.data.blnArquivo
+                "
+                icon="pi pi-trash"
+                size="small"
+                outlined
+                rounded
+                @click="excluir(rowData.data)"
+                class="max-h-8 max-w-8"
+                severity="danger"
+                title="Excluir"
               />
             </template>
           </Column>
