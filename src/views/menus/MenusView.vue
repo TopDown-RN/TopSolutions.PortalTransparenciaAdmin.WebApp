@@ -303,9 +303,9 @@ onMounted(() => {
                     id="descricaomenu"
                     class="mt-1 h-20 w-full rounded border bg-transparent px-4"
                     placeholder="Digite uma breve descrição para o menu que está criando, isso ajudará o usuário que está consultando o Portal"
-                    :invalid="!txtDescricao && !isValid"
+                    :invalid="!txtDescricaoGeral && !isValid"
                   />
-                  <small v-if="!txtDescricao && !isValid" class="text-red-500">
+                  <small v-if="!txtDescricaoGeral && !isValid" class="text-red-500">
                     Descrição do menu é obrigatório
                   </small>
                 </div>
