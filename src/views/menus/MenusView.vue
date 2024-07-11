@@ -560,9 +560,7 @@ onMounted(() => {
               />
 
               <Button
-                v-if="
-                  rowData.data.txtUrl === '' || rowData.data.blnPopUp || rowData.data.blnArquivo
-                "
+                v-if="rowData.data.blnExcluir"
                 icon="pi pi-trash"
                 size="small"
                 outlined
