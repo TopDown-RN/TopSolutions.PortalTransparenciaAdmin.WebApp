@@ -50,3 +50,17 @@ export function getTemplateMenu(_idMenu) {
       throw error
     })
 }
+
+export function delMenu(id) {
+  console.log(id)
+  return api
+    .delete('menu/deletarmenuasync', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      data: id
+    })
+    .then((response) => response.data)
+    .catch((error) => console.error(error))
+}
