@@ -48,17 +48,17 @@ const loading = ref(true)
 // Locais com valores de acordo com o banco "Estático"
 const locais_load = [
   { valor: 1, descricao: 'Cabeçalho' },
-  { valor: 2, descricao: 'Conteúdo' },
-  { valor: 3, descricao: 'Rodapé' }
+  { valor: 3, descricao: 'Conteúdo' },
+  { valor: 4, descricao: 'Rodapé' }
 ]
 
 function getTooltip(valor) {
   switch (valor) {
     case 1:
       return 'O Menu será exibido no cabeçalho do Portal. Marque para informações importantes'
-    case 2:
-      return 'O Menu será exibido no conteúdo principal do Portal, com maior destaque'
     case 3:
+      return 'O Menu será exibido no conteúdo principal do Portal, com maior destaque'
+    case 4:
       return 'O Menu será exibido no rodapé do Portal. Marque para informações suplementares'
     default:
       return ''
