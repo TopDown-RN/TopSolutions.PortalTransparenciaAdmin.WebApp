@@ -1,6 +1,6 @@
 <script setup>
 import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
-import { getDadosAdmin, postDadosAdmin } from '@/services/dadosAdmin'
+import { getDadosAdmin, postDadosAdmin, postSobrePortal } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import { manterNumeros } from '@/utils/manterNumeros'
@@ -9,6 +9,8 @@ import InputMask from 'primevue/inputmask'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import HeadingComponent from '@/components/HeadingComponent.vue'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const loading = ref(true)
 const toast = useToast()
@@ -36,6 +38,7 @@ const email = ref('')
 const facebook = ref('')
 const instagram = ref('')
 const x = ref('')
+const txtSobrePortal = ref('')
 
 const estadosOptions = ref([
   { codigo: 'AC', nome: 'Acre' },
@@ -92,6 +95,8 @@ async function pegarDadosAdmin() {
 
     srcImgLogo.value = 'data:image/' + extensaoLogo.value + ';base64,' + logo.value
     srcImgCapa.value = 'data:image/' + extensaoCapa.value + ';base64,' + capa.value
+    txtSobrePortal.value = response.data.txtSobrePortal
+
     loading.value = false
   } catch (error) {
     console.log(error)
@@ -108,6 +113,7 @@ async function atualizarDadosAdmin() {
     }
 
     const formData = new FormData()
+    const formDataSobre = new FormData()
 
     const inputImagemLogo = document.getElementById('inputImagemLogo')
     const inputImagemCapa = document.getElementById('inputImagemCapa')
@@ -131,7 +137,10 @@ async function atualizarDadosAdmin() {
     formData.append('txtX', x.value)
     formData.append('imgCapa', inputImagemCapa.files[0])
 
+    formDataSobre.append('txtSobrePortal', txtSobrePortal.value)
+
     await postDadosAdmin(formData)
+    await postSobrePortal(formDataSobre)
 
     btnAtualizar.value = true
     showSuccess()
@@ -202,16 +211,18 @@ onMounted(() => {
     subtitle="Os dados alterados aqui impactam diretamente no Portal da Transparência."
     description="Mantenha-os sempre atualizados."
   />
+
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
+
   <div v-if="!loading" class="max-w-screen-base container mx-auto">
     <div>
       <div
-        class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-md md:p-8 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
+        class="mb-6 mt-6 rounded border bg-white p-4 px-4 shadow-md md:px-8 md:py-2 dark:border-white/20 dark:bg-surface-800 dark:text-white/80"
       >
-        <div class="grid grid-cols-1 gap-4 gap-y-2 text-sm lg:grid-cols-3">
-          <div class="content-center text-gray-600 dark:text-white/80">
+        <div class="flex flex-col gap-4 gap-y-2 text-sm lg:flex-row">
+          <div class="w-full text-gray-600 lg:w-1/3 dark:text-white/80">
             <p class="pt-10 text-lg font-medium">Redes Sociais</p>
 
             <div
@@ -343,6 +354,7 @@ onMounted(() => {
                 />
                 <small v-if="!orgao" class="text-red-600">O campo Órgão é obrigatório</small>
               </div>
+
               <div class="md:col-span-1">
                 <label for="numero">CNPJ</label>
                 <InputMask
@@ -355,6 +367,7 @@ onMounted(() => {
                 />
                 <small v-if="!cnpj" class="text-red-600">O campo CNPJ é obrigatório</small>
               </div>
+
               <div class="md:col-span-4">
                 <label for="rua">Rua/Avenida</label>
                 <InputText
@@ -370,6 +383,7 @@ onMounted(() => {
                   >O campo Rua/Avenida é obrigatório</small
                 >
               </div>
+
               <div class="md:col-span-1">
                 <label for="numero">Número</label>
                 <InputText
@@ -383,6 +397,7 @@ onMounted(() => {
                 />
                 <small v-if="!numero" class="text-red-600">O campo Número é obrigatório</small>
               </div>
+
               <div class="md:col-span-2">
                 <label for="cidade">Cidade</label>
                 <InputText
@@ -396,6 +411,7 @@ onMounted(() => {
                 />
                 <small v-if="!cidade" class="text-red-600">O campo Cidade é obrigatório</small>
               </div>
+
               <div class="md:col-span-2">
                 <label for="estado">Estado</label>
                 <select
@@ -415,6 +431,7 @@ onMounted(() => {
                 </select>
                 <small v-if="!estado" class="text-red-600">O campo Estado é obrigatório</small>
               </div>
+
               <div class="md:col-span-1">
                 <label for="cep">CEP</label>
                 <InputMask
@@ -428,6 +445,7 @@ onMounted(() => {
                 />
                 <small v-if="!cep" class="text-red-600">O campo CEP é obrigatório</small>
               </div>
+
               <div class="md:col-span-2">
                 <label for="telefone">Telefone</label>
                 <InputText
@@ -441,6 +459,7 @@ onMounted(() => {
                 />
                 <!-- <small v-if="!telefone" class="text-red-600">O campo Telefone é obrigatório</small> -->
               </div>
+
               <div class="md:col-span-3">
                 <label for="email">E-mail</label>
                 <InputText
@@ -453,32 +472,41 @@ onMounted(() => {
                 />
                 <!-- <small v-if="!email" class="text-red-600">O campo E-mail é obrigatório</small> -->
               </div>
-              <div class="text-right md:col-span-5">
-                <div class="inline-flex items-end">
-                  <!-- <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    @click="atualizarDadosAdmin"
-                  >
-                    Atualizar
-                  </button> -->
-                  <button
-                    @click="btnAtualizar ? atualizarDadosAdmin() : null"
-                    :class="{
-                      'bg-primary-500 hover:bg-primary-700': btnAtualizar,
-                      'cursor-not-allowed bg-primary-700': !btnAtualizar
-                    }"
-                    :disabled="!btnAtualizar"
-                    class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
-                  >
-                    <span v-if="btnAtualizar">Atualizar</span>
-                    <span v-else>
-                      <ProgressSpinner
-                        style="width: 20px; height: 20px"
-                        strokeWidth="8"
-                        aria-label="Custom ProgressSpinner"
-                      />
-                    </span>
-                  </button>
+
+              <div class="md:col-span-5">
+                <div class="w-full pb-4">
+                  <p class="pt-10 text-lg font-medium text-gray-600 dark:text-white/80">
+                    Sobre o Portal
+                  </p>
+                  <QuillEditor
+                    v-model:content="txtSobrePortal"
+                    contentType="html"
+                    toolbar="full"
+                    theme="snow"
+                  />
+                </div>
+
+                <div class="text-right">
+                  <div class="inline-flex items-end">
+                    <button
+                      @click="btnAtualizar ? atualizarDadosAdmin() : null"
+                      :class="{
+                        'bg-primary-500 hover:bg-primary-700': btnAtualizar,
+                        'cursor-not-allowed bg-primary-700': !btnAtualizar
+                      }"
+                      :disabled="!btnAtualizar"
+                      class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
+                    >
+                      <span v-if="btnAtualizar">Atualizar</span>
+                      <span v-else>
+                        <ProgressSpinner
+                          style="width: 20px; height: 20px"
+                          strokeWidth="8"
+                          aria-label="Custom ProgressSpinner"
+                        />
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
