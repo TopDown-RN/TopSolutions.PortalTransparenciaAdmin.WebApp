@@ -72,6 +72,12 @@ const menusConfig = ref([
     nome: 'Dados API',
     icon: 'pi pi-code',
     url: `https://dataapi${removerPrefixo(window.location.hostname)}/swagger/index.html`
+  },
+  {
+    id: 5,
+    nome: 'Ajuda',
+    icon: 'pi pi-wrench',
+    url: `/tour`
   }
 ])
 
