@@ -35,3 +35,16 @@ export function postCredenciais(formData) {
       throw new Error(`erro: ${error}`)
     })
 }
+
+export function postSobrePortal(formData) {
+  return api
+    .post('dadosadministrativo/gravarsobreportal', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw new Error(`Erro: ${error}`)
+    })
+}
