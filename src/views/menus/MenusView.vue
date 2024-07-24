@@ -19,9 +19,6 @@ import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 
-// Props
-defineProps(['highlightButton'])
-
 const toast = useToast()
 const confirm = useConfirm()
 
@@ -510,8 +507,7 @@ onMounted(() => {
         >
           <template #header>
             <div class="flex justify-between">
-              <Button label="Cadastrar Menu" @click="cadastrar" size="small" icon="pi pi-plus" 
-              :class="{ 'highlight-button': highlightButton }"/>
+              <Button label="Cadastrar Menu" @click="cadastrar" size="small" icon="pi pi-plus" />
 
               <span class="relative">
                 <i
@@ -582,9 +578,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.highlight-button {
-  border: 2px solid yellow; /* Destaque do botão */
-  transition: all 0.3s ease; /* Transição suave */
-}
-</style>
+<style scoped></style>

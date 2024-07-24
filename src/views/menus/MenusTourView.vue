@@ -1,139 +1,147 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import Shepherd from 'shepherd.js'
 import MenuComponent from '@/views/menus/MenusView.vue'
+import 'shepherd.js/dist/css/shepherd.css'
 
-const showTour = ref(false)
-const highlightButton = ref(false)
-const step = ref(0)
-const totalSteps = 8
+const tour = ref(null)
+
+const startTour = () => {
+  if (!tour.value) {
+    tour.value = new Shepherd.Tour({
+      useModalOverlay: true,
+      defaultStepOptions: {
+        scrollTo: true,
+        when: {
+          show: function () {
+            const currentStepIndex = tour.value.steps.indexOf(tour.value.getCurrentStep()) + 1
+            const totalSteps = tour.value.steps.length
+            const stepCounter = document.createElement('span')
+            stepCounter.className = 'step-counter'
+            stepCounter.innerText = `${currentStepIndex}/${totalSteps}`
+            const titleElement = this.el.querySelector('.shepherd-title')
+            if (titleElement) {
+              titleElement.appendChild(stepCounter)
+            }
+          }
+        }
+      }
+    })
+
+    tour.value.addStep({
+      id: 'step-1',
+      title: 'Bem-vindo à Tour!',
+      text: 'Esta é a seção de menus. Aqui você pode fazer várias coisas...',
+      attachTo: {
+        element: '.example-css-selector-1',
+        on: 'top',
+      },
+      buttons: [
+        {
+          text: 'Avançar',
+          action: tour.value.next,
+          classes: 'btn-next'
+        }
+      ]
+    })
+
+    tour.value.addStep({
+      id: 'step-2',
+      title: 'Passo 2',
+      text: 'Este é o segundo passo do tour.',
+      attachTo: {
+        element: '.example-css-selector-2',
+        on: 'bottom'
+      },
+      buttons: [
+        {
+          text: 'Voltar',
+          action: tour.value.back,
+          classes: 'btn-back'
+        },
+        {
+          text: 'Avançar',
+          action: tour.value.next,
+          classes: 'btn-next'
+        }
+      ]
+    })
+
+    tour.value.addStep({
+      id: 'step-3',
+      title: 'Passo 3',
+      text: 'Este é o terceiro passo do tour.',
+      attachTo: {
+        element: '.example-css-selector-3',
+        on: 'top'
+      },
+      buttons: [
+        {
+          text: 'Voltar',
+          action: tour.value.back,
+          classes: 'btn-back'
+        },
+        {
+          text: 'Finalizar',
+          action: tour.value.complete,
+          classes: 'btn-next'
+        }
+      ]
+    })
+  }
+
+  tour.value.start()
+}
 
 onMounted(() => {
-  // Inicie a tour ao montar o componente
-  showTour.value = true
-  highlightButton.value = true 
+  startTour()
 })
-
-const nextStep = () => {
-  if (step.value < totalSteps - 1) {
-    step.value += 1
-  }
-}
-
-const prevStep = () => {
-  if (step.value > 0) {
-    step.value -= 1
-  }
-}
-
-const closeTour = () => {
-  showTour.value = false
-  highlightButton.value = false
-}
 </script>
 
 <template>
-    <div>
-      <MenuComponent :highlightButton="highlightButton" />
-  
-      <div v-if="showTour" class="tour-overlay">
-        <div class="tour-header">
-          <button @click="closeTour" class="close-button">X</button>
-          <span class="tour-step-indicator">{{ step + 1 }}/{{ totalSteps }}</span>
-        </div>
-        <div class="tour-content">
-          <h2 class="tour-title">Bem-vindo à Tour!</h2>
-          <p v-if="step === 0">Esta é a seção de menus. Aqui você pode fazer várias coisas...</p>
-          <p v-if="step === 1">Esta é a segunda etapa do tour...</p>
-          <p v-if="step === 2">Esta é a terceira etapa do tour...</p>
-          <p v-if="step === 3">Esta é a quarta etapa do tour...</p>
-          <p v-if="step === 4">Esta é a quinta etapa do tour...</p>
-          <p v-if="step === 5">Esta é a sexta etapa do tour...</p>
-          <p v-if="step === 6">Esta é a sétima etapa do tour...</p>
-          <p v-if="step === 7">Esta é a oitava etapa do tour...</p>
-  
-          <div class="tour-navigation">
-            <button @click="prevStep" :disabled="step === 0" class="tour-button">Voltar</button>
-            <button @click="nextStep" :disabled="step === totalSteps - 1" class="tour-button">Avançar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </template>
+  <div class="example-css-selector-1">
+    <MenuComponent />
+  </div>
+</template>
 
-<style scoped>
-.tour-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #f0f0f0;
+<style>
+.shepherd-element {
+  background: #202024;
 }
 
-.tour-header {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.close-button {
+.shepherd-has-title .shepherd-content .shepherd-header {
   background: none;
-  border: none;
-  color: #f0f0f0;
-  font-size: 20px;
-  cursor: pointer;
 }
 
-.tour-step-indicator {
-  margin-left: 20px;
-  background: #007bff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.tour-content {
-  background: #282c34;
-  padding: 30px;
-  border-radius: 8px;
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-}
-
-.tour-title {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.tour-navigation {
-  margin-top: 20px;
+.shepherd-title {
+  color: #3288e6;
+  font-weight: 600;
+  font-size: 1.25rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-.tour-button {
-  background-color: #007bff;
-  color: white;
+.shepherd-text {
+  margin-bottom: 1.25rem;
+  color: #c2c2ca;
+}
+
+.btn-back,
+.btn-next {
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  border-radius: 0.25rem;
+  color: #fff;
+  padding: 0.625rem 1.25rem;
+  margin: 0.3125rem;
 }
 
-.tour-button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+.shepherd-element .shepherd-arrow:before {
+  background: #202024;
 }
 
-.tour-button:hover:not(:disabled) {
-  background-color: #0056b3;
+.step-counter {
+  color: #c2c2ca;
+  font-size: 14px;
 }
 </style>

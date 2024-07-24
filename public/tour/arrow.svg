@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="15" viewBox="0 0 56 15" fill="none">
+    <g id=".Flow">
+      <path id="Vector (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M49.3431 14.7071L55.7071 8.34315C56.0976 7.95262 56.0976 7.31946 55.7071 6.92893L49.3431 0.564971C48.9526 0.174446 48.3195 0.174446 47.9289 0.564971C47.5384 0.955496 47.5384 1.58866 47.9289 1.97919L52.5858 6.63604L0 6.63604L0 8.63604L52.5858 8.63604L47.9289 13.2929C47.5384 13.6834 47.5384 14.3166 47.9289 14.7071C48.3195 15.0976 48.9526 15.0976 49.3431 14.7071Z" fill="url(#paint0_linear_1481_15112)"/>
+    </g>
+    <defs>
+      <linearGradient id="paint0_linear_1481_15112" x1="0" y1="7.64439" x2="55" y2="7.64439" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#202024"/>
+        <stop offset="1" stop-color="#9956F6"/>
+      </linearGradient>
+    </defs>
+  </svg>
