@@ -76,12 +76,10 @@ const menusConfig = ref([
   {
     id: 5,
     nome: 'Ajuda',
-    icon: 'pi pi-wrench',
+    icon: 'pi pi-question-circle',
     url: `/tour`
   }
 ])
-
-console.log(window.location)
 
 async function getDados() {
   try {

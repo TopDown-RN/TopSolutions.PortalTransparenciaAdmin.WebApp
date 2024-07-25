@@ -52,6 +52,8 @@ const locais_load = [
   { valor: 4, descricao: 'Rodapé' }
 ]
 
+const pathname = window.location.pathname
+
 function getTooltip(valor) {
   switch (valor) {
     case 1:
@@ -508,11 +510,19 @@ onMounted(() => {
           <template #header>
             <div class="flex justify-between">
               <Button
+                v-if="pathname === '/menus/tour'"
+                label="Cadastrar Menu"
+                size="small"
+                icon="pi pi-plus"
+                class="selector-2 pointer-events-none"
+              />
+
+              <Button
+                v-else
                 label="Cadastrar Menu"
                 @click="cadastrar"
                 size="small"
                 icon="pi pi-plus"
-                class="selector-2"
               />
 
               <span class="relative">
@@ -556,12 +566,23 @@ onMounted(() => {
           <Column header="Ações" bodyStyle="text-align: left">
             <template #body="rowData">
               <Button
+                v-if="pathname === '/menus/tour'"
+                icon="pi pi-pencil"
+                size="small"
+                outlined
+                rounded
+                class="selector-3 pointer-events-none mr-2 max-h-8 max-w-8"
+                title="Editar"
+              />
+
+              <Button
+                v-else
                 icon="pi pi-pencil"
                 size="small"
                 outlined
                 rounded
                 @click="editar(rowData.data)"
-                class="selector-3 mr-2 max-h-8 max-w-8"
+                class="mr-2 max-h-8 max-w-8"
                 title="Editar"
               />
 
