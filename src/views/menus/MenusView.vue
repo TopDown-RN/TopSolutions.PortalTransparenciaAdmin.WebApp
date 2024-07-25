@@ -507,7 +507,13 @@ onMounted(() => {
         >
           <template #header>
             <div class="flex justify-between">
-              <Button label="Cadastrar Menu" @click="cadastrar" size="small" icon="pi pi-plus" />
+              <Button
+                label="Cadastrar Menu"
+                @click="cadastrar"
+                size="small"
+                icon="pi pi-plus"
+                class="selector-2"
+              />
 
               <span class="relative">
                 <i
@@ -555,7 +561,7 @@ onMounted(() => {
                 outlined
                 rounded
                 @click="editar(rowData.data)"
-                class="mr-2 max-h-8 max-w-8"
+                class="selector-3 mr-2 max-h-8 max-w-8"
                 title="Editar"
               />
 

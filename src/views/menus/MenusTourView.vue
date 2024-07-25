@@ -1,107 +1,98 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import Shepherd from 'shepherd.js'
-import MenuComponent from '@/views/menus/MenusView.vue'
 import 'shepherd.js/dist/css/shepherd.css'
+import MenuComponent from '@/views/menus/MenusView.vue'
 
-const tour = ref(null)
-
-const startTour = () => {
-  if (!tour.value) {
-    tour.value = new Shepherd.Tour({
-      useModalOverlay: true,
-      defaultStepOptions: {
-        scrollTo: true,
-        when: {
-          show: function () {
-            const currentStepIndex = tour.value.steps.indexOf(tour.value.getCurrentStep()) + 1
-            const totalSteps = tour.value.steps.length
-            const stepCounter = document.createElement('span')
-            stepCounter.className = 'step-counter'
-            stepCounter.innerText = `${currentStepIndex}/${totalSteps}`
-            const titleElement = this.el.querySelector('.shepherd-title')
-            if (titleElement) {
-              titleElement.appendChild(stepCounter)
-            }
-          }
+const tour = new Shepherd.Tour({
+  useModalOverlay: true,
+  defaultStepOptions: {
+    scrollTo: true,
+    when: {
+      show: function () {
+        const currentStepIndex = tour.steps.indexOf(tour.getCurrentStep()) + 1
+        const totalSteps = tour.steps.length
+        const stepCounter = document.createElement('span')
+        stepCounter.className = 'step-counter'
+        stepCounter.innerText = `${currentStepIndex}/${totalSteps}`
+        const titleElement = this.el.querySelector('.shepherd-title')
+        if (titleElement) {
+          titleElement.appendChild(stepCounter)
         }
       }
-    })
-
-    tour.value.addStep({
-      id: 'step-1',
-      title: 'Bem-vindo à Tour!',
-      text: 'Esta é a seção de menus. Aqui você pode fazer várias coisas...',
-      attachTo: {
-        element: '.example-css-selector-1',
-        on: 'top',
-      },
-      buttons: [
-        {
-          text: 'Avançar',
-          action: tour.value.next,
-          classes: 'btn-next'
-        }
-      ]
-    })
-
-    tour.value.addStep({
-      id: 'step-2',
-      title: 'Passo 2',
-      text: 'Este é o segundo passo do tour.',
-      attachTo: {
-        element: '.example-css-selector-2',
-        on: 'bottom'
-      },
-      buttons: [
-        {
-          text: 'Voltar',
-          action: tour.value.back,
-          classes: 'btn-back'
-        },
-        {
-          text: 'Avançar',
-          action: tour.value.next,
-          classes: 'btn-next'
-        }
-      ]
-    })
-
-    tour.value.addStep({
-      id: 'step-3',
-      title: 'Passo 3',
-      text: 'Este é o terceiro passo do tour.',
-      attachTo: {
-        element: '.example-css-selector-3',
-        on: 'top'
-      },
-      buttons: [
-        {
-          text: 'Voltar',
-          action: tour.value.back,
-          classes: 'btn-back'
-        },
-        {
-          text: 'Finalizar',
-          action: tour.value.complete,
-          classes: 'btn-next'
-        }
-      ]
-    })
+    }
   }
+})
 
-  tour.value.start()
-}
+tour.addStep({
+  id: 'step-1',
+  title: 'Bem-vindo à Tour!',
+  text: 'Esta é a seção de menus. Aqui você pode fazer várias coisas...',
+  attachTo: {
+    on: 'top'
+  },
+  buttons: [
+    {
+      text: 'Avançar',
+      action: tour.next,
+      classes: 'btn-next'
+    }
+  ]
+})
+
+tour.addStep({
+  id: 'step-2',
+  title: 'Cadastrar Menu',
+  text: 'Cadastre os menus que serão exibidos ao público no Portal da Transparência.',
+  classes: 'step-2',
+  attachTo: {
+    element: '.selector-2',
+    on: 'left'
+  },
+  buttons: [
+    {
+      text: 'Voltar',
+      action: tour.back,
+      classes: 'btn-back'
+    },
+    {
+      text: 'Avançar',
+      action: tour.next,
+      classes: 'btn-next'
+    }
+  ]
+})
+
+tour.addStep({
+  id: 'step-3',
+  title: 'Editar Menu',
+  text: 'Aqui você pode editar os menus criados',
+  classes: 'step-3',
+  attachTo: {
+    element: '.selector-3',
+    on: 'right'
+  },
+  buttons: [
+    {
+      text: 'Voltar',
+      action: tour.back,
+      classes: 'btn-back'
+    },
+    {
+      text: 'Finalizar',
+      action: tour.complete,
+      classes: 'btn-next'
+    }
+  ]
+})
 
 onMounted(() => {
-  startTour()
+  tour.start()
 })
 </script>
 
 <template>
-  <div class="example-css-selector-1">
-    <MenuComponent />
-  </div>
+  <MenuComponent />
 </template>
 
 <style>
@@ -115,33 +106,52 @@ onMounted(() => {
 
 .shepherd-title {
   color: #3288e6;
-  font-weight: 600;
-  font-size: 1.25rem;
-  display: flex;
+  font-weight: 700;
+  font-family: Outfit;
+  font-size: 1.125rem;
   align-items: center;
   justify-content: space-between;
 }
 
 .shepherd-text {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-family: Outfit;
+  line-height: 200%;
+  margin-left: 5px;
   color: #c2c2ca;
-}
-
-.btn-back,
-.btn-next {
-  border: none;
-  border-radius: 0.25rem;
-  color: #fff;
-  padding: 0.625rem 1.25rem;
-  margin: 0.3125rem;
 }
 
 .shepherd-element .shepherd-arrow:before {
   background: #202024;
 }
 
+.btn-next {
+  padding: 0.5rem 1rem;
+  font-family: Outfit;
+}
+
+.btn-back {
+  background: #29292e;
+  padding: 0.5rem 1rem;
+  font-family: Outfit;
+}
+
+.btn-back:hover {
+  background: #323238 !important;
+}
+
 .step-counter {
   color: #c2c2ca;
-  font-size: 14px;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.step-2 {
+  margin-left: 20px;
+}
+
+.step-3 {
+  margin-left: -20px;
 }
 </style>
