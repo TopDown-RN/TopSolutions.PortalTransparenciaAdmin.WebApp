@@ -235,8 +235,9 @@ onMounted(() => {
 <template>
   <HeadingComponent
     title="Menus"
-    subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
+    subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.!"
     description="Mantenha-os sempre atualizados."
+    ajuda="menus/tour"
   />
 
   <Toast position="top-center" />

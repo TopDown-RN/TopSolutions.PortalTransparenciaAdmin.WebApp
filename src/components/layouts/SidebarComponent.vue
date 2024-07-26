@@ -77,7 +77,7 @@ const menusConfig = ref([
     id: 5,
     nome: 'Ajuda',
     icon: 'pi pi-question-circle',
-    url: `/tour`
+    rota: '/tour'
   }
 ])
 

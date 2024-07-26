@@ -73,11 +73,28 @@ onMounted(() => {
   <div v-if="loading" class="my-4 text-center">
     <ProgressSpinner />
   </div>
-  <HeadingComponent
-    title="Bem-vindo(a) ao nosso sistema!"
-    subtitle="Nosso sistema foi desenvolvido para atender às suas necessidades da melhor forma possível."
-    description="Estamos constantemente trabalhando para aprimorar e oferecer recursos que facilitem sua jornada aqui. Fique à vontade para explorar todas as funcionalidades disponíveis. Caso tenha alguma dúvida ou precise de ajuda, nossa equipe de suporte está pronta para auxiliá-lo(a) a qualquer momento."
+
+  <img
+    src="/logoTopVertical.png"
+    class="mx-auto mb-4 focus:outline-none dark:brightness-0 dark:invert"
+    width="220"
+    aria-label="logo"
+    alt="logo"
   />
+
+  <HeadingComponent
+    subtitle="Bem vindo! nosso sistema foi desenvolvido com o objetivo de atender às suas necessidades da forma mais eficiente possível. Estamos constantemente aprimorando e adicionando novos recursos para tornar sua experiência ainda melhor."
+    description="Caso surja qualquer dúvida, nossa equipe de suporte está sempre à disposição para ajudá-lo(a)."
+  />
+
+  <p class="mx-auto max-w-5xl text-center text-gray-500 dark:text-gray-300">
+    Você também pode acessar a opção "Ajuda" no menu lateral para conhecer nossa plataforma ou
+    clicando em
+    <RouterLink to="tour" class="font-medium text-primary-500 underline hover:text-primary-700">
+      Ajuda.
+    </RouterLink>
+  </p>
+
   <div class="justify-center md:flex md:space-x-6">
     <div
       class="relative mt-6 overflow-x-auto rounded-lg border dark:border-white/20"
