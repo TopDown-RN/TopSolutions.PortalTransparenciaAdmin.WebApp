@@ -13,31 +13,31 @@ const items = ref([
   {
     title: 'Menus',
     description: 'Acesse, crie e edite todos os menus',
-    image: '/tour/menus.png',
+    icon: 'pi pi-list',
     redirect: '/menus'
   },
   {
     title: 'Arquivos',
     description: 'Publique os arquivos',
-    //image: 'path/to/image2.png',
+    icon: 'pi pi-folder-open',
     redirect: '/arquivos'
   },
   {
     title: 'Ouvidoria',
     description: 'Utilize para preencher informações da ouvidoria',
-    //image: 'path/to/image2.png',
+    icon: 'pi pi-headphones',
     redirect: '/ouvidoria'
   },
   {
     title: 'Importar Dados',
     description: 'Você pode facilmente importar dados externos para o Portal',
-    //image: 'path/to/image2.png',
+    icon: 'pi pi-upload',
     redirect: '/importacaodadosplanilha'
   },
   {
     title: 'Notícias',
     description: 'Publique as principais notícias',
-    //image: 'path/to/image2.png',
+    icon: 'pi pi-address-book',
     redirect: '/noticias'
   }
 ])
@@ -112,12 +112,8 @@ onMounted(async () => {
             class="group flex w-full items-center rounded-md border bg-gray-50 p-3 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
             @click="handleRedirect(item.redirect)"
           >
-            <img
-              :src="item.image"
-              alt="Image for {{ item.title }}"
-              class="mr-4"
-              style="width: 80px; height: auto"
-            />
+            <i :class="item.icon + ' mr-4'" style="font-size: 1.6rem"></i>
+
             <div class="flex flex-col">
               <h3 class="text-left font-semibold">{{ item.title }}</h3>
               <p class="text-left">{{ item.description }}</p>
