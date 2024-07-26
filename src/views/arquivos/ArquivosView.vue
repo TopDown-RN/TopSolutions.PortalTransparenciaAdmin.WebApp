@@ -262,6 +262,7 @@ onMounted(() => {
       title="Arquivos"
       subtitle="Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência."
       description="Mantenha-os sempre atualizados."
+      ajuda="/arquivos/tour"
     />
 
     <Toast position="top-center" />
