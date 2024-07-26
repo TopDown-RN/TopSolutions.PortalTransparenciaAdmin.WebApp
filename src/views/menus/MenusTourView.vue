@@ -1,8 +1,11 @@
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Shepherd from 'shepherd.js'
 import 'shepherd.js/dist/css/shepherd.css'
 import MenuComponent from '@/views/menus/MenusView.vue'
+
+const router = useRouter()
 
 const tour = new Shepherd.Tour({
   useModalOverlay: true,
@@ -80,10 +83,21 @@ tour.addStep({
     },
     {
       text: 'Finalizar',
-      action: tour.complete,
+      action: () => {
+        tour.complete()
+        router.push({ name: 'Menus' })
+      },
       classes: 'btn-next'
     }
   ]
+})
+
+tour.on('cancel', () => {
+  router.push({ name: 'Menus' })
+})
+
+tour.on('complete', () => {
+  router.push({ name: 'Menus' })
 })
 
 onMounted(() => {
@@ -107,7 +121,6 @@ onMounted(() => {
 .shepherd-title {
   color: #3288e6;
   font-weight: 700;
-  font-family: Outfit;
   font-size: 1.125rem;
   align-items: center;
   justify-content: space-between;
@@ -116,7 +129,6 @@ onMounted(() => {
 .shepherd-text {
   margin-bottom: 0.25rem;
   font-size: 0.875rem;
-  font-family: Outfit;
   line-height: 200%;
   margin-left: 5px;
   color: #c2c2ca;
@@ -128,13 +140,11 @@ onMounted(() => {
 
 .btn-next {
   padding: 0.5rem 1rem;
-  font-family: Outfit;
 }
 
 .btn-back {
   background: #29292e;
   padding: 0.5rem 1rem;
-  font-family: Outfit;
 }
 
 .btn-back:hover {
