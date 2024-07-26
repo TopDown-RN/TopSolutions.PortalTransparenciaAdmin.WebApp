@@ -1,0 +1,46 @@
+.shepherd-element {
+  background: #202024;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-header {
+  background: none;
+}
+
+.shepherd-title {
+  color: #3288e6;
+  font-weight: 700;
+  font-size: 1.125rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shepherd-text {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 200%;
+  margin-left: 5px;
+  color: #c2c2ca;
+}
+
+.shepherd-element .shepherd-arrow:before {
+  background: #202024;
+}
+
+.btn-next {
+  padding: 0.5rem 1rem;
+}
+
+.btn-back {
+  background: #29292e;
+  padding: 0.5rem 1rem;
+}
+
+.btn-back:hover {
+  background: #323238 !important;
+}
+
+.step-counter {
+  color: #c2c2ca;
+  font-size: 0.875rem;
+  font-weight: 400;
+}

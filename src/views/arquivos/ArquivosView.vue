@@ -69,6 +69,8 @@ const anos = computed(() => {
   return anos
 })
 
+const pathname = window.location.pathname
+
 async function fetchArquivos() {
   try {
     const response = await getArquivos()
@@ -260,6 +262,7 @@ onMounted(() => {
       title="Arquivos"
       subtitle="Gerencie aqui os arquivos exibidos ao usuário no Portal da Transparência."
       description="Mantenha-os sempre atualizados."
+      ajuda="/arquivos/tour"
     />
 
     <Toast position="top-center" />
@@ -310,6 +313,7 @@ onMounted(() => {
             size="small"
             label="Adicionar arquivo"
             icon="pi pi-plus"
+            :class="{ 'selector-2 pointer-events-none': pathname === '/arquivos/tour' }"
           />
         </template>
       </Toolbar>
@@ -331,7 +335,10 @@ onMounted(() => {
       >
         <template #header>
           <div class="flex justify-between">
-            <div class="flex gap-2">
+            <div
+              class="flex gap-2"
+              :class="{ 'selector-6 pointer-events-none': pathname === '/arquivos/tour' }"
+            >
               <Button
                 label="Excluir"
                 icon="pi pi-trash"
@@ -363,7 +370,10 @@ onMounted(() => {
           </div>
         </template>
 
-        <Column selectionMode="multiple"></Column>
+        <Column
+          selectionMode="multiple"
+          :bodyClass="{ 'selector-5 pointer-events-none': pathname === '/arquivos/tour' }"
+        ></Column>
 
         <Column header="Ano" field="anoPub">
           <template #editor="{ data, field }">
@@ -426,9 +436,14 @@ onMounted(() => {
           :rowEditor="true"
           style="width: 10%; min-width: 8rem"
           bodyStyle="text-align:right"
+          :bodyClass="{ 'selector-3 pointer-events-none': pathname === '/arquivos/tour' }"
         />
 
-        <Column header="Ações" bodyStyle="text-align: left">
+        <Column
+          header="Ações"
+          bodyStyle="text-align: left"
+          :bodyClass="{ 'selector-4 pointer-events-none': pathname === '/arquivos/tour' }"
+        >
           <template #body="event">
             <Button
               icon="pi pi-trash"
