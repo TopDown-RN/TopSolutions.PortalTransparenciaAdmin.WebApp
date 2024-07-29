@@ -10,7 +10,7 @@ const router = useRouter()
 const steps = [
   {
     id: 'step-1',
-    title: 'Bem-vindo à Tour de menus!',
+    title: 'Bem-vindo ao Tour de menus!',
     text: 'Esta é a seção de menus. Aqui você pode fazer várias coisas...',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]

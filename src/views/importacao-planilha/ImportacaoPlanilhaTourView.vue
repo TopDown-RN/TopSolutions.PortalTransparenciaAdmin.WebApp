@@ -3,24 +3,24 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { createTour } from '@/utils/tour'
 import '@/assets/tour.css'
-import ArquivoComponent from '@/views/arquivos/ArquivosView.vue'
+import ImportacaoPlanilhaComponent from '@/views/importacao-planilha/ImportacaoPlanilhaView.vue'
 
 const router = useRouter()
 
 const steps = [
   {
     id: 'step-1',
-    title: 'Bem-vindo ao Tour de Arquivos!',
-    text: 'Esta é a seção de arquivos. Aqui você pode fazer várias coisas...',
+    title: 'Bem-vindo ao Tour de importação de dados!',
+    text: 'Esta é a seção de importação de dados. Aqui você pode fazer várias coisas...',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]
   },
   {
     id: 'step-2',
-    title: 'Adicionar Arquivo',
-    text: 'Cadastre os arquivos que serão exibidos ao público no Portal da Transparência.',
+    title: 'Selecionar modelo',
+    text: 'Selecione o modelo de importação que deseja utilizar.',
     classes: 'step-2',
-    attachTo: { element: '.selector-2', on: 'left' },
+    attachTo: { element: '.selector-2', on: 'top' },
     buttons: [
       { text: 'Voltar', action: () => tour.back(), classes: 'btn-back' },
       { text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }
@@ -28,10 +28,10 @@ const steps = [
   },
   {
     id: 'step-3',
-    title: 'Editar Arquivo',
-    text: 'Aqui você pode realizar uma alteração no arquivo, editar sua descrição, e também mover para um ano, categoria e/ou menu desejado.',
+    title: 'Baixar modelo',
+    text: 'Faça o download do modelo para o seu computador.',
     classes: 'step-3',
-    attachTo: { element: '.selector-3', on: 'left' },
+    attachTo: { element: '.selector-3', on: 'right' },
     buttons: [
       { text: 'Voltar', action: () => tour.back(), classes: 'btn-back' },
       { text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }
@@ -39,10 +39,10 @@ const steps = [
   },
   {
     id: 'step-4',
-    title: 'Excluir Arquivo',
-    text: 'Basta clicar nessa lixeira para excluir o arquivo desejado.',
+    title: 'Selecionar planilha',
+    text: 'Após realizar as alterações no modelo baixado, selecione a planilha que será inserida no Portal da Transparência.',
     classes: 'step-4',
-    attachTo: { element: '.selector-4', on: 'left' },
+    attachTo: { element: '.selector-4', on: 'right' },
     buttons: [
       { text: 'Voltar', action: () => tour.back(), classes: 'btn-back' },
       { text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }
@@ -50,8 +50,8 @@ const steps = [
   },
   {
     id: 'step-5',
-    title: 'Selecionar Arquivos',
-    text: 'Você também pode selecionar mais arquivos para realizar uma ação.',
+    title: 'Importar planilha',
+    text: 'Complete o envio da planilha para o Portal da Transparência.',
     classes: 'step-5',
     attachTo: { element: '.selector-5', on: 'left' },
     buttons: [
@@ -61,17 +61,28 @@ const steps = [
   },
   {
     id: 'step-6',
-    title: 'Ações',
-    text: 'Ao selecionar um arquivo, os botões acima serão habilitados e você poderá realizar a ação normalmente.',
+    title: 'Visualizar planilha',
+    text: 'Visualize as planilhas importadas para o Portal.',
     classes: 'step-6',
     attachTo: { element: '.selector-6', on: 'left' },
+    buttons: [
+      { text: 'Voltar', action: () => tour.back(), classes: 'btn-back' },
+      { text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }
+    ]
+  },
+  {
+    id: 'step-7',
+    title: 'Excluir planilha',
+    text: 'Basta clicar nessa lixeira para excluir o arquivo desejado.',
+    classes: 'step-7',
+    attachTo: { element: '.selector-7', on: 'left' },
     buttons: [
       { text: 'Voltar', action: () => tour.back(), classes: 'btn-back' },
       {
         text: 'Finalizar',
         action: () => {
           tour.complete()
-          router.push({ name: 'Arquivos' })
+          router.push({ name: 'Importar Dados' })
         },
         classes: 'btn-next'
       }
@@ -82,11 +93,11 @@ const steps = [
 const tour = createTour(steps)
 
 tour.on('cancel', () => {
-  router.push({ name: 'Arquivos' })
+  router.push({ name: 'Importar Dados' })
 })
 
 tour.on('complete', () => {
-  router.push({ name: 'Arquivos' })
+  router.push({ name: 'Importar Dados' })
 })
 
 onMounted(() => {
@@ -95,25 +106,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <ArquivoComponent />
+  <ImportacaoPlanilhaComponent />
 </template>
 
 <style>
+.shepherd-element,
+.selector-1 {
+  background: #202024;
+  max-width: 500px;
+}
+
 .step-2 {
-  margin-left: 20px;
+  margin-bottom: 20px;
 }
 
-.step-3 {
-  margin-left: -20px;
-}
-
+.step-3,
 .step-4 {
+  margin-left: 20px;
+}
+
+.step-5,
+.step-6,
+.step-7 {
   margin-left: -20px;
-}
-.step-5 {
-  margin-left: 20px;
-}
-.step-6 {
-  margin-left: 20px;
 }
 </style>
