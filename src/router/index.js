@@ -9,6 +9,7 @@ import OuvidoriaRoutes from '@/router/ouvidoria'
 import ImportacaoPlanilhaRoutes from '@/router/importacao-planilha'
 import CredenciaisRoutes from '@/router/credenciais'
 import NoticiasRoutes from '@/router/noticias'
+import TourRoutes from '@/router/tour'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,8 @@ const router = createRouter({
     ...OuvidoriaRoutes,
     ...ImportacaoPlanilhaRoutes,
     ...CredenciaisRoutes,
-    ...NoticiasRoutes
+    ...NoticiasRoutes,
+    ...TourRoutes
   ]
 })
 

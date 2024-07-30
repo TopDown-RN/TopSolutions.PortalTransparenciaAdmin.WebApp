@@ -12,6 +12,7 @@ import VueTheMask from 'vue-the-mask'
 import Tooltip from 'primevue/tooltip'
 import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice'
+import 'shepherd.js/dist/css/shepherd.css'
 
 const pinia = createPinia()
 const app = createApp(App)

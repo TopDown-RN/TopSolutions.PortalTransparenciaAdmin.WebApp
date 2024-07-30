@@ -16,6 +16,8 @@ const conteudo = ref('')
 const toast = useToast()
 const loading = ref(false)
 
+const pathname = window.location.pathname
+
 async function fetchDadosOuvidoria() {
   const response = await getDadosOuvidoria()
   telefone.value = response.data.txtNumTelefone
@@ -68,12 +70,16 @@ onMounted(() => {
       title="Ouvidoria"
       subtitle="Gerencie aqui os dados para a ouvidoria."
       description="Mantenha-os sempre atualizados."
+      ajuda="ouvidoria/tour"
     />
 
     <div class="w-full p-8 pt-8">
       <form @submit.prevent="salvarDados">
         <div class="-mx-2 md:flex md:items-center">
-          <div class="flex-1 px-2">
+          <div
+            class="flex-1 px-2"
+            :class="{ 'selector-2 pointer-events-none': pathname === '/ouvidoria/tour' }"
+          >
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Telefone</label>
             <InputText
               v-model="telefone"
@@ -85,7 +91,10 @@ onMounted(() => {
             />
           </div>
 
-          <div class="mt-4 flex-1 px-2 md:mt-0">
+          <div
+            class="mt-4 flex-1 px-2 md:mt-0"
+            :class="{ 'selector-3 pointer-events-none': pathname === '/ouvidoria/tour' }"
+          >
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
               >Endereço de Email</label
             >
@@ -98,7 +107,10 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="mt-4 w-full">
+        <div
+          class="mt-4 w-full"
+          :class="{ 'selector-4 pointer-events-none': pathname === '/ouvidoria/tour' }"
+        >
           <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
             >Conteúdo na página</label
           >
