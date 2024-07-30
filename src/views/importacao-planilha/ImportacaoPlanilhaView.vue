@@ -42,6 +42,8 @@ const fields2 = ref([])
 
 const registrosImportados = ref([])
 
+const pathname = window.location.pathname
+
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
@@ -322,14 +324,20 @@ onMounted(async () => {
   <div>
     <HeadingComponent
       :title="'Importação manual de dados'"
-      :description="'Importe seus dados manualmente via planilha'"
+      :description="'Importe seus dados manualmente utilizando planilhas pré-desenvolvidas.'"
+      ajuda="/importacaodadosplanilha/tour"
     />
 
     <div class="max-w-screen-base container mx-auto">
       <div>
         <div class="mb-6 mt-6 rounded bg-white p-4 px-4 shadow-lg md:p-8 dark:bg-surface-800">
           <div class="gap grid grid-cols-1 text-sm">
-            <div class="lg:col-span-3">
+            <div
+              class="lg:col-span-3"
+              :class="{
+                'selector-2 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+              }"
+            >
               <div class="md:col-span-2">
                 <label class="dark:text-white/80">Selecione um modelo de importação</label>
                 <select
@@ -348,15 +356,22 @@ onMounted(async () => {
               <button
                 @click="downloadPlanilha"
                 class="mr-4 cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
+                :class="{
+                  'selector-3 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+                }"
               >
                 <i class="pi pi-download"></i>
                 Baixar modelo
               </button>
+
               <div class="flex">
                 <div>
                   <label
                     for="inputarquivos"
                     class="cursor-pointer rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
+                    :class="{
+                      'selector-4 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+                    }"
                   >
                     <i class="pi pi-file-import"></i>
                     Selecionar Planilha
@@ -383,8 +398,14 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
+
             <div class="text-right md:col-span-5">
-              <div class="inline-flex items-end">
+              <div
+                class="inline-flex items-end"
+                :class="{
+                  'selector-5 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+                }"
+              >
                 <button
                   @click="btnImpotar ? confirmeImportacao() : null"
                   :class="{
@@ -447,12 +468,18 @@ onMounted(async () => {
                   @click="deletarDadosRegistro(rowData.data.idRegistroImportacao)"
                   class="text-red-500"
                   v-tooltip.top="'Excluir'"
+                  :class="{
+                    'selector-7 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+                  }"
                 >
                   <RiDeleteBinLine />
                 </button>
                 <i
                   class="pi pi-eye ml-2 cursor-pointer text-xl hover:text-primary-500"
                   @click="lerDadosImportados(rowData.data.idRegistroImportacao)"
+                  :class="{
+                    'selector-6 pointer-events-none': pathname === '/importacaodadosplanilha/tour'
+                  }"
                 ></i>
               </template>
             </Column>
