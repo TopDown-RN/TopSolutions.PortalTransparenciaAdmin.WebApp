@@ -72,10 +72,14 @@ const menusConfig = ref([
     nome: 'Dados API',
     icon: 'pi pi-code',
     url: `https://dataapi${removerPrefixo(window.location.hostname)}/swagger/index.html`
+  },
+  {
+    id: 5,
+    nome: 'Ajuda',
+    icon: 'pi pi-question-circle',
+    rota: '/tour'
   }
 ])
-
-console.log(window.location)
 
 async function getDados() {
   try {
@@ -125,7 +129,7 @@ onMounted(() => {
           <li v-for="menu in menusPrincipal" :key="menu.id">
             <RouterLink
               :to="menu.rota"
-              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               type="button"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
@@ -151,7 +155,7 @@ onMounted(() => {
             <RouterLink
               v-if="menu.rota"
               :to="menu.rota"
-              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               type="button"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
@@ -167,7 +171,7 @@ onMounted(() => {
               v-else
               :href="menu.url"
               target="_blank"
-              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 font-sans text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
+              class="center flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm font-bold capitalize text-white transition-all hover:bg-white/10"
               v-tooltip.top="menu.nome"
               @click="menuActive = menu.nome"
             >

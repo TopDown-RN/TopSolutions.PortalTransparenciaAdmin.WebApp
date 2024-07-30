@@ -52,6 +52,8 @@ const locais_load = [
   { valor: 4, descricao: 'Rodapé' }
 ]
 
+const pathname = window.location.pathname
+
 function getTooltip(valor) {
   switch (valor) {
     case 1:
@@ -233,8 +235,9 @@ onMounted(() => {
 <template>
   <HeadingComponent
     title="Menus"
-    subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência."
+    subtitle="Gerencie aqui os menus exibidos ao usuário no Portal da Transparência.!"
     description="Mantenha-os sempre atualizados."
+    ajuda="menus/tour"
   />
 
   <Toast position="top-center" />
@@ -507,7 +510,13 @@ onMounted(() => {
         >
           <template #header>
             <div class="flex justify-between">
-              <Button label="Cadastrar Menu" @click="cadastrar" size="small" icon="pi pi-plus" />
+              <Button
+                label="Cadastrar Menu"
+                @click="cadastrar"
+                size="small"
+                icon="pi pi-plus"
+                :class="{ 'selector-2 pointer-events-none': pathname === '/menus/tour' }"
+              />
 
               <span class="relative">
                 <i
@@ -547,7 +556,11 @@ onMounted(() => {
             </template>
           </Column>
 
-          <Column header="Ações" bodyStyle="text-align: left">
+          <Column
+            header="Ações"
+            bodyStyle="text-align: left"
+            :bodyClass="{ 'selector-3 pointer-events-none': pathname === '/menus/tour' }"
+          >
             <template #body="rowData">
               <Button
                 icon="pi pi-pencil"
@@ -578,4 +591,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style></style>
+<style scoped></style>

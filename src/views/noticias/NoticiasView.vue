@@ -29,6 +29,8 @@ const fileRef = ref(null)
 const selectedItems = ref([])
 const noticias = ref([])
 
+const pathname = window.location.pathname
+
 async function fetchNoticias() {
   const response = await getNoticias()
   noticias.value = response.data
@@ -201,11 +203,15 @@ onMounted(() => {
       title="Notícias"
       subtitle="Cadastre aqui as notícias a serem exibidas no Portal da Transparência."
       description="Mantenha-as sempre atualizados."
+      ajuda="/noticias/tour"
     />
 
     <div class="w-full pt-8">
       <form>
-        <div class="-mx-2 md:flex md:items-center">
+        <div
+          class="-mx-2 md:flex md:items-center"
+          :class="{ 'selector-2 pointer-events-none': pathname === '/noticias/tour' }"
+        >
           <div class="flex-1 px-2 pb-4">
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Título</label>
             <InputText
@@ -224,7 +230,10 @@ onMounted(() => {
         </div>
 
         <div class="-mx-2 md:flex md:items-center">
-          <div class="flex-1 px-2">
+          <div
+            class="flex-1 px-2"
+            :class="{ 'selector-3 pointer-events-none': pathname === '/noticias/tour' }"
+          >
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
               >Link da Notícia</label
             >
@@ -239,7 +248,10 @@ onMounted(() => {
             <small v-if="!link && !isValid" class="text-red-600">O campo Link é obrigatório</small>
           </div>
 
-          <div class="flex-2 mt-4 px-2 md:mt-0">
+          <div
+            class="flex-2 mt-4 px-2 md:mt-0"
+            :class="{ 'selector-4 pointer-events-none': pathname === '/noticias/tour' }"
+          >
             <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200"
               >Data da publicação</label
             >
@@ -259,7 +271,10 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="mt-4 w-full">
+        <div
+          class="mt-4 w-full"
+          :class="{ 'selector-5 pointer-events-none': pathname === '/noticias/tour' }"
+        >
           <label class="mb-2 block text-sm text-gray-600 dark:text-gray-200">Imagem</label>
           <FileUpload
             ref="fileRef"
@@ -294,6 +309,7 @@ onMounted(() => {
             @click="adicionarNoticias()"
             :loading="loading"
             class="text-sm font-medium tracking-wide"
+            :class="{ 'selector-6 pointer-events-none': pathname === '/noticias/tour' }"
           />
         </div>
       </form>
@@ -306,6 +322,7 @@ onMounted(() => {
         @update:model-value="onOrdenarNoticia"
         listStyle="height:auto"
         dataKey="id"
+        :class="{ 'selector-7 pointer-events-none': pathname === '/noticias/tour' }"
       >
         <template #header>Lista de Notícias</template>
         <template #item="slotProps">
@@ -323,12 +340,14 @@ onMounted(() => {
             </div>
           </div>
         </template>
+
         <template #controlsend>
           <Button
             :disabled="!hasSelection"
             @click="excluirNoticias"
             icon="pi pi-trash"
             severity="danger"
+            :class="{ 'selector-8 pointer-events-none': pathname === '/noticias/tour' }"
           />
         </template>
       </OrderList>

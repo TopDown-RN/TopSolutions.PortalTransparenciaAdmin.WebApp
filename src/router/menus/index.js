@@ -4,6 +4,12 @@ const routes = [
     name: 'Menus',
     meta: { requiresAuth: true },
     component: () => import('@/views/menus/MenusView.vue')
+  },
+  {
+    path: '/menus/tour',
+    name: 'Menus Tour',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/menus/MenusTourView.vue')
   }
 ]
 

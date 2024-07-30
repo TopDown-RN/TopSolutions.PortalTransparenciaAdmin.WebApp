@@ -18,7 +18,11 @@ function toggleSidebar() {
 }
 
 function addAba(route) {
-  if (route.name === 'not-found') {
+  if (!route || typeof route.name !== 'string') {
+    return
+  }
+
+  if (route.name === 'not-found' || route.name.toLowerCase().includes('tour')) {
     return
   }
 
