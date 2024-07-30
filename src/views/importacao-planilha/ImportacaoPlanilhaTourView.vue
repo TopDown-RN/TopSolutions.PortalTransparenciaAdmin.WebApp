@@ -10,15 +10,15 @@ const router = useRouter()
 const steps = [
   {
     id: 'step-1',
-    title: 'Bem-vindo ao Tour de importação de dados!',
-    text: 'Esta é a seção de importação de dados. Aqui você pode fazer várias coisas...',
+    title: 'Bem-vindo ao Tour de Importação de Dados!',
+    text: 'Neste tour, você aprenderá a importar dados para o Portal da Transparência. Vamos guiá-lo através das etapas essenciais para selecionar, baixar e enviar seus dados com sucesso.',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]
   },
   {
     id: 'step-2',
-    title: 'Selecionar modelo',
-    text: 'Selecione o modelo de importação que deseja utilizar.',
+    title: 'Selecionar Modelo',
+    text: 'Escolha o modelo de importação que deseja utilizar.',
     classes: 'step-2',
     attachTo: { element: '.selector-2', on: 'top' },
     buttons: [
@@ -28,8 +28,8 @@ const steps = [
   },
   {
     id: 'step-3',
-    title: 'Baixar modelo',
-    text: 'Faça o download do modelo para o seu computador.',
+    title: 'Baixar Modelo',
+    text: 'Faça o download do modelo selecionado para o seu computador. Este modelo contém o formato correto que você deve seguir para importar seus dados.',
     classes: 'step-3',
     attachTo: { element: '.selector-3', on: 'right' },
     buttons: [
@@ -39,8 +39,8 @@ const steps = [
   },
   {
     id: 'step-4',
-    title: 'Selecionar planilha',
-    text: 'Após realizar as alterações no modelo baixado, selecione a planilha que será inserida no Portal da Transparência.',
+    title: 'Selecionar Planilha',
+    text: 'Após preencher o modelo baixado, selecione a planilha atualizada que você deseja enviar para o Portal da Transparência.',
     classes: 'step-4',
     attachTo: { element: '.selector-4', on: 'right' },
     buttons: [
@@ -50,7 +50,7 @@ const steps = [
   },
   {
     id: 'step-5',
-    title: 'Importar planilha',
+    title: 'Importar Planilha',
     text: 'Complete o envio da planilha para o Portal da Transparência.',
     classes: 'step-5',
     attachTo: { element: '.selector-5', on: 'left' },
@@ -61,8 +61,8 @@ const steps = [
   },
   {
     id: 'step-6',
-    title: 'Visualizar planilha',
-    text: 'Visualize as planilhas importadas para o Portal.',
+    title: 'Visualizar Planilha',
+    text: 'Visualize as planilhas importadas para o Portal. Aqui você pode revisar e verificar as informações enviadas.',
     classes: 'step-6',
     attachTo: { element: '.selector-6', on: 'left' },
     buttons: [
@@ -72,7 +72,7 @@ const steps = [
   },
   {
     id: 'step-7',
-    title: 'Excluir planilha',
+    title: 'Excluir Planilha',
     text: 'Basta clicar nessa lixeira para excluir o arquivo desejado.',
     classes: 'step-7',
     attachTo: { element: '.selector-7', on: 'left' },

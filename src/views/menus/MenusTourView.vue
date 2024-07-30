@@ -10,15 +10,15 @@ const router = useRouter()
 const steps = [
   {
     id: 'step-1',
-    title: 'Bem-vindo ao Tour de menus!',
-    text: 'Esta é a seção de menus. Aqui você pode fazer várias coisas...',
+    title: 'Bem-vindo ao Tour de Menus!',
+    text: 'Nesta seção, você irá explorar como gerenciar menus. Descubra como cadastrar e editar os menus que serão exibidos ao público no Portal da Transparência.',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]
   },
   {
     id: 'step-2',
     title: 'Cadastrar Menu',
-    text: 'Cadastre os menus que serão exibidos ao público no Portal da Transparência.',
+    text: 'Aqui você pode cadastrar novos menus que aparecerão no Portal da Transparência.',
     classes: 'step-2',
     attachTo: { element: '.selector-2', on: 'left' },
     buttons: [
@@ -29,7 +29,7 @@ const steps = [
   {
     id: 'step-3',
     title: 'Editar Menu',
-    text: 'Aqui você pode editar os menus criados.',
+    text: 'Nesta etapa, você pode editar os menus que já foram criados.',
     classes: 'step-3',
     attachTo: { element: '.selector-3', on: 'right' },
     buttons: [

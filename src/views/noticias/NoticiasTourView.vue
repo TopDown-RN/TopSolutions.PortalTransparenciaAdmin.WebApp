@@ -10,8 +10,8 @@ const router = useRouter()
 const steps = [
   {
     id: 'step-1',
-    title: 'Bem-vindo ao Tour de notícias!',
-    text: 'Esta é a seção de Notícias. Aqui você pode fazer várias coisas...',
+    title: 'Bem-vindo ao Tour de Notícias!',
+    text: 'Você está na seção de Notícias, onde pode gerenciar e publicar conteúdos para o Portal da Transparência. Vamos explorar as funcionalidades disponíveis para você.',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]
   },
@@ -75,7 +75,7 @@ const steps = [
 
   {
     id: 'step-7',
-    title: 'Lista de notícias',
+    title: 'Lista de Notícias',
     text: 'Aqui é possível visualizar as notícias cadastradas no Portal da Transparência. Você pode selecionar uma ou mais notícias e ordená-las como quiser utilizando os botões à esquerda.',
     classes: 'step-7',
     attachTo: { element: '.selector-7', on: 'top' },
@@ -86,7 +86,7 @@ const steps = [
   },
   {
     id: 'step-8',
-    title: 'Excluir notícia',
+    title: 'Excluir Notícia',
     text: 'Após selecionar uma ou mais notícias, basta clicar nessa lixeira para excluir.',
     classes: 'step-8',
     attachTo: { element: '.selector-8', on: 'left' },
