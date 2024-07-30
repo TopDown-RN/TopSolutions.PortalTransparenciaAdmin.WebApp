@@ -11,14 +11,14 @@ const steps = [
   {
     id: 'step-1',
     title: 'Bem-vindo ao Tour de Arquivos!',
-    text: 'Esta é a seção de arquivos. Aqui você pode fazer várias coisas...',
+    text: 'Nesta seção, você encontrará diversas funcionalidades para gerenciar seus arquivos. Vamos explorar cada uma delas!',
     attachTo: { on: 'top' },
     buttons: [{ text: 'Avançar', action: () => tour.next(), classes: 'btn-next' }]
   },
   {
     id: 'step-2',
     title: 'Adicionar Arquivo',
-    text: 'Cadastre os arquivos que serão exibidos ao público no Portal da Transparência.',
+    text: 'Aqui você pode adicionar novos arquivos que serão visíveis no Portal da Transparência. Faça o cadastro dos documentos que deseja disponibilizar.',
     classes: 'step-2',
     attachTo: { element: '.selector-2', on: 'left' },
     buttons: [
@@ -29,7 +29,7 @@ const steps = [
   {
     id: 'step-3',
     title: 'Editar Arquivo',
-    text: 'Aqui você pode realizar uma alteração no arquivo, editar sua descrição, e também mover para um ano, categoria e/ou menu desejado.',
+    text: 'Nesta etapa, você pode modificar as informações do arquivo, ajustar sua descrição e alterar ano, categoria e/ou menu associados.',
     classes: 'step-3',
     attachTo: { element: '.selector-3', on: 'left' },
     buttons: [
@@ -40,7 +40,7 @@ const steps = [
   {
     id: 'step-4',
     title: 'Excluir Arquivo',
-    text: 'Basta clicar nessa lixeira para excluir o arquivo desejado.',
+    text: 'Para excluir um arquivo, clique no ícone da lixeira correspondente. Essa ação removerá o arquivo permanentemente.',
     classes: 'step-4',
     attachTo: { element: '.selector-4', on: 'left' },
     buttons: [
@@ -51,7 +51,7 @@ const steps = [
   {
     id: 'step-5',
     title: 'Selecionar Arquivos',
-    text: 'Você também pode selecionar mais arquivos para realizar uma ação.',
+    text: 'Você pode selecionar vários arquivos simultaneamente para realizar uma ação.',
     classes: 'step-5',
     attachTo: { element: '.selector-5', on: 'left' },
     buttons: [
@@ -62,7 +62,7 @@ const steps = [
   {
     id: 'step-6',
     title: 'Ações',
-    text: 'Ao selecionar um arquivo, os botões acima serão habilitados e você poderá realizar a ação normalmente.',
+    text: 'Quando você seleciona um arquivo, os botões acima serão habilitados e você poderá realizar a ação normalmente.',
     classes: 'step-6',
     attachTo: { element: '.selector-6', on: 'left' },
     buttons: [
