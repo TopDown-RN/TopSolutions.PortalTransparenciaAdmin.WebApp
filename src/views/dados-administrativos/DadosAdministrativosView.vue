@@ -1,21 +1,22 @@
 <script setup>
-import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
-import { getDadosAdmin, postDadosAdmin, postSobrePortal } from '@/services/dadosAdmin'
 import { ref, onMounted } from 'vue'
-import ProgressSpinner from 'primevue/progressspinner'
+import { getDadosAdmin, postDadosAdmin, postSobrePortal } from '@/services/dadosAdmin'
 import { manterNumeros } from '@/utils/manterNumeros'
+import HeadingComponent from '@/components/HeadingComponent.vue'
+import ProgressSpinner from 'primevue/progressspinner'
 import InputText from 'primevue/inputtext'
 import InputMask from 'primevue/inputmask'
 import Toast from 'primevue/toast'
+import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
-import HeadingComponent from '@/components/HeadingComponent.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { RiFacebookLine, RiInstagramLine, RiTwitterXLine } from '@remixicon/vue'
 
 const loading = ref(true)
 const toast = useToast()
 
-const btnAtualizar = ref(true)
+const loadingButton = ref(false)
 const isValid = ref(true)
 
 const logo = ref('')
@@ -106,11 +107,11 @@ async function pegarDadosAdmin() {
 
 async function atualizarDadosAdmin() {
   try {
-    btnAtualizar.value = false
-
     if (!validarCampos()) {
       return
     }
+
+    loadingButton.value = true
 
     const formData = new FormData()
     const formDataSobre = new FormData()
@@ -141,18 +142,17 @@ async function atualizarDadosAdmin() {
 
     await postDadosAdmin(formData)
     await postSobrePortal(formDataSobre)
-
-    btnAtualizar.value = true
     showSuccess()
 
     setTimeout(() => {
       window.location.reload()
     }, 2000)
   } catch (error) {
-    btnAtualizar.value = true
     showError()
     console.log(error)
   }
+
+  loadingButton.value = false
 }
 
 function showSuccess() {
@@ -192,7 +192,6 @@ function validarCampos() {
     //!telefone.value ||
     //!email.value
   ) {
-    btnAtualizar.value = true
     isValid.value = false
   }
 
@@ -488,24 +487,12 @@ onMounted(() => {
 
                 <div class="text-right">
                   <div class="inline-flex items-end">
-                    <button
-                      @click="btnAtualizar ? atualizarDadosAdmin() : null"
-                      :class="{
-                        'bg-primary-500 hover:bg-primary-700': btnAtualizar,
-                        'cursor-not-allowed bg-primary-700': !btnAtualizar
-                      }"
-                      :disabled="!btnAtualizar"
-                      class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
-                    >
-                      <span v-if="btnAtualizar">Atualizar</span>
-                      <span v-else>
-                        <ProgressSpinner
-                          style="width: 20px; height: 20px"
-                          strokeWidth="8"
-                          aria-label="Custom ProgressSpinner"
-                        />
-                      </span>
-                    </button>
+                    <Button
+                      type="button"
+                      @click="atualizarDadosAdmin()"
+                      label="Atualizar"
+                      :loading="loadingButton"
+                    />
                   </div>
                 </div>
               </div>
