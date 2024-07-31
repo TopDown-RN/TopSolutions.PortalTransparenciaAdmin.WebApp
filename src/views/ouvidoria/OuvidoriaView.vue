@@ -27,8 +27,8 @@ async function fetchDadosOuvidoria() {
 
 async function salvarDados() {
   try {
-    console.log(conteudo.value)
     loading.value = true
+
     const formData = new FormData()
     formData.append('txtNumTelefone', telefone.value)
     formData.append('txtEmail', email.value)
@@ -36,12 +36,12 @@ async function salvarDados() {
 
     await postDadosOuvidoria(formData)
     showSuccess()
-    loading.value = false
   } catch (err) {
-    loading.value = false
     showError()
     console.log(err)
   }
+
+  loading.value = false
 }
 
 function showSuccess() {

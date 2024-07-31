@@ -33,6 +33,8 @@ async function postSaveArquivos() {
       return
     }
 
+    loading.value = true
+
     const formData = new FormData()
     formData.append('txtDescricao', txtDescricao.value)
     formData.append('idMenu', id_Menu.value.idMenu)
@@ -53,6 +55,8 @@ async function postSaveArquivos() {
     showError('Erro ao salvar arquivo(s)')
     console.log(`Erro ao salvar arquivo(s): ${e}`)
   }
+
+  loading.value = false
 }
 
 function setArquivos(event) {
