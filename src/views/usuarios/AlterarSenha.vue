@@ -50,7 +50,7 @@ async function salvar() {
       return
     }
 
-    const response = await alterarSenha(senhaNova.value, usuario.value.txtCpfCnpj)
+    await alterarSenha(senhaNova.value, usuario.value.txtCpfCnpj)
     usuario.value.blnAlterarSenha = false
     showSuccess()
     removeToken()

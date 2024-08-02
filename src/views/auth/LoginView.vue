@@ -9,6 +9,7 @@ import Password from 'primevue/password'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 
 const toast = useToast()
 const txtCpfCnpjEmail = ref('')
@@ -102,12 +103,15 @@ onMounted(() => {
         </p>
       </div>
       <div class="mt-9 w-full rounded bg-white p-10 shadow md:max-w-lg lg:w-1/3">
-        <p tabindex="0" class="text-2xl font-extrabold leading-6 text-gray-800 focus:outline-none">
+        <p
+          tabindex="0"
+          class="text-center text-2xl font-extrabold leading-6 text-gray-800 focus:outline-none"
+        >
           Portal da Transparência
         </p>
         <p
           tabindex="0"
-          class="mt-2 pb-8 text-sm font-medium leading-none text-gray-800 focus:outline-none"
+          class="mt-2 pb-8 text-center text-sm font-medium leading-none text-gray-800 focus:outline-none"
         >
           Painel Administrativo
         </p>
@@ -140,16 +144,17 @@ onMounted(() => {
               placeholder="Digite sua senha"
             />
           </div>
+
+          <div class="mx-auto max-w-5xl text-right">
+            <RouterLink
+              to="esqueceu-senha"
+              class="font-medium text-primary-500 underline hover:text-primary-700"
+            >
+              Esqueci minha senha
+            </RouterLink>
+          </div>
+
           <div class="mt-8">
-            <!-- <button
-            role="button"
-            class="focus:ring-2 focus:ring-offset-2 focus:ring-primary-700 text-sm font-semibold leading-none text-white focus:outline-none bg-primary-700 border rounded hover:bg-primary-600 py-3 w-full"
-            @click="postAutenticar($event)"
-          >
-            <div class="relative flex items-center justify-center">
-              <RiLoginBoxLine class="text-white size-4" />&nbsp;Acessar
-            </div>
-          </button> -->
             <button
               @click="btnAcessar ? postAutenticar($event) : null"
               :class="{

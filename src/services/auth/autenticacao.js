@@ -18,4 +18,16 @@ export function verifyToken(_token) {
     .then((response) => response.data)
     .catch((error) => console.error(error))
 }
+
+export function redefinirSenha(txtCpfCnpjEmail) {
+  return api
+    .post('autenticacao/emailredefinirsenha', {
+      txtCpfCnpjEmail: txtCpfCnpjEmail
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
 export default api
