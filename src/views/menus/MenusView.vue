@@ -23,7 +23,7 @@ const toast = useToast()
 const confirm = useConfirm()
 
 const menuDialog = ref(false)
-const btnCadastraMenu = ref(true)
+const loadingButton = ref(false)
 const isValid = ref(true)
 
 // Campos de cadastro de arquivo
@@ -89,7 +89,7 @@ async function postGravarMenu() {
   }
 
   try {
-    btnCadastraMenu.value = false
+    loadingButton.value = true
     const locaisSelecionados = locais.value.map((local) => parseInt(local))
     const menu = {
       idMenu: idArquivo.value,
@@ -108,11 +108,12 @@ async function postGravarMenu() {
     await getMenusList()
     showSuccess('Menu salvo com sucesso')
     limpar()
-    btnCadastraMenu.value = true
     menuDialog.value = false
   } catch (error) {
     showError('Erro ao cadastrar Menu')
   }
+
+  loadingButton.value = false
 }
 
 function limpar() {
@@ -464,32 +465,16 @@ onMounted(() => {
                 <div class="text-right md:col-span-5">
                   <div class="inline-flex items-end">
                     <div class="mr-2">
-                      <button
-                        @click="btnCadastraMenu ? postGravarMenu() : null"
-                        :class="{
-                          'bg-primary-500 hover:bg-primary-700': btnCadastraMenu,
-                          'cursor-not-allowed bg-primary-700': !btnCadastraMenu
-                        }"
-                        :disabled="!btnCadastraMenu"
-                        class="flex h-9 w-24 items-center justify-center rounded px-4 py-2 font-bold text-white"
-                      >
-                        <span v-if="btnCadastraMenu">Gravar</span>
-                        <span v-else>
-                          <ProgressSpinner
-                            style="width: 20px; height: 20px"
-                            strokeWidth="8"
-                            aria-label="Custom ProgressSpinner"
-                          />
-                        </span>
-                      </button>
+                      <Button
+                        type="button"
+                        label="Salvar"
+                        @click="postGravarMenu()"
+                        :loading="loadingButton"
+                        class=""
+                      />
                     </div>
                     <div>
-                      <button
-                        @click="limpar"
-                        class="rounded border border-primary-500 px-4 py-2 font-bold text-primary-500 hover:bg-primary-700 hover:text-white"
-                      >
-                        Limpar
-                      </button>
+                      <Button type="button" label="Limpar" @click="limpar" outlined />
                     </div>
                   </div>
                 </div>

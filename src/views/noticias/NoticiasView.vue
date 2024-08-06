@@ -46,6 +46,8 @@ async function adicionarNoticias() {
       return
     }
 
+    loading.value = true
+
     const formData = new FormData()
 
     formData.append('txtTitulo', titulo.value)
@@ -60,6 +62,8 @@ async function adicionarNoticias() {
   } catch (error) {
     showError('Ocorreu um erro ao cadastrar a notícia')
   }
+
+  loading.value = false
 }
 
 function excluirNoticias() {

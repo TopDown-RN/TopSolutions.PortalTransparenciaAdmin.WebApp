@@ -1,30 +1,28 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { RouterLink } from 'vue-router'
 import { login } from '@/services/auth/autenticacao.js'
 import { addToken, setIdUsuario } from '@/services/auth/authStorage'
-import ProgressSpinner from 'primevue/progressspinner'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+import Button from 'primevue/button'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
-import { RiLoginBoxLine } from '@remixicon/vue'
 
 const toast = useToast()
 const txtCpfCnpjEmail = ref('')
 const txtPass = ref('')
-const btnAcessar = ref(true)
+const loading = ref(false)
 
 const router = useRouter()
 
 async function postAutenticar() {
   try {
-    btnAcessar.value = false
+    loading.value = true
     const response = await login(txtCpfCnpjEmail.value, txtPass.value)
     addToken(response.data.token)
     setIdUsuario(response.data.idUsuario)
-    btnAcessar.value = true
+    loading.value = false
 
     if (
       response.data.txtCpfCnpj === '99999999999' ||
@@ -39,7 +37,7 @@ async function postAutenticar() {
 
     window.location.reload()
   } catch (e) {
-    btnAcessar.value = true
+    loading.value = false
     toast.add({
       severity: 'error',
       summary: 'Erro',
@@ -157,37 +155,15 @@ onMounted(() => {
               placeholder="Digite sua senha"
             />
           </div>
-
-          <div class="mx-auto max-w-5xl text-right">
-            <RouterLink
-              to="esqueceu-senha"
-              class="font-medium text-primary-500 underline hover:text-primary-700"
-            >
-              Esqueci minha senha
-            </RouterLink>
-          </div>
-
-          <div class="mt-8">
-            <button
-              @click="btnAcessar ? postAutenticar($event) : null"
-              :class="{
-                'bg-primary-700 hover:bg-primary-600': btnAcessar,
-                'cursor-not-allowed bg-primary-600': !btnAcessar
-              }"
-              :disabled="!btnAcessar"
-              class="w-full rounded border py-3 text-sm font-semibold leading-none text-white focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2"
-            >
-              <span v-if="btnAcessar" class="relative flex items-center justify-center">
-                <RiLoginBoxLine class="size-4 text-white" />&nbsp;Acessar
-              </span>
-              <span v-else>
-                <ProgressSpinner
-                  style="width: 20px; height: 20px"
-                  strokeWidth="8"
-                  aria-label="Custom ProgressSpinner"
-                />
-              </span>
-            </button>
+          <div class="mt-8 flex justify-center">
+            <Button
+              class="w-full"
+              type="submit"
+              label="Acessar"
+              icon="pi pi-sign-in"
+              :loading="loading"
+              @click="postAutenticar($event)"
+            />
           </div>
         </form>
       </div>
@@ -195,4 +171,9 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style>
+span[data-pc-section='label'] {
+  flex: initial;
+  display: inline-block;
+}
+</style>
