@@ -34,6 +34,7 @@ const txtUrl = ref('')
 const blnAtivo = ref(false)
 const blnArquivo = ref(false)
 const blnPopUp = ref(false)
+const blnExcluir = ref(true)
 const locais = ref([])
 const idMenuPai = ref(0)
 const txtFiltro = ref('') // sem campo na tela ainda
@@ -99,6 +100,7 @@ async function postGravarMenu() {
       blnAtivo: blnAtivo.value,
       blnArquivo: blnArquivo.value,
       blnPopUp: blnPopUp.value,
+      blnExcluir: blnExcluir.value,
       locais: locaisSelecionados,
       idMenuPai: idMenuPai.value,
       txtFiltro: txtFiltro.value
@@ -124,6 +126,7 @@ function limpar() {
   txtUrlArquivo.value = ''
   blnAtivo.value = false
   blnArquivo.value = false
+  blnExcluir.value = true
   blnPopUp.value = false
   locais.value = []
   idMenuPai.value = 0
@@ -140,6 +143,7 @@ function editar(menu) {
   blnAtivo.value = menu.blnAtivo
   blnArquivo.value = menu.blnArquivo
   blnPopUp.value = menu.blnPopUp
+  blnExcluir.value = menu.blnExcluir
   idMenuPai.value = menu.idMenuPai
   txtFiltro.value = menu.txtFiltro
   locais.value = menu.locais
@@ -151,9 +155,6 @@ function editar(menu) {
 }
 
 function excluir(itensMenu) {
-  console.log(itensMenu)
-  // const id = selectedItems.value.map((item) => item.idMenu)
-
   confirm.require({
     group: 'headless',
     header: 'Tem certeza de que deseja excluir?',
