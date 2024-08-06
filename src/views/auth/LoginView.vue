@@ -1,13 +1,13 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { login } from '@/services/auth/autenticacao.js'
 import { addToken, setIdUsuario } from '@/services/auth/authStorage'
-import { onMounted, ref } from 'vue'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
-import { useRouter } from 'vue-router'
 
 const toast = useToast()
 const txtCpfCnpjEmail = ref('')
@@ -72,9 +72,22 @@ function verificarCadastro() {
   }
 }
 
+function verificarRedefinirSenha() {
+  if (localStorage.getItem('redefinir-senha-sucesso')) {
+    toast.add({
+      severity: 'success',
+      summary: 'Successo',
+      detail: 'Sua senha foi redefinida com sucesso!',
+      life: 5000
+    })
+    localStorage.removeItem('redefinir-senha-sucesso')
+  }
+}
+
 onMounted(() => {
   verificarSessao()
   verificarCadastro()
+  verificarRedefinirSenha()
 })
 </script>
 
@@ -101,12 +114,15 @@ onMounted(() => {
         </p>
       </div>
       <div class="mt-9 w-full rounded bg-white p-10 shadow md:max-w-lg lg:w-1/3">
-        <p tabindex="0" class="text-2xl font-extrabold leading-6 text-gray-800 focus:outline-none">
+        <p
+          tabindex="0"
+          class="text-center text-2xl font-extrabold leading-6 text-gray-800 focus:outline-none"
+        >
           Portal da Transparência
         </p>
         <p
           tabindex="0"
-          class="mt-2 pb-8 text-sm font-medium leading-none text-gray-800 focus:outline-none"
+          class="mt-2 pb-8 text-center text-sm font-medium leading-none text-gray-800 focus:outline-none"
         >
           Painel Administrativo
         </p>
