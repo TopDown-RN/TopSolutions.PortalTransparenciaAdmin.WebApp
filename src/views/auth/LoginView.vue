@@ -165,6 +165,14 @@ onMounted(() => {
               @click="postAutenticar($event)"
             />
           </div>
+          <div class="mx-auto mt-4 max-w-5xl text-right">
+            <RouterLink
+              to="esqueceu-senha"
+              class="font-medium text-primary-500 underline hover:text-primary-700"
+            >
+              Esqueci minha senha
+            </RouterLink>
+          </div>
         </form>
       </div>
     </div>
