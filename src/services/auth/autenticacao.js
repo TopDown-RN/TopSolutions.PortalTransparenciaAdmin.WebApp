@@ -30,4 +30,18 @@ export function redefinirSenha(txtCpfCnpjEmail) {
     })
 }
 
+export function alterarSenha(novaSenha, token) {
+  return api
+    .get('autenticacao/alterarsenha', {
+      params: {
+        novaSenha,
+        token
+      }
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
 export default api

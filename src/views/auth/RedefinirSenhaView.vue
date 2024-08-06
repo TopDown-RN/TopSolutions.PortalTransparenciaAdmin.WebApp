@@ -1,15 +1,16 @@
 <script setup>
 import { ref } from 'vue'
-import { alterarSenha } from '@/services/usuario'
+import { useRoute, useRouter } from 'vue-router'
+import { alterarSenha } from '@/services/auth/autenticacao'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
 import Password from 'primevue/password'
-import { useRoute } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
-const txtCpfCnpj = route.query.c
+const token = route.query.t
 const toast = useToast()
 const txtPass = ref('')
 const txtPassConfirm = ref('')
@@ -27,24 +28,20 @@ async function redefinirSenha() {
       return
     }
 
-    await alterarSenha(txtPass.value, txtCpfCnpj)
-    showSuccess()
+    loading.value = true
+
+    await alterarSenha(txtPass.value, token)
+    localStorage.setItem('redefinir-senha-sucesso', 'true')
+    router.push('/login')
   } catch (e) {
     showError('Erro ao alterar senha!')
   }
+
+  loading.value = false
 }
 
 function showError(error) {
   toast.add({ severity: 'error', summary: 'Erro!', detail: error, life: 3000 })
-}
-
-function showSuccess() {
-  toast.add({
-    severity: 'success',
-    summary: 'Successo',
-    detail: 'Senha alterada com sucesso!',
-    life: 2000
-  })
 }
 </script>
 
@@ -125,10 +122,10 @@ function showSuccess() {
           <div class="mt-8 flex justify-center">
             <Button
               class="w-full"
-              type="button"
+              type="submit"
               label="Alterar senha"
               :loading="loading"
-              @click="redefinirSenha()"
+              @click="redefinirSenha($event)"
             />
           </div>
 

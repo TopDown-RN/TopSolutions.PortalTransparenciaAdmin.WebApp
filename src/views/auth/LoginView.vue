@@ -1,15 +1,15 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { login } from '@/services/auth/autenticacao.js'
 import { addToken, setIdUsuario } from '@/services/auth/authStorage'
-import { onMounted, ref } from 'vue'
-import { RiLoginBoxLine } from '@remixicon/vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
-import { useRouter } from 'vue-router'
-import { RouterLink } from 'vue-router'
+import { RiLoginBoxLine } from '@remixicon/vue'
 
 const toast = useToast()
 const txtCpfCnpjEmail = ref('')
@@ -74,9 +74,22 @@ function verificarCadastro() {
   }
 }
 
+function verificarRedefinirSenha() {
+  if (localStorage.getItem('redefinir-senha-sucesso')) {
+    toast.add({
+      severity: 'success',
+      summary: 'Successo',
+      detail: 'Sua senha foi redefinida com sucesso!',
+      life: 5000
+    })
+    localStorage.removeItem('redefinir-senha-sucesso')
+  }
+}
+
 onMounted(() => {
   verificarSessao()
   verificarCadastro()
+  verificarRedefinirSenha()
 })
 </script>
 

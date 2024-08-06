@@ -69,7 +69,6 @@ export function getPorToken() {
 }
 
 export function alterarSenha(senha, cpf) {
-  console.log(senha, cpf)
   return api
     .patch(`usuario/alterarsenha?novaSenha=${senha}&txtCpfCnpj=${cpf}`, {
       Authorization: `Bearer ${localStorage.getItem('token')}`

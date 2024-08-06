@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import InputText from 'primevue/inputtext'
-import Toast from 'primevue/toast'
-import Button from 'primevue/button'
-import { useToast } from 'primevue/usetoast'
 import { redefinirSenha } from '@/services/auth/autenticacao'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
 const txtCpfCnpjEmail = ref('')
@@ -93,7 +93,7 @@ function validarCampo() {
           Informe o login para receber em seu e-mail as instruções para alterar a senha.
         </p>
 
-        <form action="">
+        <form action.="">
           <div class="py-1">
             <label id="email" class="text-sm font-medium leading-none text-gray-600"
               >E-mail, CPF ou CNPJ</label
@@ -116,11 +116,11 @@ function validarCampo() {
           <div class="mt-8 flex justify-center">
             <Button
               class="w-full"
-              type="button"
+              type="submit"
               label="Recuperar senha"
               icon="pi pi-envelope"
               :loading="loading"
-              @click="enviarEmail()"
+              @click="enviarEmail($event)"
             />
           </div>
 
