@@ -6,7 +6,7 @@ import LayoutView from '@/views/LayoutView.vue'
 
 <template>
   <LayoutView v-if="getToken()" />
-  <RouterView></RouterView>
+  <RouterView v-else></RouterView>
 </template>
 
 <style scoped></style>
