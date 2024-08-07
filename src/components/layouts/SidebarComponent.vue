@@ -1,84 +1,37 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getDadosAdmin } from '@/services/dadosAdmin'
+import { acessoMoviDesk } from '@/services/usuario'
 
 const props = defineProps(['dataShowSidebar'])
 const logo = ref('')
 const extensaoLogo = ref('')
 const txtCliente = ref('')
+const moviDesk = ref('')
 
 const menuActive = ref()
-const menusPrincipal = ref([
-  {
-    id: 1,
-    nome: 'Início',
-    icon: 'pi pi-home',
-    rota: '/'
-  },
-  {
-    id: 2,
-    nome: 'Menus',
-    icon: 'pi pi-list',
-    rota: '/menus'
-  },
-  {
-    id: 3,
-    nome: 'Arquivos',
-    icon: 'pi pi-folder-open',
-    rota: '/arquivos'
-  },
-  {
-    id: 5,
-    nome: 'Ouvidoria',
-    icon: 'pi pi-headphones',
-    rota: '/ouvidoria'
-  },
-  {
-    id: 6,
-    nome: 'Importar Dados',
-    icon: 'pi pi-upload',
-    rota: '/importacaodadosplanilha'
-  },
-  {
-    id: 7,
-    nome: 'Notícias',
-    icon: 'pi pi-address-book',
-    rota: '/noticias'
-  }
-])
+const menusPrincipal = [
+  { id: 1, nome: 'Início', icon: 'pi pi-home', rota: '/' },
+  { id: 2, nome: 'Menus', icon: 'pi pi-list', rota: '/menus' },
+  { id: 3, nome: 'Arquivos', icon: 'pi pi-folder-open', rota: '/arquivos' },
+  { id: 5, nome: 'Ouvidoria', icon: 'pi pi-headphones', rota: '/ouvidoria' },
+  { id: 6, nome: 'Importar Dados', icon: 'pi pi-upload', rota: '/importacaodadosplanilha' },
+  { id: 7, nome: 'Notícias', icon: 'pi pi-address-book', rota: '/noticias' }
+]
 
-const menusConfig = ref([
-  {
-    id: 1,
-    nome: 'Usuários',
-    icon: 'pi pi-user',
-    rota: '/usuarios'
-  },
-  {
-    id: 2,
-    nome: 'Dados Administrativos',
-    icon: 'pi pi-wrench',
-    rota: '/dados-administrativos'
-  },
-  {
-    id: 3,
-    nome: 'Credenciais',
-    icon: 'pi pi-cog',
-    rota: '/credenciais'
-  },
+const menusConfig = computed(() => [
+  { id: 1, nome: 'Usuários', icon: 'pi pi-user', rota: '/usuarios' },
+  { id: 2, nome: 'Dados Administrativos', icon: 'pi pi-wrench', rota: '/dados-administrativos' },
+  { id: 3, nome: 'Credenciais', icon: 'pi pi-cog', rota: '/credenciais' },
   {
     id: 4,
     nome: 'Dados API',
     icon: 'pi pi-code',
     url: `https://dataapi${removerPrefixo(window.location.hostname)}/swagger/index.html`
   },
-  {
-    id: 5,
-    nome: 'Ajuda',
-    icon: 'pi pi-question-circle',
-    rota: '/tour'
-  }
+  { id: 5, nome: 'Ajuda', icon: 'pi pi-question-circle', rota: '/tour' },
+  { id: 6, nome: 'Suporte', icon: 'pi pi-megaphone', url: moviDesk.value }
 ])
 
 async function getDados() {
@@ -92,12 +45,22 @@ async function getDados() {
   }
 }
 
+async function fetchMoviDesk() {
+  try {
+    const response = await acessoMoviDesk()
+    moviDesk.value = response
+  } catch (error) {
+    console.error(`Ocorreu um erro com a conexão com o movidesk: `, error)
+  }
+}
+
 function removerPrefixo() {
   return window.location.hostname.replace('admin', '')
 }
 
 onMounted(() => {
   getDados()
+  fetchMoviDesk()
 })
 </script>
 
@@ -183,7 +146,7 @@ onMounted(() => {
       </nav>
     </div>
     <div class="flex items-center justify-center space-x-2 border-t border-white/20 px-4 py-4">
-      <span class="text-sm text-gray-300">Para suporte: (84) 3207-1622</span>
+      <span class="text-sm text-gray-300">Mais informações: (84) 3207-1622</span>
     </div>
   </div>
 </template>

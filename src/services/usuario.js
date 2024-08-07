@@ -80,4 +80,15 @@ export function alterarSenha(senha, cpf) {
     })
 }
 
+export function acessoMoviDesk() {
+  return api
+    .get('usuario/acessomovidesk', {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error
+    })
+}
+
 export default api
